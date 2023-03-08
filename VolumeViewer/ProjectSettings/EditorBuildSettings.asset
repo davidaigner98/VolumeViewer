@@ -7,3 +7,4 @@ EditorBuildSettings:
   m_Scenes: []
   m_configObjects:
     Varjo.XR.Settings: {fileID: 11400000, guid: e647e6feb3eebe648a882f3498e022fc, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 4700baa045b702e459b2296e15d5ea0c, type: 2}
