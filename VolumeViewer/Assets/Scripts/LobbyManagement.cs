@@ -3,6 +3,8 @@ using Unity.Netcode;
 
 public class LobbyManagement : MonoBehaviour {
     public NetworkManager networkManager;
+    public GameObject serviceProvider;
+    public GameObject interactionManager;
     public GameObject xrRig;
     public GameObject displayCamera;
     public GameObject model;
@@ -21,8 +23,11 @@ public class LobbyManagement : MonoBehaviour {
     }
 
     private void ReplaceXRRigWithDisplayCamera() {
+        Destroy(interactionManager);
+        Destroy(serviceProvider);
         Destroy(xrRig);
         GameObject newCamera = GameObject.Instantiate(displayCamera);
+        newCamera.GetComponent<DisplayCameraAlignment>().model = model;
         newCamera.transform.position = model.transform.position + offsetToModelTransform;
         newCamera.transform.LookAt(model.transform);
     }
