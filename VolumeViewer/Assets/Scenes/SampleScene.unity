@@ -2921,7 +2921,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2231273808069645170, guid: cf629f94ba4b7d0498c70d126a14a7f1, type: 3}
       propertyPath: m_Name
-      value: Cube
+      value: Model
+      objectReference: {fileID: 0}
+    - target: {fileID: 3944766741467376454, guid: cf629f94ba4b7d0498c70d126a14a7f1, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 892837570
       objectReference: {fileID: 0}
     - target: {fileID: 4212566293109390455, guid: cf629f94ba4b7d0498c70d126a14a7f1, type: 3}
       propertyPath: m_RootOrder
