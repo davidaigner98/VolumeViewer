@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class AlighToTransform : MonoBehaviour {
+public class AlignToTransform : MonoBehaviour {
     public Transform alignTo;
     public Vector3 offset;
 
