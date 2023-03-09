@@ -1008,7 +1008,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -2462,6 +2462,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1442968423 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2231273808069645170, guid: cf629f94ba4b7d0498c70d126a14a7f1, type: 3}
+  m_PrefabInstance: {fileID: 3944766741467376452}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1458297430
 GameObject:
   m_ObjectHideFlags: 0
@@ -2655,6 +2660,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   networkManager: {fileID: 1354586661}
+  xrRig: {fileID: 1458297430}
+  displayCamera: {fileID: 1634275933079748902, guid: d1f8b1dc475ad6141afe3ec3058e4376, type: 3}
+  model: {fileID: 1442968423}
+  offsetToModelTransform: {x: 0, y: 0, z: -1}
 --- !u!4 &1741001461 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4212566293109390455, guid: cf629f94ba4b7d0498c70d126a14a7f1, type: 3}
