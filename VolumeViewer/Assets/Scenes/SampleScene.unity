@@ -2660,6 +2660,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   networkManager: {fileID: 1354586661}
+  serviceProvider: {fileID: 0}
+  interactionManager: {fileID: 0}
   xrRig: {fileID: 1458297430}
   displayCamera: {fileID: 1634275933079748902, guid: d1f8b1dc475ad6141afe3ec3058e4376, type: 3}
   model: {fileID: 1442968423}
