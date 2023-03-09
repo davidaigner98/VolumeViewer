@@ -10,6 +10,7 @@ public class LobbyManagement : MonoBehaviour {
 
     public void StartHost() {
         networkManager.StartHost();
+        model.AddComponent<Draggable>();
         ReplaceXRRigWithDisplayCamera();
         Destroy(gameObject);
     }
