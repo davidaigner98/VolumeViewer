@@ -2940,6 +2940,18 @@ PrefabInstance:
       propertyPath: Interpolate
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3944766741467376455, guid: cf629f94ba4b7d0498c70d126a14a7f1, type: 3}
+      propertyPath: SyncPositionX
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3944766741467376455, guid: cf629f94ba4b7d0498c70d126a14a7f1, type: 3}
+      propertyPath: SyncPositionY
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3944766741467376455, guid: cf629f94ba4b7d0498c70d126a14a7f1, type: 3}
+      propertyPath: SyncPositionZ
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4212566293109390455, guid: cf629f94ba4b7d0498c70d126a14a7f1, type: 3}
       propertyPath: m_RootOrder
       value: 0
