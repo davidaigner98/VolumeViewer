@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class Draggable : MonoBehaviour {
-    public float rotSpeed = 100.0f;
+    public float rotSpeed = 250.0f;
 
     // Start is called before the first frame update
     void Start() {
