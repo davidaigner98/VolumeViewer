@@ -974,7 +974,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 114892109605653334, guid: 33edf201cbc6fe645ad9078697cd2aea, type: 3}
   m_PrefabInstance: {fileID: 641364788}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1080604074}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0625e574c0d47a241b7dfc7a8c67ca2b, type: 3}
@@ -2201,6 +2201,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1b43d6eb40db60b419700fd2677e79c4, type: 3}
+--- !u!1 &1080604074 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1148719034140820, guid: 33edf201cbc6fe645ad9078697cd2aea, type: 3}
+  m_PrefabInstance: {fileID: 641364788}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1202314630 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3557434566810426997, guid: 15d3b5cf5cea75344a4482323bc124a8, type: 3}
+  m_PrefabInstance: {fileID: 25074056}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1289131266
 GameObject:
   m_ObjectHideFlags: 0
@@ -2660,9 +2670,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   networkManager: {fileID: 1354586661}
-  serviceProvider: {fileID: 0}
-  interactionManager: {fileID: 0}
+  serviceProvider: {fileID: 1202314630}
+  interactionManager: {fileID: 1080604074}
   xrRig: {fileID: 1458297430}
+  lightsource: {fileID: 705507993}
   displayCamera: {fileID: 1634275933079748902, guid: d1f8b1dc475ad6141afe3ec3058e4376, type: 3}
   model: {fileID: 1442968423}
   offsetToModelTransform: {x: 0, y: 0, z: -1}
