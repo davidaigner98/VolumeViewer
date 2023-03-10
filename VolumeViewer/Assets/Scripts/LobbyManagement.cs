@@ -6,15 +6,15 @@ public class LobbyManagement : MonoBehaviour {
     public GameObject serviceProvider;
     public GameObject interactionManager;
     public GameObject xrRig;
-    public GameObject light;
+    public GameObject lightsource;
     public GameObject displayCamera;
     public GameObject model;
     public Vector3 offsetToModelTransform;
 
     public void StartHost() {
         networkManager.StartHost();
-        model.AddComponent<Draggable>();
-        ReplaceXRRigWithDisplayCamera();
+        GameObject newCamera = ReplaceXRRigWithDisplayCamera();
+        model.AddComponent<Draggable>().displayCameraTransform = newCamera.transform;
         Destroy(gameObject);
     }
 
@@ -23,7 +23,7 @@ public class LobbyManagement : MonoBehaviour {
         Destroy(gameObject);
     }
 
-    private void ReplaceXRRigWithDisplayCamera() {
+    private GameObject ReplaceXRRigWithDisplayCamera() {
         Destroy(interactionManager);
         Destroy(serviceProvider);
         Destroy(xrRig);
@@ -31,6 +31,8 @@ public class LobbyManagement : MonoBehaviour {
         newCamera.GetComponent<DisplayCameraAlignment>().model = model;
         newCamera.transform.position = model.transform.position + offsetToModelTransform;
         newCamera.transform.LookAt(model.transform);
-        light.transform.SetParent(newCamera.transform);
+        lightsource.transform.SetParent(newCamera.transform);
+        
+        return newCamera;
     }
 }
