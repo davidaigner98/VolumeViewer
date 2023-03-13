@@ -3202,7 +3202,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3944766741467376455, guid: cf629f94ba4b7d0498c70d126a14a7f1, type: 3}
       propertyPath: Interpolate
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3944766741467376455, guid: cf629f94ba4b7d0498c70d126a14a7f1, type: 3}
       propertyPath: SyncPositionX
