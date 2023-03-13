@@ -14,7 +14,7 @@ public class LobbyManagement : MonoBehaviour {
     public void StartHost() {
         networkManager.StartHost();
         GameObject newCamera = ReplaceXRRigWithDisplayCamera();
-        model.AddComponent<Draggable>().displayCameraTransform = newCamera.transform;
+        model.AddComponent<Draggable>().displayCamera = newCamera;
         Destroy(gameObject);
     }
 

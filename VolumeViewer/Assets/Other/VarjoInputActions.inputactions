@@ -1,0 +1,54 @@
+{
+    "name": "VarjoInputActions",
+    "maps": [
+        {
+            "name": "Varjo",
+            "id": "36524c6e-0bb1-4460-87c3-d4d515a39746",
+            "actions": [
+                {
+                    "name": "Position",
+                    "type": "Value",
+                    "id": "71ec509d-c112-4b8d-9f75-9c4bcf2f56af",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Rotation",
+                    "type": "Value",
+                    "id": "9a1a27f7-67da-4788-a6e0-de7931292cb7",
+                    "expectedControlType": "Quaternion",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "6ea65858-6c4c-40d2-9821-1e322a12e320",
+                    "path": "<VarjoHMD>/centerEyePosition",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Position",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "36c61b49-4dc7-4a74-9562-19b17150ce08",
+                    "path": "<VarjoHMD>/centerEyeRotation",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

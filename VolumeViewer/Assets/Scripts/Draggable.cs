@@ -1,19 +1,46 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Draggable : MonoBehaviour {
-    public Transform displayCameraTransform;
-    public float rotSpeed = 250.0f;
+    public GameObject displayCamera;
+    public float rotSpeed = 0.4f;
+    private Mouse mouse;
+    private InputAction moveAction;
+    private InputAction dragAction;
+    private Vector2 startOffset;
 
-    // Start is called before the first frame update
     void Start() {
-        
+        mouse = Mouse.current;
+
+        PlayerInput playerInput = displayCamera.GetComponent<PlayerInput>();
+        InputActionMap map = playerInput.currentActionMap;
+        moveAction = map.FindAction("Move");
+        dragAction = map.FindAction("Drag");
+        moveAction.Enable();
+        dragAction.Enable();
+
+        dragAction.started += DragStarted;
+        dragAction.canceled += DragCanceled;
     }
 
-    private void OnMouseDrag() {
-        float rotX = Input.GetAxis("Mouse X") * Mathf.Deg2Rad * rotSpeed;
-        float rotY = Input.GetAxis("Mouse Y") * Mathf.Deg2Rad * rotSpeed;
+    void DragStarted(InputAction.CallbackContext c) {
+        moveAction.started += MoveStarted;
+        moveAction.performed += MovePerformed;
+    }
 
-        transform.Rotate(displayCameraTransform.TransformDirection(Vector3.up), -rotX, Space.World);
-        transform.Rotate(displayCameraTransform.TransformDirection(Vector3.right), rotY, Space.World);
+    void DragCanceled(InputAction.CallbackContext c) {
+        moveAction.started -= MoveStarted;
+        moveAction.performed -= MovePerformed;
+    }
+
+    void MoveStarted(InputAction.CallbackContext c) {
+        startOffset = mouse.delta.ReadValue();
+    }
+
+    void MovePerformed(InputAction.CallbackContext c) {
+        Vector2 rotation = (mouse.delta.ReadValue() - startOffset) * rotSpeed;
+
+        transform.Rotate(displayCamera.transform.TransformDirection(Vector3.up), -rotation.x, Space.World);
+        transform.Rotate(displayCamera.transform.TransformDirection(Vector3.right), rotation.y, Space.World);
     }
 }
