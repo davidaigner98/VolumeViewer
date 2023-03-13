@@ -32,7 +32,8 @@ public class LobbyManagement : MonoBehaviour {
         newCamera.transform.position = model.transform.position + offsetToModelTransform;
         newCamera.transform.LookAt(model.transform);
         lightsource.transform.SetParent(newCamera.transform);
-        
+
+        model.GetComponent<MeshRenderer>().enabled = true;
         return newCamera;
     }
 }
