@@ -3525,7 +3525,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   Period: 0.1
-  HandModel: {fileID: 1078999436}
+  HandModel: {fileID: 1078999437}
   PointingType: 3
   PointingDirection: {x: 0, y: 0, z: 1}
   TargetObject: {fileID: 1741001461}
