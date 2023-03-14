@@ -15,11 +15,16 @@ public class LobbyManagement : MonoBehaviour {
         networkManager.StartHost();
         GameObject newCamera = ReplaceXRRigWithDisplayCamera();
         model.AddComponent<Draggable>().displayCamera = newCamera;
+        
+        ModelTransformator modelTransformator = model.GetComponent<ModelTransformator>();
+        modelTransformator.SetAlpha(1);
+        Destroy(modelTransformator);
         Destroy(gameObject);
     }
 
     public void StartClient() {
         networkManager.StartClient();
+        model.GetComponent<ModelTransformator>().isConnected = true;
         Destroy(gameObject);
     }
 
@@ -32,7 +37,8 @@ public class LobbyManagement : MonoBehaviour {
         newCamera.transform.position = model.transform.position + offsetToModelTransform;
         newCamera.transform.LookAt(model.transform);
         lightsource.transform.SetParent(newCamera.transform);
-        
+
+        model.GetComponent<MeshRenderer>().enabled = true;
         return newCamera;
     }
 }
