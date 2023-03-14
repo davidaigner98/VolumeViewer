@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 public class Draggable : MonoBehaviour {
     public GameObject displayCamera;
-    public float rotSpeed = 0.4f;
+    public float rotSpeed = 0.3f;
     private Mouse mouse;
     private InputAction moveAction;
     private InputAction dragAction;

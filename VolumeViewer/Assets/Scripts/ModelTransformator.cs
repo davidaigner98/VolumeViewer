@@ -12,6 +12,10 @@ public class ModelTransformator : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
+    
+    }
+
+    public void RescaleForAI() {
         transform.localScale = Vector3.one * displaySize.localScale.y / 2;
     }
 
