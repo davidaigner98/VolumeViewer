@@ -41,6 +41,7 @@ public class ModelTransformator : MonoBehaviour {
             separatedFromDisplay = true;
         } else {
             GetComponent<MeshRenderer>().enabled = false;
+            transform.localPosition = Vector3.zero;
         }
     }
 }
