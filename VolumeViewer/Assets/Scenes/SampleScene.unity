@@ -513,12 +513,12 @@ GameObject:
   - component: {fileID: 135434840}
   - component: {fileID: 135434839}
   m_Layer: 0
-  m_Name: TestCube
+  m_Name: DisplaySize
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &135434838
 Transform:
   m_ObjectHideFlags: 0
@@ -554,7 +554,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 135434837}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -3219,6 +3219,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d2e27d8ddfdfdf4dad4656de9d0be39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displaySize: {fileID: 0}
   releaseDistanceThreshold: 1
 --- !u!1 &1964519987
 GameObject:

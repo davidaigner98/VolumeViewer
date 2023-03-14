@@ -3,6 +3,7 @@ using Leap.Unity;
 using UnityEngine;
 
 public class ModelTransformator : MonoBehaviour {
+    public Transform displaySize;
     public float releaseDistanceThreshold = 1.0f;
     private bool separatedFromDisplay = false;
     private bool isBeingGrabbed = false;
@@ -11,7 +12,7 @@ public class ModelTransformator : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        
+        transform.localScale = Vector3.one * displaySize.localScale.y / 2;
     }
 
     // Update is called once per frame
