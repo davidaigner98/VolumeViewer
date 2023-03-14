@@ -788,7 +788,7 @@ MonoBehaviour:
   HandModel: {fileID: 1078999436}
   PointingType: 3
   PointingDirection: {x: 0, y: 0, z: 1}
-  TargetObject: {fileID: 1109841966}
+  TargetObject: {fileID: 1741001461}
   OnAngle: 45
   OffAngle: 65
   ShowGizmos: 1
@@ -3528,7 +3528,7 @@ MonoBehaviour:
   HandModel: {fileID: 1078999436}
   PointingType: 3
   PointingDirection: {x: 0, y: 0, z: 1}
-  TargetObject: {fileID: 1109841966}
+  TargetObject: {fileID: 1741001461}
   OnAngle: 45
   OffAngle: 65
   ShowGizmos: 1
