@@ -1,10 +1,13 @@
 using Leap;
 using Leap.Unity;
+using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 public class ModelTransformator : MonoBehaviour {
     public Transform displaySize;
     public float releaseDistanceThreshold = 1.0f;
+    public float resetSpeed = 1.0f;
     private bool separatedFromDisplay = false;
     private bool isBeingGrabbed = false;
     private Hand grabbingHand;
@@ -53,9 +56,24 @@ public class ModelTransformator : MonoBehaviour {
             //transform.SetParent(null);
             separatedFromDisplay = true;
         } else {
-            SetAlpha(0);
-            transform.localPosition = Vector3.zero;
+            StartCoroutine(MoveToOrigin());
         }
+    }
+
+    private IEnumerator MoveToOrigin() {
+        float distanceToOrigin;
+        Vector3 delta = transform.localPosition;
+
+        do {
+            distanceToOrigin = Vector3.Distance(Vector3.zero, transform.localPosition);
+            transform.localPosition -= delta * Time.deltaTime * resetSpeed;
+            SetAlpha(distanceToOrigin / releaseDistanceThreshold);
+
+            yield return null;
+        } while (distanceToOrigin > 0.01);
+
+        SetAlpha(0);
+        transform.localPosition = Vector3.zero;
     }
 
     public void SetAlpha(float alpha) {
