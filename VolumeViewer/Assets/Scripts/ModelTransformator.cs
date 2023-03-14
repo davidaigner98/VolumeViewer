@@ -17,7 +17,6 @@ public class ModelTransformator : MonoBehaviour {
 
     private void Rescale() {
         transform.localScale = Vector3.one * displaySize.localScale.y / 2;
-        Debug.Log("scaled him down to " + transform.localScale);
     }
 
     // Update is called once per frame
@@ -55,12 +54,13 @@ public class ModelTransformator : MonoBehaviour {
             separatedFromDisplay = true;
         } else {
             SetAlpha(0);
+            transform.localPosition = Vector3.zero;
         }
     }
 
-    private void SetAlpha(float alpha) {
+    public void SetAlpha(float alpha) {
         Color newColor = GetComponent<Renderer>().material.color;
         newColor.a = alpha;
-        transform.localPosition = Vector3.zero;
+        GetComponent<Renderer>().material.color = newColor;
     }
 }
