@@ -18,6 +18,7 @@ public class ModelTransformator : MonoBehaviour {
     void Update() {
         if (isBeingGrabbed && lastPalmPosition != null) {
             Vector3 delta = grabbingHand.PalmPosition - lastPalmPosition;
+            lastPalmPosition = grabbingHand.PalmPosition;
 
             transform.position += delta;
         }
@@ -37,7 +38,7 @@ public class ModelTransformator : MonoBehaviour {
         isBeingGrabbed = false;
 
         if (distance >= releaseDistanceThreshold) {
-            transform.SetParent(null);
+            //transform.SetParent(null);
             separatedFromDisplay = true;
         } else {
             GetComponent<MeshRenderer>().enabled = false;
