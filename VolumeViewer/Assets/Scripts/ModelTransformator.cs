@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 public class ModelTransformator : MonoBehaviour {
+    public bool isConnected = false;
     public Transform displaySize;
     public float releaseDistanceThreshold = 1.0f;
     public float resetSpeed = 1.0f;
@@ -24,7 +25,7 @@ public class ModelTransformator : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (isBeingGrabbed) {
+        if (isBeingGrabbed && isConnected) {
             Vector3 delta = grabbingHand.PalmPosition - lastPalmPosition;
             lastPalmPosition = grabbingHand.PalmPosition;
 
@@ -40,23 +41,27 @@ public class ModelTransformator : MonoBehaviour {
     }
 
     public void PalmGrabModelOn(string hand) {
-        if (hand.Equals("left")) { grabbingHand = Hands.Left; }
-        else if (hand.Equals("right")) { grabbingHand = Hands.Right; }
-        lastPalmPosition = grabbingHand.PalmPosition;
+        if (isConnected) {
+            if (hand.Equals("left")) { grabbingHand = Hands.Left; }
+            else if (hand.Equals("right")) { grabbingHand = Hands.Right; }
+            lastPalmPosition = grabbingHand.PalmPosition;
 
-        Rescale();
-        isBeingGrabbed = true;
+            Rescale();
+            isBeingGrabbed = true;
+        }
     }
 
     public void PalmGrabModelOff() {
-        float distance = Vector3.Distance(transform.position, transform.parent.position);
-        isBeingGrabbed = false;
+        if (isConnected) { 
+            float distance = Vector3.Distance(transform.position, transform.parent.position);
+            isBeingGrabbed = false;
 
-        if (distance >= releaseDistanceThreshold) {
-            //transform.SetParent(null);
-            separatedFromDisplay = true;
-        } else {
-            StartCoroutine(MoveToOrigin());
+            if (distance >= releaseDistanceThreshold) {
+                //transform.SetParent(null);
+                separatedFromDisplay = true;
+            } else {
+                StartCoroutine(MoveToOrigin());
+            }
         }
     }
 

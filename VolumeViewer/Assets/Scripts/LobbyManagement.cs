@@ -15,12 +15,16 @@ public class LobbyManagement : MonoBehaviour {
         networkManager.StartHost();
         GameObject newCamera = ReplaceXRRigWithDisplayCamera();
         model.AddComponent<Draggable>().displayCamera = newCamera;
-        model.GetComponent<ModelTransformator>().SetAlpha(1);
+        
+        ModelTransformator modelTransformator = model.GetComponent<ModelTransformator>();
+        modelTransformator.SetAlpha(1);
+        Destroy(modelTransformator);
         Destroy(gameObject);
     }
 
     public void StartClient() {
         networkManager.StartClient();
+        model.GetComponent<ModelTransformator>().isConnected = true;
         Destroy(gameObject);
     }
 
