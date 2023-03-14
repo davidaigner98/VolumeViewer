@@ -1,6 +1,14 @@
+using Leap;
+using Leap.Unity;
 using UnityEngine;
 
 public class ModelTransformator : MonoBehaviour {
+    public float releaseDistanceThreshold = 1.0f;
+    private bool separatedFromDisplay = false;
+    private bool isBeingGrabbed = false;
+    private Hand grabbingHand;
+    private Vector3 lastPalmPosition;
+
     // Start is called before the first frame update
     void Start() {
         
@@ -8,18 +16,31 @@ public class ModelTransformator : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        
+        if (isBeingGrabbed && lastPalmPosition != null) {
+            Vector3 delta = grabbingHand.PalmPosition - lastPalmPosition;
+
+            transform.position += delta;
+        }
     }
 
-    public void ExtractModelFromDisplay(float distance) {
-        if (distance < 0) { distance = 0; }
-        else if (distance > 1) { distance = 1; }
+    public void PalmGrabModelOn(string hand) {
+        if (hand.Equals("left")) { grabbingHand = Hands.Left; }
+        else if (hand.Equals("right")) { grabbingHand = Hands.Right; }
+        lastPalmPosition = grabbingHand.PalmPosition;
 
-        if (distance > 0.05) {
-            GetComponent<MeshRenderer>().enabled = true;
+        isBeingGrabbed = true;
+        GetComponent<MeshRenderer>().enabled = true;
+    }
+
+    public void PalmGrabModelOff() {
+        float distance = Vector3.Distance(transform.position, transform.parent.position);
+        isBeingGrabbed = false;
+
+        if (distance >= releaseDistanceThreshold) {
+            transform.SetParent(null);
+            separatedFromDisplay = true;
+        } else {
+            GetComponent<MeshRenderer>().enabled = false;
         }
-
-        transform.localPosition = new Vector3(0, 0, -distance);
-        transform.localScale = new Vector3(1, 1, distance);
     }
 }
