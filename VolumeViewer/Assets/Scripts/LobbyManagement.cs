@@ -20,7 +20,6 @@ public class LobbyManagement : MonoBehaviour {
 
     public void StartClient() {
         networkManager.StartClient();
-        model.GetComponent<ModelTransformator>().RescaleForAI();
         Destroy(gameObject);
     }
 

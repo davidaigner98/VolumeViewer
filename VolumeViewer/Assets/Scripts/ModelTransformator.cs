@@ -15,8 +15,9 @@ public class ModelTransformator : MonoBehaviour {
     
     }
 
-    public void RescaleForAI() {
+    private void Rescale() {
         transform.localScale = Vector3.one * displaySize.localScale.y / 2;
+        Debug.Log("scaled him down to " + transform.localScale);
     }
 
     // Update is called once per frame
@@ -34,6 +35,7 @@ public class ModelTransformator : MonoBehaviour {
         else if (hand.Equals("right")) { grabbingHand = Hands.Right; }
         lastPalmPosition = grabbingHand.PalmPosition;
 
+        Rescale();
         isBeingGrabbed = true;
         GetComponent<MeshRenderer>().enabled = true;
     }
