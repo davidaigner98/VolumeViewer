@@ -62,11 +62,11 @@ public class ModelTransformator : MonoBehaviour {
 
     private IEnumerator MoveToOrigin() {
         float distanceToOrigin;
-        Vector3 delta = transform.localPosition;
 
         do {
-            distanceToOrigin = Vector3.Distance(Vector3.zero, transform.localPosition);
-            transform.localPosition -= delta * Time.deltaTime * resetSpeed;
+            Vector3 delta = transform.localPosition;
+            distanceToOrigin = Vector3.Distance(Vector3.zero, delta);
+            transform.localPosition -= delta.normalized * Time.deltaTime * resetSpeed;
             SetAlpha(distanceToOrigin / releaseDistanceThreshold);
 
             yield return null;

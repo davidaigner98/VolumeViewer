@@ -3221,6 +3221,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displaySize: {fileID: 135434838}
   releaseDistanceThreshold: 0.2
+  resetSpeed: 3
 --- !u!1 &1964519987
 GameObject:
   m_ObjectHideFlags: 0
