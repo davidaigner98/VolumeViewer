@@ -22,11 +22,18 @@ public class ModelTransformator : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (isBeingGrabbed && lastPalmPosition != null) {
+        if (isBeingGrabbed) {
             Vector3 delta = grabbingHand.PalmPosition - lastPalmPosition;
             lastPalmPosition = grabbingHand.PalmPosition;
 
             transform.position += delta;
+
+            float distance = Vector3.Distance(transform.position, transform.parent.position);
+            if (distance < releaseDistanceThreshold) {
+                SetAlpha(distance / releaseDistanceThreshold);
+            } else {
+                SetAlpha(1);
+            }
         }
     }
 
@@ -37,7 +44,6 @@ public class ModelTransformator : MonoBehaviour {
 
         Rescale();
         isBeingGrabbed = true;
-        GetComponent<MeshRenderer>().enabled = true;
     }
 
     public void PalmGrabModelOff() {
@@ -48,8 +54,13 @@ public class ModelTransformator : MonoBehaviour {
             //transform.SetParent(null);
             separatedFromDisplay = true;
         } else {
-            GetComponent<MeshRenderer>().enabled = false;
-            transform.localPosition = Vector3.zero;
+            SetAlpha(0);
         }
+    }
+
+    private void SetAlpha(float alpha) {
+        Color newColor = GetComponent<Renderer>().material.color;
+        newColor.a = alpha;
+        transform.localPosition = Vector3.zero;
     }
 }
