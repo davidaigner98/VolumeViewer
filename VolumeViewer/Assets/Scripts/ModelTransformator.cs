@@ -10,41 +10,54 @@ public class ModelTransformator : MonoBehaviour {
     public float releaseDistanceThreshold = 1.0f;
     public float resetSpeed = 1.0f;
     private bool separatedFromDisplay = false;
+    private Hand interactingHand;
     private bool isBeingGrabbed = false;
-    private Hand grabbingHand;
+    private bool isBeingRotated = false;
     private Vector3 lastPalmPosition;
+    private Vector3 lastIndexPosition;
 
     // Start is called before the first frame update
     void Start() {
-    
-    }
 
-    private void Rescale() {
-        transform.localScale = Vector3.one * displaySize.localScale.y / 2;
     }
 
     // Update is called once per frame
     void Update() {
-        if (isBeingGrabbed && isConnected) {
-            Vector3 delta = grabbingHand.PalmPosition - lastPalmPosition;
-            lastPalmPosition = grabbingHand.PalmPosition;
-
-            transform.position += delta;
-
-            float distance = Vector3.Distance(transform.position, transform.parent.position);
-            if (distance < releaseDistanceThreshold) {
-                SetAlpha(distance / releaseDistanceThreshold);
-            } else {
-                SetAlpha(1);
-            }
+        if (isConnected) {
+            if (isBeingGrabbed) { PalmGrabMovement(); }
+            else if (isBeingRotated) { OneFingerRotation(); }
         }
+    }
+
+    private void PalmGrabMovement() {
+        Vector3 delta = interactingHand.PalmPosition - lastPalmPosition;
+        lastPalmPosition = interactingHand.PalmPosition;
+
+        transform.position += delta;
+
+        float distance = Vector3.Distance(transform.position, transform.parent.position);
+        if (distance < releaseDistanceThreshold) {
+            SetAlpha(distance / releaseDistanceThreshold);
+        } else {
+            SetAlpha(1);
+        }
+    }
+
+    private void OneFingerRotation() {
+        Vector3 indexPosition = interactingHand.GetIndex().TipPosition - transform.position;
+
+        float angle = Vector3.Angle(indexPosition, lastIndexPosition);
+        Vector3 axis = Vector3.Cross(indexPosition, lastIndexPosition);
+        transform.Rotate(axis, angle);
+
+        lastIndexPosition = indexPosition;
     }
 
     public void PalmGrabModelOn(string hand) {
         if (isConnected) {
-            if (hand.Equals("left")) { grabbingHand = Hands.Left; }
-            else if (hand.Equals("right")) { grabbingHand = Hands.Right; }
-            lastPalmPosition = grabbingHand.PalmPosition;
+            if (hand.Equals("left")) { interactingHand = Hands.Left; }
+            else if (hand.Equals("right")) { interactingHand = Hands.Right; }
+            lastPalmPosition = interactingHand.PalmPosition;
 
             Rescale();
             isBeingGrabbed = true;
@@ -85,5 +98,21 @@ public class ModelTransformator : MonoBehaviour {
         Color newColor = GetComponent<Renderer>().material.color;
         newColor.a = alpha;
         GetComponent<Renderer>().material.color = newColor;
+    }
+
+    private void Rescale() {
+        transform.localScale = Vector3.one * displaySize.localScale.y / 2;
+    }
+    
+    public void OneFingerRotationOn(string hand) {
+        if (hand.Equals("left")) { interactingHand = Hands.Left; }
+        else if (hand.Equals("right")) { interactingHand = Hands.Right; }
+
+        lastIndexPosition = interactingHand.GetIndex().TipPosition - transform.position;
+        isBeingRotated = true;
+    }
+
+    public void OneFingerRotationOff() {
+        isBeingRotated = false;
     }
 }
