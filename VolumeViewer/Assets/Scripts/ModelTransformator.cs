@@ -4,6 +4,7 @@ using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 
 public class ModelTransformator : MonoBehaviour {
     public bool isConnected = false;
@@ -46,14 +47,12 @@ public class ModelTransformator : MonoBehaviour {
 
     [ServerRpc(RequireOwnership = false)]
     private void OneFingerRotationServerRpc() {
-        Debug.Log("One Finger Rotation called!");
         Vector3 indexPosition = interactingHand.GetIndex().TipPosition - transform.position;
 
-        //float angle = Vector3.Angle(indexPosition, lastIndexPosition);
-        //Vector3 axis = Vector3.Cross(indexPosition, lastIndexPosition);
-        //transform.Rotate(axis, angle);
-        transform.Rotate(Vector3.up, 45*Time.deltaTime);
-
+        float angle = Vector3.Angle(indexPosition, lastIndexPosition);
+        Vector3 axis = Vector3.Cross(indexPosition, lastIndexPosition);
+        transform.Rotate(axis, angle);
+        
         lastIndexPosition = indexPosition;
     }
 
