@@ -46,7 +46,7 @@ public class ModelTransformator : MonoBehaviour {
         Vector3 indexPosition = interactingHand.GetIndex().TipPosition - transform.position;
 
         Vector3 axis = Vector3.Cross(indexPosition, lastIndexPosition);
-        float angle = Vector3.Angle(indexPosition, lastIndexPosition);
+        float angle = -Vector3.Angle(indexPosition, lastIndexPosition);
         
         synchronizer.RotateModelServerRpc(axis, angle);
         
