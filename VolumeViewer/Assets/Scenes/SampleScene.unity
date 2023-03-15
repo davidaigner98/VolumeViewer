@@ -1142,7 +1142,19 @@ MonoBehaviour:
       m_Calls: []
   OnDeactivate:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1741001462}
+        m_TargetAssemblyTypeName: ModelTransformator, Assembly-CSharp
+        m_MethodName: OneFingerRotationOff
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   Period: 0.1
   HandModel: {fileID: 1078999437}
   Thumb: 1
@@ -1182,19 +1194,7 @@ MonoBehaviour:
         m_CallState: 2
   OnDeactivate:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1741001462}
-        m_TargetAssemblyTypeName: ModelTransformator, Assembly-CSharp
-        m_MethodName: OneFingerRotationOff
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   Detectors:
   - {fileID: 482933750}
   - {fileID: 482933749}
@@ -2841,7 +2841,19 @@ MonoBehaviour:
       m_Calls: []
   OnDeactivate:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1741001462}
+        m_TargetAssemblyTypeName: ModelTransformator, Assembly-CSharp
+        m_MethodName: OneFingerRotationOff
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   Period: 0.1
   HandModel: {fileID: 1078999436}
   Thumb: 1
@@ -2881,19 +2893,7 @@ MonoBehaviour:
         m_CallState: 2
   OnDeactivate:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1741001462}
-        m_TargetAssemblyTypeName: ModelTransformator, Assembly-CSharp
-        m_MethodName: OneFingerRotationOff
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   Detectors:
   - {fileID: 1118736564}
   - {fileID: 1118736563}
