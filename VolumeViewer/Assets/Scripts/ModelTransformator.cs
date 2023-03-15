@@ -3,6 +3,7 @@ using Leap.Unity;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
+using Unity.Netcode;
 
 public class ModelTransformator : MonoBehaviour {
     public bool isConnected = false;
@@ -25,7 +26,7 @@ public class ModelTransformator : MonoBehaviour {
     void Update() {
         if (isConnected) {
             if (isBeingGrabbed) { PalmGrabMovement(); }
-            else if (isBeingRotated) { OneFingerRotation(); }
+            else if (isBeingRotated) { OneFingerRotationServerRpc(); }
         }
     }
 
@@ -43,7 +44,8 @@ public class ModelTransformator : MonoBehaviour {
         }
     }
 
-    private void OneFingerRotation() {
+    [ServerRpc(RequireOwnership = false)]
+    private void OneFingerRotationServerRpc() {
         Vector3 indexPosition = interactingHand.GetIndex().TipPosition - transform.position;
 
         float angle = Vector3.Angle(indexPosition, lastIndexPosition);
