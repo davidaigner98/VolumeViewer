@@ -46,11 +46,13 @@ public class ModelTransformator : MonoBehaviour {
 
     [ServerRpc(RequireOwnership = false)]
     private void OneFingerRotationServerRpc() {
+        Debug.Log("One Finger Rotation called!");
         Vector3 indexPosition = interactingHand.GetIndex().TipPosition - transform.position;
 
-        float angle = Vector3.Angle(indexPosition, lastIndexPosition);
-        Vector3 axis = Vector3.Cross(indexPosition, lastIndexPosition);
-        transform.Rotate(axis, angle);
+        //float angle = Vector3.Angle(indexPosition, lastIndexPosition);
+        //Vector3 axis = Vector3.Cross(indexPosition, lastIndexPosition);
+        //transform.Rotate(axis, angle);
+        transform.Rotate(Vector3.up, 45*Time.deltaTime);
 
         lastIndexPosition = indexPosition;
     }
