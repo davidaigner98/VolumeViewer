@@ -1,16 +1,15 @@
 using Leap;
 using Leap.Unity;
 using System.Collections;
-using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using Unity.Netcode;
-using Unity.Netcode.Components;
 
 public class ModelTransformator : MonoBehaviour {
     public bool isConnected = false;
     public Transform displaySize;
     public float releaseDistanceThreshold = 1.0f;
     public float resetSpeed = 1.0f;
+    private ModelSynchronizer synchronizer;
     private bool separatedFromDisplay = false;
     private Hand interactingHand;
     private bool isBeingGrabbed = false;
@@ -18,16 +17,14 @@ public class ModelTransformator : MonoBehaviour {
     private Vector3 lastPalmPosition;
     private Vector3 lastIndexPosition;
 
-    // Start is called before the first frame update
-    void Start() {
-
+    private void Start() {
+        synchronizer = GetComponent<ModelSynchronizer>();
     }
 
-    // Update is called once per frame
-    void Update() {
+    private void Update() {
         if (isConnected) {
             if (isBeingGrabbed) { PalmGrabMovement(); }
-            else if (isBeingRotated) { OneFingerRotationServerRpc(); }
+            else if (isBeingRotated) { OneFingerRotation(); }
         }
     }
 
@@ -45,13 +42,13 @@ public class ModelTransformator : MonoBehaviour {
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void OneFingerRotationServerRpc() {
+    private void OneFingerRotation() {
         Vector3 indexPosition = interactingHand.GetIndex().TipPosition - transform.position;
 
-        float angle = Vector3.Angle(indexPosition, lastIndexPosition);
         Vector3 axis = Vector3.Cross(indexPosition, lastIndexPosition);
-        transform.Rotate(axis, angle);
+        float angle = Vector3.Angle(indexPosition, lastIndexPosition);
+        
+        synchronizer.RotateModelServerRpc(axis, angle);
         
         lastIndexPosition = indexPosition;
     }
