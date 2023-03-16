@@ -71,6 +71,7 @@ public class ModelTransformator : MonoBehaviour {
         if (isConnected) {
             if (hand.Equals("left")) { interactingHand = Hands.Left; }
             else if (hand.Equals("right")) { interactingHand = Hands.Right; }
+
             float distance = Vector3.Distance(currentModel.transform.position, interactingHand.PalmPosition);
 
             if (distance <= palmGrabDistance) {
