@@ -8,23 +8,22 @@ public class LobbyManagement : MonoBehaviour {
     public GameObject xrRig;
     public GameObject lightsource;
     public GameObject displayCamera;
-    public GameObject model;
+    public ModelTransformator modelTransformator;
     public Vector3 offsetToModelTransform;
 
     public void StartHost() {
         networkManager.StartHost();
         GameObject newCamera = ReplaceXRRigWithDisplayCamera();
-        model.AddComponent<Draggable>().displayCamera = newCamera;
-        
-        ModelTransformator modelTransformator = model.GetComponent<ModelTransformator>();
+        modelTransformator.currentModel.AddComponent<Draggable>().displayCamera = newCamera;        
         modelTransformator.SetAlpha(1);
+
         Destroy(modelTransformator);
         Destroy(gameObject);
     }
 
     public void StartClient() {
         networkManager.StartClient();
-        model.GetComponent<ModelTransformator>().isConnected = true;
+        modelTransformator.currentModel.GetComponent<ModelTransformator>().isConnected = true;
         Destroy(gameObject);
     }
 
@@ -33,12 +32,12 @@ public class LobbyManagement : MonoBehaviour {
         Destroy(serviceProvider);
         Destroy(xrRig);
         GameObject newCamera = GameObject.Instantiate(displayCamera);
-        newCamera.GetComponent<DisplayCameraAlignment>().model = model;
-        newCamera.transform.position = model.transform.position + offsetToModelTransform;
-        newCamera.transform.LookAt(model.transform);
+        newCamera.GetComponent<DisplayCameraAlignment>().model = modelTransformator.currentModel;
+        newCamera.transform.position = modelTransformator.currentModel.transform.position + offsetToModelTransform;
+        newCamera.transform.LookAt(modelTransformator.currentModel.transform);
         lightsource.transform.SetParent(newCamera.transform);
 
-        model.GetComponent<MeshRenderer>().enabled = true;
+        modelTransformator.currentModel.GetComponent<MeshRenderer>().enabled = true;
         return newCamera;
     }
 }
