@@ -119,7 +119,7 @@ public class ModelTransformator : MonoBehaviour {
         if (hand.Equals("left")) { interactingHand = Hands.Left; }
         else if (hand.Equals("right")) { interactingHand = Hands.Right; }
 
-        lastIndexPosition = interactingHand.GetIndex().TipPosition - transform.position;
+        lastIndexPosition = interactingHand.GetIndex().TipPosition - currentModel.transform.position;
         isBeingRotated = true;
     }
 
