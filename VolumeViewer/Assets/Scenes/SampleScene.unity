@@ -4071,5 +4071,5 @@ MonoBehaviour:
   PositionThreshold: 0.001
   RotAngleThreshold: 0.01
   ScaleThreshold: 0.01
-  InLocalSpace: 1
+  InLocalSpace: 0
   Interpolate: 1
