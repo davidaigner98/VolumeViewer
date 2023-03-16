@@ -6,6 +6,7 @@ public class LobbyManagement : MonoBehaviour {
     public GameObject serviceProvider;
     public GameObject interactionManager;
     public GameObject xrRig;
+    public GameObject displayProjection;
     public GameObject lightsource;
     public GameObject displayCamera;
     public ModelTransformator modelTransformator;
@@ -16,7 +17,11 @@ public class LobbyManagement : MonoBehaviour {
         GameObject newCamera = ReplaceXRRigWithDisplayCamera();
         modelTransformator.currentModel.AddComponent<Draggable>().displayCamera = newCamera;        
         modelTransformator.SetAlpha(1);
+        modelTransformator.currentModel.transform.SetParent(null);
+        modelTransformator.currentModel.transform.position = Vector3.zero;
+        modelTransformator.currentModel.transform.rotation = Quaternion.identity;
 
+        Destroy(displayProjection);
         Destroy(modelTransformator);
         Destroy(gameObject);
     }
