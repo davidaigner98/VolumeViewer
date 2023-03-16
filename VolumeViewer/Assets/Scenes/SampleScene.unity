@@ -1138,8 +1138,8 @@ MonoBehaviour:
   PointingType: 3
   PointingDirection: {x: 0, y: 0, z: 1}
   TargetObject: {fileID: 543450653272222730}
-  OnAngle: 15
-  OffAngle: 25
+  OnAngle: 25
+  OffAngle: 45
   ShowGizmos: 1
 --- !u!114 &482933750
 MonoBehaviour:
@@ -2837,8 +2837,8 @@ MonoBehaviour:
   PointingType: 3
   PointingDirection: {x: 0, y: 0, z: 1}
   TargetObject: {fileID: 543450653272222730}
-  OnAngle: 15
-  OffAngle: 25
+  OnAngle: 25
+  OffAngle: 45
   ShowGizmos: 1
 --- !u!114 &1118736564
 MonoBehaviour:
