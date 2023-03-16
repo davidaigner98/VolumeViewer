@@ -47,9 +47,6 @@ Shader "TransparentShader"
                     v.texcoord.x = 1 - v.texcoord.x;
                     o.texcoord = TRANSFORM_TEX(v.texcoord, _MainTex);
 
-                    UNITY_SETUP_INSTANCE_ID(v); 
-                    UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
-
                     return o;
                 }
 
