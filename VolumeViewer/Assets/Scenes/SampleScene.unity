@@ -870,11 +870,6 @@ MonoBehaviour:
   AddAllSiblingDetectorsOnAwake: 1
   GateType: 0
   Negate: 0
---- !u!1 &284041376 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4498360056612878058, guid: 1b43d6eb40db60b419700fd2677e79c4, type: 3}
-  m_PrefabInstance: {fileID: 1078999435}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &339050689
 GameObject:
   m_ObjectHideFlags: 0
@@ -1097,7 +1092,6 @@ GameObject:
   - component: {fileID: 482933751}
   - component: {fileID: 482933750}
   - component: {fileID: 482933749}
-  - component: {fileID: 482933752}
   m_Layer: 0
   m_Name: OneFingerRotationDetectorLeft
   m_TagString: Untagged
@@ -1220,43 +1214,9 @@ MonoBehaviour:
   Detectors:
   - {fileID: 482933750}
   - {fileID: 482933749}
-  - {fileID: 482933752}
   AddAllSiblingDetectorsOnAwake: 1
   GateType: 0
   Negate: 0
---- !u!114 &482933752
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 482933747}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 251ea3343c15b4000a02573c7aad5a0b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnActivate:
-    m_PersistentCalls:
-      m_Calls: []
-  OnDeactivate:
-    m_PersistentCalls:
-      m_Calls: []
-  OnProximity:
-    m_PersistentCalls:
-      m_Calls: []
-  Period: 0.1
-  TargetObjects:
-  - {fileID: 1169739961}
-  - {fileID: 919132149616932528}
-  TagName: 
-  UseLayersNotList: 0
-  Layer:
-    serializedVersion: 2
-    m_Bits: 0
-  OnDistance: 0.4
-  OffDistance: 1
-  ShowGizmos: 1
 --- !u!1 &512663373
 GameObject:
   m_ObjectHideFlags: 0
@@ -2831,7 +2791,6 @@ GameObject:
   - component: {fileID: 1118736565}
   - component: {fileID: 1118736564}
   - component: {fileID: 1118736563}
-  - component: {fileID: 1118736566}
   m_Layer: 0
   m_Name: OneFingerRotationDetectorRight
   m_TagString: Untagged
@@ -2954,43 +2913,9 @@ MonoBehaviour:
   Detectors:
   - {fileID: 1118736564}
   - {fileID: 1118736563}
-  - {fileID: 1118736566}
   AddAllSiblingDetectorsOnAwake: 1
   GateType: 0
   Negate: 0
---- !u!114 &1118736566
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1118736561}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 251ea3343c15b4000a02573c7aad5a0b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnActivate:
-    m_PersistentCalls:
-      m_Calls: []
-  OnDeactivate:
-    m_PersistentCalls:
-      m_Calls: []
-  OnProximity:
-    m_PersistentCalls:
-      m_Calls: []
-  Period: 0.1
-  TargetObjects:
-  - {fileID: 284041376}
-  - {fileID: 919132149616932528}
-  TagName: 
-  UseLayersNotList: 0
-  Layer:
-    serializedVersion: 2
-    m_Bits: 0
-  OnDistance: 0.4
-  OffDistance: 1
-  ShowGizmos: 1
 --- !u!1 &1163098837
 GameObject:
   m_ObjectHideFlags: 0
@@ -3081,11 +3006,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1169739961 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6461923715358433366, guid: 1b43d6eb40db60b419700fd2677e79c4, type: 3}
-  m_PrefabInstance: {fileID: 1078999435}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1202314630 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3557434566810426997, guid: 15d3b5cf5cea75344a4482323bc124a8, type: 3}
@@ -3602,6 +3522,8 @@ MonoBehaviour:
   transparentShader: {fileID: 4800000, guid: 3bf3990958cb10b4f8212c83b1ef0f76, type: 3}
   isConnected: 0
   displaySize: {fileID: 135434838}
+  palmGrabDistance: 0.5
+  oneFingerRotationDistance: 0.25
   releaseDistanceThreshold: 0.2
   resetSpeed: 3
 --- !u!4 &1617042985
