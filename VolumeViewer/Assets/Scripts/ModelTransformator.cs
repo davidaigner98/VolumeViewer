@@ -2,9 +2,10 @@ using Leap;
 using Leap.Unity;
 using System.Collections;
 using UnityEngine;
-using Unity.Netcode;
 
 public class ModelTransformator : MonoBehaviour {
+    public GameObject currentModel;
+    public Shader transparentShader;
     public bool isConnected = false;
     public Transform displaySize;
     public float releaseDistanceThreshold = 1.0f;
@@ -18,7 +19,14 @@ public class ModelTransformator : MonoBehaviour {
     private Vector3 lastIndexPosition;
 
     private void Start() {
-        synchronizer = GetComponent<ModelSynchronizer>();
+        synchronizer = currentModel.GetComponent<ModelSynchronizer>();
+
+        Material[] mats = currentModel.GetComponent<Renderer>().materials;
+        foreach (Material mat in mats) {
+            mat.shader = transparentShader;
+        }
+
+        SetAlpha(0);
     }
 
     private void Update() {
@@ -32,9 +40,9 @@ public class ModelTransformator : MonoBehaviour {
         Vector3 delta = interactingHand.PalmPosition - lastPalmPosition;
         lastPalmPosition = interactingHand.PalmPosition;
 
-        transform.position += delta;
+        currentModel.transform.position += delta;
 
-        float distance = Vector3.Distance(transform.position, transform.parent.position);
+        float distance = Vector3.Distance(currentModel.transform.position, currentModel.transform.parent.position);
         if (distance < releaseDistanceThreshold) {
             SetAlpha(distance / releaseDistanceThreshold);
         } else {
@@ -43,7 +51,7 @@ public class ModelTransformator : MonoBehaviour {
     }
 
     private void OneFingerRotation() {
-        Vector3 indexPosition = interactingHand.GetIndex().TipPosition - transform.position;
+        Vector3 indexPosition = interactingHand.GetIndex().TipPosition - currentModel.transform.position;
 
         Vector3 axis = Vector3.Cross(indexPosition, lastIndexPosition);
         float angle = -Vector3.Angle(indexPosition, lastIndexPosition);
@@ -66,11 +74,11 @@ public class ModelTransformator : MonoBehaviour {
 
     public void PalmGrabModelOff() {
         if (isConnected) { 
-            float distance = Vector3.Distance(transform.position, transform.parent.position);
+            float distance = Vector3.Distance(currentModel.transform.position, currentModel.transform.parent.position);
             isBeingGrabbed = false;
 
             if (distance >= releaseDistanceThreshold) {
-                //transform.SetParent(null);
+                //currentModel.transform.SetParent(null);
                 separatedFromDisplay = true;
             } else {
                 StartCoroutine(MoveToOrigin());
@@ -82,26 +90,29 @@ public class ModelTransformator : MonoBehaviour {
         float distanceToOrigin;
 
         do {
-            Vector3 delta = transform.localPosition;
+            Vector3 delta = currentModel.transform.localPosition;
             distanceToOrigin = Vector3.Distance(Vector3.zero, delta);
-            transform.localPosition -= delta.normalized * Time.deltaTime * resetSpeed;
+            currentModel.transform.localPosition -= delta.normalized * Time.deltaTime * resetSpeed;
             SetAlpha(distanceToOrigin / releaseDistanceThreshold);
 
             yield return null;
         } while (distanceToOrigin > 0.01);
 
         SetAlpha(0);
-        transform.localPosition = Vector3.zero;
+        currentModel.transform.localPosition = Vector3.zero;
     }
 
     public void SetAlpha(float alpha) {
-        Color newColor = GetComponent<Renderer>().material.color;
-        newColor.a = alpha;
-        GetComponent<Renderer>().material.color = newColor;
+        Material[] mats = currentModel.GetComponent<Renderer>().materials;
+        foreach (Material mat in mats) {
+            Color newColor = mat.color;
+            newColor.a = alpha;
+            mat.color = newColor;
+        }
     }
 
     private void Rescale() {
-        transform.localScale = Vector3.one * displaySize.localScale.y / 2;
+        currentModel.transform.localScale = Vector3.one * displaySize.localScale.y / 2;
     }
     
     public void OneFingerRotationOn(string hand) {
