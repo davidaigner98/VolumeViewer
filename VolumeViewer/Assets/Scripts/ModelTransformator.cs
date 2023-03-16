@@ -8,6 +8,8 @@ public class ModelTransformator : MonoBehaviour {
     public Shader transparentShader;
     public bool isConnected = false;
     public Transform displaySize;
+    public float palmGrabDistance = 1.0f;
+    public float oneFingerRotationDistance = 1.0f;
     public float releaseDistanceThreshold = 1.0f;
     public float resetSpeed = 1.0f;
     private ModelSynchronizer synchronizer;
@@ -51,24 +53,32 @@ public class ModelTransformator : MonoBehaviour {
     }
 
     private void OneFingerRotation() {
-        Vector3 indexPosition = interactingHand.GetIndex().TipPosition - currentModel.transform.position;
+        float distance = Vector3.Distance(currentModel.transform.position, interactingHand.GetIndex().TipPosition);
 
-        Vector3 axis = Vector3.Cross(indexPosition, lastIndexPosition);
-        float angle = -Vector3.Angle(indexPosition, lastIndexPosition);
-        
-        synchronizer.RotateModelServerRpc(axis, angle);
-        
-        lastIndexPosition = indexPosition;
+        if (distance <= oneFingerRotationDistance) {
+            Vector3 indexPosition = interactingHand.GetIndex().TipPosition - currentModel.transform.position;
+
+            Vector3 axis = Vector3.Cross(indexPosition, lastIndexPosition);
+            float angle = -Vector3.Angle(indexPosition, lastIndexPosition);
+
+            synchronizer.RotateModelServerRpc(axis, angle);
+
+            lastIndexPosition = indexPosition;
+        }
     }
 
     public void PalmGrabModelOn(string hand) {
         if (isConnected) {
             if (hand.Equals("left")) { interactingHand = Hands.Left; }
             else if (hand.Equals("right")) { interactingHand = Hands.Right; }
-            lastPalmPosition = interactingHand.PalmPosition;
+            float distance = Vector3.Distance(currentModel.transform.position, interactingHand.PalmPosition);
 
-            Rescale();
-            isBeingGrabbed = true;
+            if (distance <= palmGrabDistance) {
+                Rescale();
+
+                lastPalmPosition = interactingHand.PalmPosition;
+                isBeingGrabbed = true;
+            }
         }
     }
 
@@ -119,7 +129,7 @@ public class ModelTransformator : MonoBehaviour {
         if (hand.Equals("left")) { interactingHand = Hands.Left; }
         else if (hand.Equals("right")) { interactingHand = Hands.Right; }
 
-        lastIndexPosition = interactingHand.GetIndex().TipPosition - transform.position;
+        lastIndexPosition = interactingHand.GetIndex().TipPosition - currentModel.transform.position;
         isBeingRotated = true;
     }
 
