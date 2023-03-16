@@ -2,10 +2,10 @@ using Leap;
 using Leap.Unity;
 using System.Collections;
 using UnityEngine;
-using Unity.Netcode;
 
 public class ModelTransformator : MonoBehaviour {
     public GameObject currentModel;
+    public Shader transparentShader;
     public bool isConnected = false;
     public Transform displaySize;
     public float releaseDistanceThreshold = 1.0f;
@@ -20,6 +20,11 @@ public class ModelTransformator : MonoBehaviour {
 
     private void Start() {
         synchronizer = currentModel.GetComponent<ModelSynchronizer>();
+
+        Material[] mats = currentModel.GetComponent<Renderer>().materials;
+        foreach (Material mat in mats) {
+            mat.shader = transparentShader;
+        }
     }
 
     private void Update() {
@@ -96,9 +101,14 @@ public class ModelTransformator : MonoBehaviour {
     }
 
     public void SetAlpha(float alpha) {
-        Color newColor = currentModel.GetComponent<Renderer>().material.color;
-        newColor.a = alpha;
-        currentModel.GetComponent<Renderer>().material.color = newColor;
+        Material[] mats = currentModel.GetComponent<Renderer>().materials;
+        foreach (Material mat in mats) {
+            Color newColor = mat.color;
+            newColor.a = alpha;
+            currentModel.GetComponent<Renderer>().material.color = newColor;
+
+            mat.color = newColor;
+        }
     }
 
     private void Rescale() {

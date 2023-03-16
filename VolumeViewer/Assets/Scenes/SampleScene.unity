@@ -3519,6 +3519,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentModel: {fileID: 919132149616932528}
+  transparentShader: {fileID: 4800000, guid: 3bf3990958cb10b4f8212c83b1ef0f76, type: 3}
   isConnected: 0
   displaySize: {fileID: 135434838}
   releaseDistanceThreshold: 0.2
