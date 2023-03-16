@@ -23,7 +23,7 @@ public class LobbyManagement : MonoBehaviour {
 
     public void StartClient() {
         networkManager.StartClient();
-        modelTransformator.currentModel.GetComponent<ModelTransformator>().isConnected = true;
+        modelTransformator.isConnected = true;
         Destroy(gameObject);
     }
 
