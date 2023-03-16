@@ -25,6 +25,8 @@ public class ModelTransformator : MonoBehaviour {
         foreach (Material mat in mats) {
             mat.shader = transparentShader;
         }
+
+        SetAlpha(0);
     }
 
     private void Update() {
@@ -105,8 +107,6 @@ public class ModelTransformator : MonoBehaviour {
         foreach (Material mat in mats) {
             Color newColor = mat.color;
             newColor.a = alpha;
-            currentModel.GetComponent<Renderer>().material.color = newColor;
-
             mat.color = newColor;
         }
     }
