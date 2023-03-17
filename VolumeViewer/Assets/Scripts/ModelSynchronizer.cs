@@ -15,10 +15,14 @@ public class ModelSynchronizer : NetworkBehaviour {
 
     [ClientRpc]
     public void ChangeAttachmentModeClientRpc(bool attached) {
-        if (attached && displayCenter != null) {
-            transform.SetParent(displayCenter.transform);
-        } else {
-            transform.SetParent(null);
+        if (displayCenter != null) {
+            if (attached) {
+                transform.eulerAngles = transform.InverseTransformDirection(transform.eulerAngles);
+                transform.SetParent(displayCenter.transform);
+            } else {
+                transform.SetParent(null);
+                transform.eulerAngles = transform.TransformDirection(transform.eulerAngles);
+            }
         }
     }
 }
