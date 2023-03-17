@@ -3522,7 +3522,6 @@ MonoBehaviour:
   currentModel: {fileID: 919132149616932528}
   transparentShader: {fileID: 4800000, guid: 3bf3990958cb10b4f8212c83b1ef0f76, type: 3}
   isConnected: 0
-  isHost: 0
   attached: 1
   displaySize: {fileID: 135434838}
   palmGrabDistance: 0.5

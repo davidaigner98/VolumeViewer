@@ -26,6 +26,7 @@ public class DisplayCameraCanvasManager : MonoBehaviour {
     public void ToggleAttachmentMode() {
         modelTransformator.ToggleAttachmentMode();
 
+        Debug.Log(detachButtonText.text);
         if (detachButtonText.text.Equals("Detach")) {
             detachButtonText.text = "Attach";
         } else if (detachButtonText.text.Equals("Attach")) {

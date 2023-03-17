@@ -1170,7 +1170,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 4982795654860263572}
         m_TargetAssemblyTypeName: DisplayCameraCanvasManager, Assembly-CSharp
-        m_MethodName: AlignCoronal
+        m_MethodName: ToggleAttachmentMode
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
