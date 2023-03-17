@@ -18,7 +18,6 @@ public class LobbyManagement : MonoBehaviour {
         modelTransformator.currentModel.AddComponent<Draggable>().displayCamera = newCamera;        
         modelTransformator.SetAlpha(1);
         modelTransformator.currentModel.transform.SetParent(null);
-        //modelTransformator.currentModel.transform.position = Vector3.zero;
         modelTransformator.currentModel.transform.rotation = Quaternion.identity;
 
         Destroy(displayProjection);
@@ -37,7 +36,6 @@ public class LobbyManagement : MonoBehaviour {
         Destroy(serviceProvider);
         Destroy(xrRig);
         GameObject newCamera = GameObject.Instantiate(displayCamera);
-        newCamera.GetComponent<DisplayCameraAlignment>().model = modelTransformator.currentModel;
         newCamera.transform.position = modelTransformator.currentModel.transform.position + offsetToModelTransform;
         newCamera.transform.LookAt(modelTransformator.currentModel.transform);
         lightsource.transform.SetParent(newCamera.transform);
