@@ -17,11 +17,13 @@ public class ModelSynchronizer : NetworkBehaviour {
     public void ChangeAttachmentModeClientRpc(bool attached) {
         if (displayCenter != null) {
             if (attached) {
-                transform.eulerAngles = transform.InverseTransformDirection(transform.eulerAngles);
+                GameObject modelParent = transform.parent.gameObject;
                 transform.SetParent(displayCenter.transform);
+                Destroy(modelParent);
             } else {
-                transform.SetParent(null);
-                transform.eulerAngles = transform.TransformDirection(transform.eulerAngles);
+                GameObject modelParent = new GameObject("ModelParent");
+                modelParent.transform.rotation = displayCenter.transform.rotation;
+                transform.SetParent(modelParent.transform);
             }
         }
     }
