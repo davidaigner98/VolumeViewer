@@ -16,9 +16,9 @@ public class ModelSynchronizer : NetworkBehaviour {
     [ClientRpc]
     public void ChangeAttachmentModeClientRpc(bool attached) {
         if (attached && displayCenter != null) {
-            transform.SetParent(displayCenter.transform, true);
+            transform.SetParent(displayCenter.transform, false);
         } else {
-            transform.SetParent(null, true);
+            transform.SetParent(null, false);
         }
     }
 }
