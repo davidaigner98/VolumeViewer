@@ -1,9 +1,10 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class DisplayCameraCanvasManager : MonoBehaviour {
     private ModelTransformator modelTransformator;
-    public Text detachButtonText;
+    public TextMeshProUGUI detachButtonText;
 
     public void Start() {
         modelTransformator = GameObject.Find("ModelManager").GetComponent<ModelTransformator>();
@@ -27,7 +28,7 @@ public class DisplayCameraCanvasManager : MonoBehaviour {
 
         if (detachButtonText.text.Equals("Detach")) {
             detachButtonText.text = "Attach";
-        } else {
+        } else if (detachButtonText.text.Equals("Attach")) {
             detachButtonText.text = "Detach";
         }
     }

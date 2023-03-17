@@ -20,7 +20,6 @@ public class LobbyManagement : MonoBehaviour {
         modelTransformator.currentModel.transform.SetParent(null);
         modelTransformator.currentModel.transform.rotation = Quaternion.identity;
         modelTransformator.isConnected = true;
-        modelTransformator.isHost = true;
 
         Destroy(displayProjection);
         Destroy(modelTransformator);
@@ -30,7 +29,6 @@ public class LobbyManagement : MonoBehaviour {
     public void StartClient() {
         networkManager.StartClient();
         modelTransformator.isConnected = true;
-        modelTransformator.isHost = false;
         Destroy(gameObject);
     }
 

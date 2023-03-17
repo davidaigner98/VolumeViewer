@@ -7,7 +7,6 @@ public class ModelTransformator : MonoBehaviour {
     public GameObject currentModel;
     public Shader transparentShader;
     public bool isConnected = false;
-    public bool isHost;
     public bool attached = true;
     public Transform displaySize;
     public float palmGrabDistance = 1.0f;
@@ -15,7 +14,6 @@ public class ModelTransformator : MonoBehaviour {
     public float releaseDistanceThreshold = 1.0f;
     public float resetSpeed = 1.0f;
     private ModelSynchronizer synchronizer;
-    private GameObject displayCenter;
     private bool separatedFromDisplay = false;
     private bool inDisplay = true;
     private Hand interactingHand;
@@ -26,9 +24,6 @@ public class ModelTransformator : MonoBehaviour {
 
     private void Start() {
         synchronizer = currentModel.GetComponent<ModelSynchronizer>();
-        if (!isHost) {
-            displayCenter = currentModel.transform.parent.gameObject;
-        }
 
         Material[] mats = currentModel.GetComponent<Renderer>().materials;
         foreach (Material mat in mats) {
@@ -164,13 +159,6 @@ public class ModelTransformator : MonoBehaviour {
 
     public void ToggleAttachmentMode() {
         attached = !attached;
-
-        if (!isHost) {
-            if (attached) {
-                currentModel.transform.SetParent(displayCenter.transform);
-            } else {
-                currentModel.transform.SetParent(null);
-            }
-        }
+        synchronizer.ChangeAttachmentModeClientRpc(attached);
     }
 }
