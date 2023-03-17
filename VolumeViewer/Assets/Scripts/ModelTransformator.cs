@@ -144,4 +144,16 @@ public class ModelTransformator : MonoBehaviour {
     public void OneFingerRotationOff() {
         isBeingRotated = false;
     }
+
+    public void AlignCoronal() {
+        currentModel.transform.rotation = Quaternion.Euler(0, 0, 0);
+    }
+
+    public void AlignSagittal() {
+        currentModel.transform.rotation = Quaternion.Euler(0, 270, 0);
+    }
+
+    public void AlignAxial() {
+        currentModel.transform.rotation = Quaternion.Euler(90, 0, 0);
+    }
 }
