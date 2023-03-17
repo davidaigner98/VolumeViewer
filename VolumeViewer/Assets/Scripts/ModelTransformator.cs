@@ -14,6 +14,7 @@ public class ModelTransformator : MonoBehaviour {
     public float resetSpeed = 1.0f;
     private ModelSynchronizer synchronizer;
     private bool separatedFromDisplay = false;
+    private bool inDisplay = true;
     private Hand interactingHand;
     private bool isBeingGrabbed = false;
     private bool isBeingRotated = false;
@@ -32,6 +33,10 @@ public class ModelTransformator : MonoBehaviour {
     }
 
     private void Update() {
+        if (inDisplay) {
+            currentModel.transform.localPosition = Vector3.zero;
+        }
+
         if (isConnected) {
             if (isBeingGrabbed) { PalmGrabMovement(); }
             else if (isBeingRotated) { OneFingerRotation(); }
@@ -71,13 +76,15 @@ public class ModelTransformator : MonoBehaviour {
         if (isConnected) {
             if (hand.Equals("left")) { interactingHand = Hands.Left; }
             else if (hand.Equals("right")) { interactingHand = Hands.Right; }
+
             float distance = Vector3.Distance(currentModel.transform.position, interactingHand.PalmPosition);
 
             if (distance <= palmGrabDistance) {
                 Rescale();
 
-                lastPalmPosition = interactingHand.PalmPosition;
+                inDisplay = false;
                 isBeingGrabbed = true;
+                lastPalmPosition = interactingHand.PalmPosition;
             }
         }
     }
@@ -109,6 +116,7 @@ public class ModelTransformator : MonoBehaviour {
         } while (distanceToOrigin > 0.01);
 
         SetAlpha(0);
+        inDisplay = true;
         currentModel.transform.localPosition = Vector3.zero;
     }
 
