@@ -146,14 +146,14 @@ public class ModelTransformator : MonoBehaviour {
     }
 
     public void AlignCoronal() {
-        currentModel.transform.rotation = Quaternion.Euler(0, 180, 0);
+        currentModel.transform.rotation = Quaternion.Euler(0, 0, 0);
     }
 
     public void AlignSagittal() {
-        currentModel.transform.rotation = Quaternion.Euler(0, 90, 0);
+        currentModel.transform.rotation = Quaternion.Euler(0, 270, 0);
     }
 
     public void AlignAxial() {
-        currentModel.transform.rotation = Quaternion.Euler(90, 180, 0);
+        currentModel.transform.rotation = Quaternion.Euler(90, 0, 0);
     }
 }
