@@ -1,7 +1,10 @@
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DisplayCameraCanvasManager : MonoBehaviour {
     private ModelTransformator modelTransformator;
+    public TextMeshProUGUI detachButtonText;
 
     public void Start() {
         modelTransformator = GameObject.Find("ModelManager").GetComponent<ModelTransformator>();
@@ -18,5 +21,16 @@ public class DisplayCameraCanvasManager : MonoBehaviour {
 
     public void AlignAxial() {
         modelTransformator.AlignAxial();
+    }
+
+    public void ToggleAttachmentMode() {
+        modelTransformator.ToggleAttachmentMode();
+
+        Debug.Log(detachButtonText.text);
+        if (detachButtonText.text.Equals("Detach")) {
+            detachButtonText.text = "Attach";
+        } else if (detachButtonText.text.Equals("Attach")) {
+            detachButtonText.text = "Detach";
+        }
     }
 }

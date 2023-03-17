@@ -7,6 +7,7 @@ public class ModelTransformator : MonoBehaviour {
     public GameObject currentModel;
     public Shader transparentShader;
     public bool isConnected = false;
+    public bool attached = true;
     public Transform displaySize;
     public float palmGrabDistance = 1.0f;
     public float oneFingerRotationDistance = 1.0f;
@@ -95,7 +96,6 @@ public class ModelTransformator : MonoBehaviour {
             isBeingGrabbed = false;
 
             if (distance >= releaseDistanceThreshold) {
-                //currentModel.transform.SetParent(null);
                 separatedFromDisplay = true;
             } else {
                 StartCoroutine(MoveToOrigin());
@@ -155,5 +155,10 @@ public class ModelTransformator : MonoBehaviour {
 
     public void AlignAxial() {
         currentModel.transform.rotation = Quaternion.Euler(90, 0, 0);
+    }
+
+    public void ToggleAttachmentMode() {
+        attached = !attached;
+        synchronizer.ChangeAttachmentModeClientRpc(attached);
     }
 }

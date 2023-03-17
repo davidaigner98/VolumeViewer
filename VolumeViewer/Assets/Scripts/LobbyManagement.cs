@@ -19,6 +19,7 @@ public class LobbyManagement : MonoBehaviour {
         modelTransformator.SetAlpha(1);
         modelTransformator.currentModel.transform.SetParent(null);
         modelTransformator.currentModel.transform.rotation = Quaternion.identity;
+        modelTransformator.isConnected = true;
 
         Destroy(displayProjection);
         Destroy(modelTransformator);
