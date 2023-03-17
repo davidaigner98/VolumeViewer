@@ -7,6 +7,7 @@ public class ModelTransformator : MonoBehaviour {
     public GameObject currentModel;
     public Shader transparentShader;
     public bool isConnected = false;
+    public bool attached = true;
     public Transform displaySize;
     public float palmGrabDistance = 1.0f;
     public float oneFingerRotationDistance = 1.0f;

@@ -19,4 +19,8 @@ public class DisplayCameraCanvasManager : MonoBehaviour {
     public void AlignAxial() {
         modelTransformator.AlignAxial();
     }
+
+    public void ToggleAttachmentMode() {
+        modelTransformator.attached = !modelTransformator.attached;
+    }
 }
