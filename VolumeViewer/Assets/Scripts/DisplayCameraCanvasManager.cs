@@ -1,7 +1,9 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DisplayCameraCanvasManager : MonoBehaviour {
     private ModelTransformator modelTransformator;
+    public Text detachButtonText;
 
     public void Start() {
         modelTransformator = GameObject.Find("ModelManager").GetComponent<ModelTransformator>();
@@ -22,5 +24,11 @@ public class DisplayCameraCanvasManager : MonoBehaviour {
 
     public void ToggleAttachmentMode() {
         modelTransformator.ToggleAttachmentMode();
+
+        if (detachButtonText.text.Equals("Detach")) {
+            detachButtonText.text = "Attach";
+        } else {
+            detachButtonText.text = "Detach";
+        }
     }
 }
