@@ -21,6 +21,6 @@ public class DisplayCameraCanvasManager : MonoBehaviour {
     }
 
     public void ToggleAttachmentMode() {
-        modelTransformator.attached = !modelTransformator.attached;
+        modelTransformator.ToggleAttachmentMode();
     }
 }
