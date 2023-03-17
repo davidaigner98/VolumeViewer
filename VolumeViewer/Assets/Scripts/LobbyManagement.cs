@@ -18,7 +18,7 @@ public class LobbyManagement : MonoBehaviour {
         modelTransformator.currentModel.AddComponent<Draggable>().displayCamera = newCamera;        
         modelTransformator.SetAlpha(1);
         modelTransformator.currentModel.transform.SetParent(null);
-        modelTransformator.currentModel.transform.position = Vector3.zero;
+        //modelTransformator.currentModel.transform.position = Vector3.zero;
         modelTransformator.currentModel.transform.rotation = Quaternion.identity;
 
         Destroy(displayProjection);

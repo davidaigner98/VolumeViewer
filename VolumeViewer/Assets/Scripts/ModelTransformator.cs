@@ -32,6 +32,10 @@ public class ModelTransformator : MonoBehaviour {
     }
 
     private void Update() {
+        if (!separatedFromDisplay) {
+            currentModel.transform.localPosition = Vector3.zero;
+        }
+
         if (isConnected) {
             if (isBeingGrabbed) { PalmGrabMovement(); }
             else if (isBeingRotated) { OneFingerRotation(); }
