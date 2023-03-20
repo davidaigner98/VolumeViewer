@@ -117,6 +117,7 @@ public class ModelTransformator : MonoBehaviour {
 
         SetAlpha(0);
         inDisplay = true;
+        synchronizer.ChangeModelAttachment(true);
         currentModel.transform.localPosition = Vector3.zero;
     }
 
@@ -157,8 +158,7 @@ public class ModelTransformator : MonoBehaviour {
         currentModel.transform.rotation = Quaternion.Euler(90, 0, 0);
     }
 
-    public void ChangeAttachmentMode(bool attached) {
+    public void SetAttachedState(bool attached) {
         this.attached = attached;
-        synchronizer.ChangeAttachmentModeClientRpc(attached);
     }
 }

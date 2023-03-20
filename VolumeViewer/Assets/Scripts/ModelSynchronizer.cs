@@ -3,10 +3,12 @@ using Unity.Netcode;
 using UnityEngine;
 
 public class ModelSynchronizer : NetworkBehaviour {
+    private ModelTransformator transformator;
     private GameObject displayCenter;
     private TextMeshProUGUI attachmentButtonText;
 
     public void Start() {
+        transformator = GameObject.Find("ModelManager").GetComponent<ModelTransformator>();
         displayCenter = transform.parent.gameObject;
         attachmentButtonText = GameObject.Find("DisplayCamera(Clone)/DisplayCanvas/AttachmentButton/Text (TMP)").GetComponent<TextMeshProUGUI>();
     }
@@ -18,21 +20,27 @@ public class ModelSynchronizer : NetworkBehaviour {
 
     [ClientRpc]
     public void ChangeAttachmentModeClientRpc(bool attached) {
-        if (displayCenter != null) {
-            if (attached) {
-                GameObject modelParent = transform.parent.gameObject;
-                transform.SetParent(displayCenter.transform);
-                Destroy(modelParent);
-            } else {
-                GameObject modelParent = new GameObject("ModelParent");
-                modelParent.transform.rotation = displayCenter.transform.rotation;
-                transform.SetParent(modelParent.transform);
-            }
+        ChangeModelAttachment(attached);
+    }
+
+    public void ChangeModelAttachment(bool attached) {
+        transformator.SetAttachedState(attached);
+
+        if (attached) {
+            GameObject modelParent = transform.parent.gameObject;
+            transform.SetParent(displayCenter.transform);
+            Destroy(modelParent);
+        } else {
+            GameObject modelParent = new GameObject("ModelParent");
+            modelParent.transform.rotation = displayCenter.transform.rotation;
+            transform.SetParent(modelParent.transform);
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void ChangeAttachmentLabelServerRpc(bool attached) {
+        transformator.SetAttachedState(attached);
+        
         if (attached) {
             attachmentButtonText.text = "Detach";
         } else {
