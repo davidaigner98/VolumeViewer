@@ -1,12 +1,12 @@
 using TMPro;
 using Unity.Netcode;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ModelSynchronizer : NetworkBehaviour {
     private ModelTransformator transformator;
     private GameObject displayCenter;
+    public NetworkVariable<bool> attached = new NetworkVariable<bool>(true);
 
     public void Start() {
         transformator = GameObject.Find("ModelManager").GetComponent<ModelTransformator>();
@@ -24,9 +24,7 @@ public class ModelSynchronizer : NetworkBehaviour {
     }
 
     public void ChangeModelAttachment(bool attached) {
-        if (transformator.attached != attached) {
-            transformator.SetAttachedState(attached);
-
+        if (this.attached.Value != attached) {
             if (attached) {
                 GameObject modelParent = GameObject.Find("ModelParent");
                 transform.SetParent(displayCenter.transform);
@@ -39,10 +37,8 @@ public class ModelSynchronizer : NetworkBehaviour {
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    /*[ServerRpc(RequireOwnership = false)]
     public void ChangeAttachmentLabelServerRpc(bool attached) {
-        transformator.SetAttachedState(attached);
-
         GameObject attachmentButtonTextGO = GameObject.Find("DisplayCamera(Clone)/DisplayCanvas/AttachmentButton/Text (TMP)");
         TextMeshProUGUI attachmentButtonText = attachmentButtonTextGO.GetComponent<TextMeshProUGUI>();
         if (attached) {
@@ -50,7 +46,7 @@ public class ModelSynchronizer : NetworkBehaviour {
         } else {
             attachmentButtonText.text = "Attach";
         }
-    }
+    }*/
 
     [ServerRpc(RequireOwnership = false)]
     public void ChangeAttachmentButtonInteractabilityServerRpc(bool interactable) {

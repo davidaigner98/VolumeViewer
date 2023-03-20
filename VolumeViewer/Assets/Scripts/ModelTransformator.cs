@@ -2,13 +2,11 @@ using Leap;
 using Leap.Unity;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ModelTransformator : MonoBehaviour {
     public GameObject currentModel;
     public Shader transparentShader;
     public bool isConnected = false;
-    public bool attached = true;
     public Transform displaySize;
     public float palmGrabDistance = 1.0f;
     public float oneFingerRotationDistance = 1.0f;
@@ -123,8 +121,9 @@ public class ModelTransformator : MonoBehaviour {
 
         SetAlpha(0);
         inDisplay = true;
+        SetAttachedState(true);
         synchronizer.ChangeModelAttachment(true);
-        synchronizer.ChangeAttachmentLabelServerRpc(true);
+        //synchronizer.ChangeAttachmentLabelServerRpc(true);
         synchronizer.ChangeAttachmentButtonInteractabilityServerRpc(false);
         currentModel.transform.localPosition = Vector3.zero;
     }
@@ -167,6 +166,6 @@ public class ModelTransformator : MonoBehaviour {
     }
 
     public void SetAttachedState(bool attached) {
-        this.attached = attached;
+        synchronizer.attached.Value = attached;
     }
 }
