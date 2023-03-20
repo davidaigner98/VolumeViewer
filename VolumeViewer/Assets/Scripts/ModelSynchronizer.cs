@@ -10,7 +10,10 @@ public class ModelSynchronizer : NetworkBehaviour {
     public void Start() {
         transformator = GameObject.Find("ModelManager").GetComponent<ModelTransformator>();
         displayCenter = transform.parent.gameObject;
-        attachmentButtonText = GameObject.Find("DisplayCamera(Clone)/DisplayCanvas/AttachmentButton/Text (TMP)").GetComponent<TextMeshProUGUI>();
+        GameObject attachmentButtonTextGO = GameObject.Find("DisplayCamera(Clone)/DisplayCanvas/AttachmentButton/Text (TMP)");
+        if (attachmentButtonTextGO != null) {
+            attachmentButtonText = attachmentButtonTextGO.GetComponent<TextMeshProUGUI>();
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
