@@ -31,14 +31,14 @@ public class ModelSynchronizer : NetworkBehaviour {
             transformator.SetAttachedState(attached);
 
             if (attached) {
-                GameObject modelParent = new GameObject("ModelParent");
-                modelParent.transform.rotation = displayCenter.transform.rotation;
-                transform.SetParent(modelParent.transform);
-            }
-            else {
                 GameObject modelParent = GameObject.Find("ModelParent");
                 transform.SetParent(displayCenter.transform);
                 Destroy(modelParent);
+            }
+            else {
+                GameObject modelParent = new GameObject("ModelParent");
+                modelParent.transform.rotation = displayCenter.transform.rotation;
+                transform.SetParent(modelParent.transform);
             }
         }
     }
