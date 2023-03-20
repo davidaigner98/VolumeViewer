@@ -123,6 +123,7 @@ public class ModelTransformator : MonoBehaviour {
         SetAlpha(0);
         inDisplay = true;
         synchronizer.ChangeModelAttachment(true);
+        synchronizer.ChangeAttachmentLabelServerRpc(true);
         currentModel.transform.localPosition = Vector3.zero;
     }
 
