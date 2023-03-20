@@ -27,17 +27,19 @@ public class ModelSynchronizer : NetworkBehaviour {
     }
 
     public void ChangeModelAttachment(bool attached) {
-        transformator.SetAttachedState(attached);
+        if (transformator.attached != attached) {
+            transformator.SetAttachedState(attached);
 
-        if (attached) {
-            GameObject modelParent = new GameObject("ModelParent");
-            modelParent.transform.rotation = displayCenter.transform.rotation;
-            transform.SetParent(modelParent.transform);
-        }
-        else {
-            GameObject modelParent = GameObject.Find("ModelParent");
-            transform.SetParent(displayCenter.transform);
-            Destroy(modelParent);
+            if (attached) {
+                GameObject modelParent = new GameObject("ModelParent");
+                modelParent.transform.rotation = displayCenter.transform.rotation;
+                transform.SetParent(modelParent.transform);
+            }
+            else {
+                GameObject modelParent = GameObject.Find("ModelParent");
+                transform.SetParent(displayCenter.transform);
+                Destroy(modelParent);
+            }
         }
     }
 
