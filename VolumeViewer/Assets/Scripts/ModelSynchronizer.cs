@@ -11,6 +11,7 @@ public class ModelSynchronizer : NetworkBehaviour {
     public void Start() {
         transformator = GameObject.Find("ModelManager").GetComponent<ModelTransformator>();
         displayCenter = transform.parent.gameObject;
+        attached.OnValueChanged += ChangeModelAttachment;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -18,40 +19,32 @@ public class ModelSynchronizer : NetworkBehaviour {
         transform.Rotate(axis, angle, Space.World);
     }
 
-    [ClientRpc]
-    public void ChangeAttachmentModeClientRpc(bool attached) {
-        ChangeModelAttachment(attached);
+    public void ChangeModelAttachment(bool prev, bool current) {
+        ChangeModelAttachment();
     }
 
-    public void ChangeModelAttachment(bool attached) {
-        if (this.attached.Value != attached) {
-            if (attached) {
-                GameObject modelParent = GameObject.Find("ModelParent");
-                transform.SetParent(displayCenter.transform);
-                Destroy(modelParent);
-            } else {
-                GameObject modelParent = new GameObject("ModelParent");
-                modelParent.transform.rotation = displayCenter.transform.rotation;
-                transform.SetParent(modelParent.transform);
-            }
-        }
-    }
-
-    /*[ServerRpc(RequireOwnership = false)]
-    public void ChangeAttachmentLabelServerRpc(bool attached) {
-        GameObject attachmentButtonTextGO = GameObject.Find("DisplayCamera(Clone)/DisplayCanvas/AttachmentButton/Text (TMP)");
-        TextMeshProUGUI attachmentButtonText = attachmentButtonTextGO.GetComponent<TextMeshProUGUI>();
-        if (attached) {
-            attachmentButtonText.text = "Detach";
+    public void ChangeModelAttachment() {
+        if (attached.Value) {
+            GameObject modelParent = GameObject.Find("ModelParent");
+            transform.SetParent(displayCenter.transform);
+            Destroy(modelParent);
         } else {
-            attachmentButtonText.text = "Attach";
+            GameObject modelParent = new GameObject("ModelParent");
+            modelParent.transform.rotation = displayCenter.transform.rotation;
+            transform.SetParent(modelParent.transform);
         }
-    }*/
+    }
+
 
     [ServerRpc(RequireOwnership = false)]
     public void ChangeAttachmentButtonInteractabilityServerRpc(bool interactable) {
         GameObject attachmentButtonGO = GameObject.Find("DisplayCamera(Clone)/DisplayCanvas/AttachmentButton");
         Button attachmentButton = attachmentButtonGO.GetComponent<Button>();
         attachmentButton.interactable = interactable;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SetAttachedStateServerRpc(bool attached) {
+        this.attached.Value = attached;
     }
 }

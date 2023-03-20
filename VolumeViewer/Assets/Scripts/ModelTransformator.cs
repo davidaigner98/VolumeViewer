@@ -121,9 +121,8 @@ public class ModelTransformator : MonoBehaviour {
 
         SetAlpha(0);
         inDisplay = true;
-        SetAttachedState(true);
-        synchronizer.ChangeModelAttachment(true);
-        //synchronizer.ChangeAttachmentLabelServerRpc(true);
+        synchronizer.SetAttachedStateServerRpc(true);
+        synchronizer.ChangeModelAttachment();
         synchronizer.ChangeAttachmentButtonInteractabilityServerRpc(false);
         currentModel.transform.localPosition = Vector3.zero;
     }
@@ -163,9 +162,5 @@ public class ModelTransformator : MonoBehaviour {
 
     public void AlignAxial() {
         currentModel.transform.rotation = Quaternion.Euler(90, 0, 0);
-    }
-
-    public void SetAttachedState(bool attached) {
-        synchronizer.attached.Value = attached;
     }
 }

@@ -27,8 +27,7 @@ public class DisplayCameraCanvasManager : MonoBehaviour {
 
     public void ToggleAttachmentMode() {
         bool attached = !synchronizer.attached.Value;
-        transformator.SetAttachedState(attached);
-        synchronizer.ChangeAttachmentModeClientRpc(attached);
+        synchronizer.SetAttachedStateServerRpc(attached);
     }
 
     private void RefreshAttachmentButtonText(bool prev, bool current) {
