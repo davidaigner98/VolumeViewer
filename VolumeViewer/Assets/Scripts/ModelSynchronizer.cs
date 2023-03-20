@@ -5,15 +5,10 @@ using UnityEngine;
 public class ModelSynchronizer : NetworkBehaviour {
     private ModelTransformator transformator;
     private GameObject displayCenter;
-    private TextMeshProUGUI attachmentButtonText;
 
     public void Start() {
         transformator = GameObject.Find("ModelManager").GetComponent<ModelTransformator>();
         displayCenter = transform.parent.gameObject;
-        GameObject attachmentButtonTextGO = GameObject.Find("DisplayCamera(Clone)/DisplayCanvas/AttachmentButton/Text (TMP)");
-        if (attachmentButtonTextGO != null) {
-            attachmentButtonText = attachmentButtonTextGO.GetComponent<TextMeshProUGUI>();
-        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -34,8 +29,7 @@ public class ModelSynchronizer : NetworkBehaviour {
                 GameObject modelParent = GameObject.Find("ModelParent");
                 transform.SetParent(displayCenter.transform);
                 Destroy(modelParent);
-            }
-            else {
+            } else {
                 GameObject modelParent = new GameObject("ModelParent");
                 modelParent.transform.rotation = displayCenter.transform.rotation;
                 transform.SetParent(modelParent.transform);
@@ -46,7 +40,9 @@ public class ModelSynchronizer : NetworkBehaviour {
     [ServerRpc(RequireOwnership = false)]
     public void ChangeAttachmentLabelServerRpc(bool attached) {
         transformator.SetAttachedState(attached);
-        
+
+        GameObject attachmentButtonTextGO = GameObject.Find("DisplayCamera(Clone)/DisplayCanvas/AttachmentButton/Text (TMP)");
+        attachmentButtonTextGO.GetComponent<TextMeshProUGUI>();
         if (attached) {
             attachmentButtonText.text = "Detach";
         } else {
