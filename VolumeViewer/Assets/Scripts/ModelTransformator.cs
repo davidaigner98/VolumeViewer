@@ -59,7 +59,6 @@ public class ModelTransformator : MonoBehaviour {
         if (distance < releaseDistanceThreshold) {
             SetAlpha(distance / releaseDistanceThreshold);
         } else {
-            synchronizer.ChangeAttachmentButtonInteractabilityServerRpc(true);
             SetAlpha(1);
         }
     }
@@ -102,6 +101,7 @@ public class ModelTransformator : MonoBehaviour {
 
             if (distance >= releaseDistanceThreshold) {
                 separatedFromDisplay = true;
+                synchronizer.ChangeAttachmentButtonInteractabilityServerRpc(true);
             } else {
                 StartCoroutine(MoveToOrigin());
             }
