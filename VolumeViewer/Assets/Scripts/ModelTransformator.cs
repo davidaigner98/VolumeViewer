@@ -25,7 +25,9 @@ public class ModelTransformator : MonoBehaviour {
 
     private void Start() {
         synchronizer = currentModel.GetComponent<ModelSynchronizer>();
-        displayCenter = transform.parent.gameObject;
+        if (transform.parent != null) {
+            displayCenter = transform.parent.gameObject;
+        }
 
         Material[] mats = currentModel.GetComponent<Renderer>().materials;
         foreach (Material mat in mats) {
