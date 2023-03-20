@@ -42,7 +42,7 @@ public class ModelSynchronizer : NetworkBehaviour {
         transformator.SetAttachedState(attached);
 
         GameObject attachmentButtonTextGO = GameObject.Find("DisplayCamera(Clone)/DisplayCanvas/AttachmentButton/Text (TMP)");
-        attachmentButtonTextGO.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI attachmentButtonText = attachmentButtonTextGO.GetComponent<TextMeshProUGUI>();
         if (attached) {
             attachmentButtonText.text = "Detach";
         } else {
