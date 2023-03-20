@@ -14,6 +14,7 @@ public class ModelTransformator : MonoBehaviour {
     public float releaseDistanceThreshold = 1.0f;
     public float resetSpeed = 1.0f;
     private ModelSynchronizer synchronizer;
+    private GameObject displayCenter;
     private bool separatedFromDisplay = false;
     private bool inDisplay = true;
     private Hand interactingHand;
@@ -24,6 +25,7 @@ public class ModelTransformator : MonoBehaviour {
 
     private void Start() {
         synchronizer = currentModel.GetComponent<ModelSynchronizer>();
+        displayCenter = transform.parent.gameObject;
 
         Material[] mats = currentModel.GetComponent<Renderer>().materials;
         foreach (Material mat in mats) {
@@ -50,7 +52,7 @@ public class ModelTransformator : MonoBehaviour {
 
         currentModel.transform.position += delta;
 
-        float distance = Vector3.Distance(currentModel.transform.position, currentModel.transform.parent.position);
+        float distance = Vector3.Distance(currentModel.transform.position, displayCenter.transform.position);
         if (distance < releaseDistanceThreshold) {
             SetAlpha(distance / releaseDistanceThreshold);
         } else {
@@ -92,7 +94,7 @@ public class ModelTransformator : MonoBehaviour {
 
     public void PalmGrabModelOff() {
         if (isConnected) { 
-            float distance = Vector3.Distance(currentModel.transform.position, currentModel.transform.parent.position);
+            float distance = Vector3.Distance(currentModel.transform.position, displayCenter.transform.position);
             isBeingGrabbed = false;
 
             if (distance >= releaseDistanceThreshold) {
@@ -104,12 +106,13 @@ public class ModelTransformator : MonoBehaviour {
     }
 
     private IEnumerator MoveToOrigin() {
+        Vector3 destination = displayCenter.transform.position;
         float distanceToOrigin;
 
         do {
-            Vector3 delta = currentModel.transform.localPosition;
+            Vector3 delta = currentModel.transform.position - destination;
+            currentModel.transform.position -= delta.normalized * Time.deltaTime * resetSpeed;
             distanceToOrigin = Vector3.Distance(Vector3.zero, delta);
-            currentModel.transform.localPosition -= delta.normalized * Time.deltaTime * resetSpeed;
             SetAlpha(distanceToOrigin / releaseDistanceThreshold);
 
             yield return null;
