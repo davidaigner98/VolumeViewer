@@ -157,8 +157,8 @@ public class ModelTransformator : MonoBehaviour {
         currentModel.transform.rotation = Quaternion.Euler(90, 0, 0);
     }
 
-    public void ToggleAttachmentMode() {
-        attached = !attached;
+    public void ChangeAttachmentMode(bool attached) {
+        this.attached = attached;
         synchronizer.ChangeAttachmentModeClientRpc(attached);
     }
 }

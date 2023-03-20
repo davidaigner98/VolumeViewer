@@ -24,13 +24,13 @@ public class DisplayCameraCanvasManager : MonoBehaviour {
     }
 
     public void ToggleAttachmentMode() {
-        modelTransformator.ToggleAttachmentMode();
+        bool attached = !modelTransformator.attached;
+        modelTransformator.ChangeAttachmentMode(attached);
 
-        Debug.Log(detachButtonText.text);
-        if (detachButtonText.text.Equals("Detach")) {
-            detachButtonText.text = "Attach";
-        } else if (detachButtonText.text.Equals("Attach")) {
+        if (attached) {
             detachButtonText.text = "Detach";
+        } else {
+            detachButtonText.text = "Attach";
         }
     }
 }
