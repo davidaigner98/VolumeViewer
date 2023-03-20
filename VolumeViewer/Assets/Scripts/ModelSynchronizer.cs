@@ -1,11 +1,14 @@
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
 public class ModelSynchronizer : NetworkBehaviour {
     private GameObject displayCenter;
+    private TextMeshProUGUI attachmentButtonText;
 
     public void Start() {
         displayCenter = transform.parent.gameObject;
+        attachmentButtonText = GameObject.Find("DisplayCamera(Clone)/DisplayCanvas/AttachmentButton/Text (TMP)").GetComponent<TextMeshProUGUI>();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -25,6 +28,15 @@ public class ModelSynchronizer : NetworkBehaviour {
                 modelParent.transform.rotation = displayCenter.transform.rotation;
                 transform.SetParent(modelParent.transform);
             }
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ChangeAttachmentLabelServerRpc(bool attached) {
+        if (attached) {
+            attachmentButtonText.text = "Detach";
+        } else {
+            attachmentButtonText.text = "Attach";
         }
     }
 }
