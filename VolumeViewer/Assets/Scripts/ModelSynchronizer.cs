@@ -1,6 +1,8 @@
 using TMPro;
 using Unity.Netcode;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ModelSynchronizer : NetworkBehaviour {
     private ModelTransformator transformator;
@@ -48,5 +50,12 @@ public class ModelSynchronizer : NetworkBehaviour {
         } else {
             attachmentButtonText.text = "Attach";
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ChangeAttachmentButtonInteractabilityServerRpc(bool interactable) {
+        GameObject attachmentButtonGO = GameObject.Find("DisplayCamera(Clone)/DisplayCanvas/AttachmentButton");
+        Button attachmentButton = attachmentButtonGO.GetComponent<Button>();
+        attachmentButton.interactable = interactable;
     }
 }

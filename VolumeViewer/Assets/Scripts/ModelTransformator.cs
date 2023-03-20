@@ -2,6 +2,7 @@ using Leap;
 using Leap.Unity;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ModelTransformator : MonoBehaviour {
     public GameObject currentModel;
@@ -58,6 +59,7 @@ public class ModelTransformator : MonoBehaviour {
         if (distance < releaseDistanceThreshold) {
             SetAlpha(distance / releaseDistanceThreshold);
         } else {
+            synchronizer.ChangeAttachmentButtonInteractabilityServerRpc(true);
             SetAlpha(1);
         }
     }
@@ -83,7 +85,6 @@ public class ModelTransformator : MonoBehaviour {
             else if (hand.Equals("right")) { interactingHand = Hands.Right; }
 
             float distance = Vector3.Distance(currentModel.transform.position, interactingHand.PalmPosition);
-
             if (distance <= palmGrabDistance) {
                 Rescale();
 
@@ -124,6 +125,7 @@ public class ModelTransformator : MonoBehaviour {
         inDisplay = true;
         synchronizer.ChangeModelAttachment(true);
         synchronizer.ChangeAttachmentLabelServerRpc(true);
+        synchronizer.ChangeAttachmentButtonInteractabilityServerRpc(false);
         currentModel.transform.localPosition = Vector3.zero;
     }
 
