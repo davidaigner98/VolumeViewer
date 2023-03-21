@@ -7,13 +7,13 @@ public class ModelTransformator : MonoBehaviour {
     public GameObject currentModel;
     public Shader transparentShader;
     public bool isConnected = false;
-    public bool attached = true;
     public Transform displaySize;
     public float palmGrabDistance = 1.0f;
     public float oneFingerRotationDistance = 1.0f;
     public float releaseDistanceThreshold = 1.0f;
     public float resetSpeed = 1.0f;
     private ModelSynchronizer synchronizer;
+    private GameObject displayCenter;
     private bool separatedFromDisplay = false;
     private bool inDisplay = true;
     private Hand interactingHand;
@@ -24,6 +24,9 @@ public class ModelTransformator : MonoBehaviour {
 
     private void Start() {
         synchronizer = currentModel.GetComponent<ModelSynchronizer>();
+        if (currentModel.transform.parent != null) {
+            displayCenter = currentModel.transform.parent.gameObject;
+        }
 
         Material[] mats = currentModel.GetComponent<Renderer>().materials;
         foreach (Material mat in mats) {
@@ -50,7 +53,7 @@ public class ModelTransformator : MonoBehaviour {
 
         currentModel.transform.position += delta;
 
-        float distance = Vector3.Distance(currentModel.transform.position, currentModel.transform.parent.position);
+        float distance = Vector3.Distance(currentModel.transform.position, displayCenter.transform.position);
         if (distance < releaseDistanceThreshold) {
             SetAlpha(distance / releaseDistanceThreshold);
         } else {
@@ -79,7 +82,6 @@ public class ModelTransformator : MonoBehaviour {
             else if (hand.Equals("right")) { interactingHand = Hands.Right; }
 
             float distance = Vector3.Distance(currentModel.transform.position, interactingHand.PalmPosition);
-
             if (distance <= palmGrabDistance) {
                 Rescale();
 
@@ -92,11 +94,12 @@ public class ModelTransformator : MonoBehaviour {
 
     public void PalmGrabModelOff() {
         if (isConnected) { 
-            float distance = Vector3.Distance(currentModel.transform.position, currentModel.transform.parent.position);
+            float distance = Vector3.Distance(currentModel.transform.position, displayCenter.transform.position);
             isBeingGrabbed = false;
 
             if (distance >= releaseDistanceThreshold) {
                 separatedFromDisplay = true;
+                synchronizer.ChangeAttachmentButtonInteractabilityServerRpc(true);
             } else {
                 StartCoroutine(MoveToOrigin());
             }
@@ -104,12 +107,13 @@ public class ModelTransformator : MonoBehaviour {
     }
 
     private IEnumerator MoveToOrigin() {
+        Vector3 destination = displayCenter.transform.position;
         float distanceToOrigin;
 
         do {
-            Vector3 delta = currentModel.transform.localPosition;
+            Vector3 delta = currentModel.transform.position - destination;
+            currentModel.transform.position -= delta.normalized * Time.deltaTime * resetSpeed;
             distanceToOrigin = Vector3.Distance(Vector3.zero, delta);
-            currentModel.transform.localPosition -= delta.normalized * Time.deltaTime * resetSpeed;
             SetAlpha(distanceToOrigin / releaseDistanceThreshold);
 
             yield return null;
@@ -117,6 +121,9 @@ public class ModelTransformator : MonoBehaviour {
 
         SetAlpha(0);
         inDisplay = true;
+        synchronizer.SetAttachedStateServerRpc(true);
+        synchronizer.ChangeModelAttachment();
+        synchronizer.ChangeAttachmentButtonInteractabilityServerRpc(false);
         currentModel.transform.localPosition = Vector3.zero;
     }
 
@@ -155,10 +162,5 @@ public class ModelTransformator : MonoBehaviour {
 
     public void AlignAxial() {
         currentModel.transform.rotation = Quaternion.Euler(90, 0, 0);
-    }
-
-    public void ToggleAttachmentMode() {
-        attached = !attached;
-        synchronizer.ChangeAttachmentModeClientRpc(attached);
     }
 }
