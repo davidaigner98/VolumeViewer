@@ -1,9 +1,13 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
+using UnityEngine.InputSystem.LowLevel;
+using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 public class Draggable : MonoBehaviour {
     public GameObject displayCamera;
     public float rotSpeed = 0.25f;
+    public float moveSpeed = 0.01f;
     private InputAction mouseMoveAction;
     private InputAction mouseDragAction;
     private InputAction touchMoveAction;
@@ -53,11 +57,11 @@ public class Draggable : MonoBehaviour {
     }
 
     private void TouchMovePerformed(InputAction.CallbackContext c) {
-        int touchCount = Touchscreen.current.touches.Count;
+        int touchCount = GetNumbersOfTouches();
 
         if (touchCount == 1) {
             OneFingerGesture();
-        } else if (touchCount == 2) {
+        } else if (touchCount == 5) {
             TwoFingerGesture();
         }
     }
@@ -70,6 +74,33 @@ public class Draggable : MonoBehaviour {
     }
 
     private void TwoFingerGesture() {
-    
+        TouchControl touch0 = Touchscreen.current.touches[0];
+        TouchControl touch1 = Touchscreen.current.touches[1];
+        TouchControl touch2 = Touchscreen.current.touches[1];
+        TouchControl touch3 = Touchscreen.current.touches[1];
+        TouchControl touch4 = Touchscreen.current.touches[1];
+
+        Vector2 totalDelta = Vector3.zero;
+        totalDelta += touch0.delta.ReadValue();
+        totalDelta += touch1.delta.ReadValue();
+        totalDelta += touch2.delta.ReadValue();
+        totalDelta += touch3.delta.ReadValue();
+        totalDelta += touch4.delta.ReadValue();
+        totalDelta /= 5;
+        transform.position += new Vector3(-totalDelta.x, totalDelta.y, 0) * moveSpeed;
+    }
+
+    private int GetNumbersOfTouches() {
+        int touchCount = 0;
+
+        for (int i = 0; i < Touchscreen.current.touches.Count; i++) {
+            TouchState currTouch = Touchscreen.current.touches[i].ReadValue();
+
+            if (currTouch.phase != 0 && currTouch.phase != TouchPhase.Canceled && currTouch.phase != TouchPhase.Ended) {
+                touchCount++;
+            }
+        }
+
+        return touchCount;
     }
 }
