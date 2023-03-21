@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 
 public class Draggable : MonoBehaviour {
@@ -10,7 +9,7 @@ public class Draggable : MonoBehaviour {
     private InputAction touchMoveAction;
     private InputAction touchDragAction;
 
-    void Start() {
+    private void Start() {
         PlayerInput playerInput = displayCamera.GetComponent<PlayerInput>();
         InputActionMap map = playerInput.currentActionMap;
         mouseMoveAction = map.FindAction("MouseMove");
@@ -28,37 +27,49 @@ public class Draggable : MonoBehaviour {
         touchDragAction.canceled += TouchDragCanceled;
     }
 
-    void MouseDragStarted(InputAction.CallbackContext c) {
+    private void MouseDragStarted(InputAction.CallbackContext c) {
         mouseMoveAction.performed += MouseMovePerformed;
-        Debug.Log("Mouse Drag started!");
     }
 
-    void MouseDragCanceled(InputAction.CallbackContext c) {
+    private void MouseDragCanceled(InputAction.CallbackContext c) {
         mouseMoveAction.performed -= MouseMovePerformed;
     }
 
-    void TouchDragStarted(InputAction.CallbackContext c) {
+    private void TouchDragStarted(InputAction.CallbackContext c) {
         touchMoveAction.performed += TouchMovePerformed;
         mouseDragAction.started -= MouseDragStarted;
-        Debug.Log("Touch Drag started!");
     }
 
-    void TouchDragCanceled(InputAction.CallbackContext c) {
+    private void TouchDragCanceled(InputAction.CallbackContext c) {
         touchMoveAction.performed -= TouchMovePerformed;
         mouseDragAction.started += MouseDragStarted;
     }
 
-    void MouseMovePerformed(InputAction.CallbackContext c) {
+    private void MouseMovePerformed(InputAction.CallbackContext c) {
         Vector2 rotation = Mouse.current.delta.ReadValue() * rotSpeed;
         
         transform.Rotate(displayCamera.transform.TransformDirection(Vector3.up), -rotation.x, Space.World);
         transform.Rotate(displayCamera.transform.TransformDirection(Vector3.right), rotation.y, Space.World);
     }
 
-    void TouchMovePerformed(InputAction.CallbackContext c) {
+    private void TouchMovePerformed(InputAction.CallbackContext c) {
+        int touchCount = Touchscreen.current.touches.Count;
+
+        if (touchCount == 1) {
+            OneFingerGesture();
+        } else if (touchCount == 2) {
+            TwoFingerGesture();
+        }
+    }
+
+    private void OneFingerGesture() {
         Vector2 rotation = Touchscreen.current.delta.ReadValue() * rotSpeed;
-        
+
         transform.Rotate(displayCamera.transform.TransformDirection(Vector3.up), -rotation.x, Space.World);
         transform.Rotate(displayCamera.transform.TransformDirection(Vector3.right), rotation.y, Space.World);
+    }
+
+    private void TwoFingerGesture() {
+    
     }
 }
