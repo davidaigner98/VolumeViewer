@@ -7,7 +7,6 @@ public class ModelSynchronizer : NetworkBehaviour {
     private ModelTransformator transformator;
     private GameObject displayCenter;
     public NetworkVariable<bool> attached = new NetworkVariable<bool>(true);
-    public NetworkVariable<bool> attachedNew = new NetworkVariable<bool>(true);
 
     public void Start() {
         transformator = GameObject.Find("ModelManager").GetComponent<ModelTransformator>();
