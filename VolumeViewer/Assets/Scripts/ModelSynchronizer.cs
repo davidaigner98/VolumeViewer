@@ -7,6 +7,7 @@ public class ModelSynchronizer : NetworkBehaviour {
     private ModelTransformator transformator;
     private GameObject displayCenter;
     public NetworkVariable<bool> attached = new NetworkVariable<bool>(true);
+    public NetworkVariable<bool> attachedNew = new NetworkVariable<bool>(true);
 
     public void Start() {
         transformator = GameObject.Find("ModelManager").GetComponent<ModelTransformator>();
@@ -24,17 +25,18 @@ public class ModelSynchronizer : NetworkBehaviour {
     }
 
     public void ChangeModelAttachment() {
-        if (attached.Value) {
-            GameObject modelParent = GameObject.Find("ModelParent");
-            transform.SetParent(displayCenter.transform);
-            Destroy(modelParent);
-        } else {
-            GameObject modelParent = new GameObject("ModelParent");
-            modelParent.transform.rotation = displayCenter.transform.rotation;
-            transform.SetParent(modelParent.transform);
+        if (displayCenter != null) {
+            if (attached.Value) {
+                GameObject modelParent = GameObject.Find("ModelParent");
+                transform.SetParent(displayCenter.transform);
+                Destroy(modelParent);
+            } else {
+                GameObject modelParent = new GameObject("ModelParent");
+                modelParent.transform.rotation = displayCenter.transform.rotation;
+                transform.SetParent(modelParent.transform);
+            }
         }
     }
-
 
     [ServerRpc(RequireOwnership = false)]
     public void ChangeAttachmentButtonInteractabilityServerRpc(bool interactable) {
