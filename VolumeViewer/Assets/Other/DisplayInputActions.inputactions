@@ -6,7 +6,7 @@
             "id": "5223cc1a-49e6-4864-a585-5e7d35da5a93",
             "actions": [
                 {
-                    "name": "Move",
+                    "name": "TouchMove",
                     "type": "Value",
                     "id": "b6836f2a-6afd-49e3-8991-86ae81b94ac8",
                     "expectedControlType": "Axis",
@@ -15,7 +15,25 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Drag",
+                    "name": "TouchDrag",
+                    "type": "Button",
+                    "id": "028535aa-49f4-4619-8d70-1e4f94622645",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MouseMove",
+                    "type": "Value",
+                    "id": "014a5e29-4993-4da9-bb3b-e201f359e3df",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "MouseDrag",
                     "type": "Button",
                     "id": "89bdf212-e45f-4861-aae3-3cceb39a9057",
                     "expectedControlType": "Button",
@@ -32,29 +50,62 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Drag",
+                    "action": "MouseDrag",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "c576b44d-0224-4855-8119-00c091298f43",
-                    "path": "<Mouse>/position/x",
+                    "path": "<Touchscreen>/delta/x",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "TouchMove",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "5449c898-3da3-4bae-a607-6a7cbcc4f627",
-                    "path": "<Mouse>/position/y",
+                    "path": "<Touchscreen>/primaryTouch/delta/y",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "TouchMove",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "17ed501d-67ef-4eb3-9186-173bcfc0b080",
+                    "path": "<Mouse>/delta/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseMove",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "18726682-e3ee-4b19-9445-f58d499f4795",
+                    "path": "<Mouse>/delta/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseMove",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "54cc71b2-4051-41b7-82c6-e6f55e7eef7d",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TouchDrag",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
