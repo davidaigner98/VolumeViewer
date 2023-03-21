@@ -39,7 +39,11 @@ public class ModelTransformator : MonoBehaviour {
         DisplayProfileManager profileManager = GameObject.Find("DisplayProjection").GetComponent<DisplayProfileManager>();
         displayCenter = profileManager.GetCurrentDisplayCenter();
         displaySize = profileManager.GetCurrentDisplaySize().transform;
-        palmGrabDistance = displaySize.localScale.y / 3;
+        
+        Rescale();
+        palmGrabDistance = currentModel.transform.localScale.x * 2;
+        oneFingerRotationDistance = currentModel.transform.localScale.x * 3 / 2;
+        releaseDistanceThreshold = currentModel.transform.localScale.x * 4 / 5;
 
         currentModel.transform.SetParent(displayCenter.transform);
         currentModel.transform.localPosition = Vector3.zero;
@@ -154,7 +158,7 @@ public class ModelTransformator : MonoBehaviour {
     }
 
     private void Rescale() {
-        currentModel.transform.localScale = Vector3.one * displaySize.localScale.y / 2;
+        currentModel.transform.localScale = Vector3.one * displaySize.localScale.y / 3;
     }
     
     public void OneFingerRotationOn(string hand) {
