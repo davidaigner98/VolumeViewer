@@ -2775,7 +2775,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 135434838}
-  - {fileID: 543450653272222730}
   m_Father: {fileID: 1452968027}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
@@ -3138,6 +3137,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 543450653272222730}
   - {fileID: 1452968027}
   m_Father: {fileID: 0}
   m_RootOrder: 10
@@ -3454,7 +3454,7 @@ Transform:
   m_Children:
   - {fileID: 1109841966}
   m_Father: {fileID: 1163098839}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 5, y: 17, z: 74}
 --- !u!114 &1452968028
 MonoBehaviour:
@@ -3689,9 +3689,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d2e27d8ddfdfdf4dad4656de9d0be39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isServer: 0
+  isStarted: 0
   currentModel: {fileID: 919132149616932528}
   transparentShader: {fileID: 4800000, guid: 3bf3990958cb10b4f8212c83b1ef0f76, type: 3}
-  isConnected: 0
   displaySize: {fileID: 135434838}
   palmGrabDistance: 0.5
   oneFingerRotationDistance: 0.25
@@ -4125,8 +4126,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1109841966}
-  m_RootOrder: 1
+  m_Father: {fileID: 1163098839}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &919132149616932528
 GameObject:

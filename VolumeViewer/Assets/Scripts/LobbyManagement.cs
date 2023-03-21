@@ -22,7 +22,9 @@ public class LobbyManagement : MonoBehaviour {
         modelTransformator.SetAlpha(1);
         modelTransformator.currentModel.transform.SetParent(null);
         modelTransformator.currentModel.transform.rotation = Quaternion.identity;
-        modelTransformator.isConnected = true;
+        modelTransformator.isStarted = true;
+        modelTransformator.isServer = true;
+        modelTransformator.SetupServer();
 
         Destroy(displayProjection);
         Destroy(modelTransformator);
@@ -33,13 +35,14 @@ public class LobbyManagement : MonoBehaviour {
         errorLabel.enabled = false;
         networkManager.OnClientConnectedCallback += ClientConnectionSuccess;
         networkManager.OnClientDisconnectCallback += ClientConnectionFailure;
+        modelTransformator.SetupClient();
 
         networkManager.StartClient();
     }
 
     private void ClientConnectionSuccess(ulong clientId) {
         connected = true;
-        modelTransformator.isConnected = true;
+        modelTransformator.isStarted = true;
         Destroy(gameObject);
     }
 

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class DisplayProfileManager : MonoBehaviour {
     public List<DisplayProfile> displayProfiles = new List<DisplayProfile>();
-    
+
     public enum DisplayProfileEnum {
         Laptop,
         TouchTV
