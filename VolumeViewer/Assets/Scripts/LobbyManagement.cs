@@ -12,8 +12,8 @@ public class LobbyManagement : MonoBehaviour {
     public ModelTransformator modelTransformator;
     public Vector3 offsetToModelTransform;
 
-    public void StartHost() {
-        networkManager.StartHost();
+    public void StartServer() {
+        networkManager.StartServer();
         GameObject newCamera = ReplaceXRRigWithDisplayCamera();
         modelTransformator.currentModel.AddComponent<Draggable>().displayCamera = newCamera;        
         modelTransformator.SetAlpha(1);
