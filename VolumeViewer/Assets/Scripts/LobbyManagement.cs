@@ -1,5 +1,6 @@
 using UnityEngine;
 using Unity.Netcode;
+using TMPro;
 
 public class LobbyManagement : MonoBehaviour {
     public NetworkManager networkManager;
@@ -11,6 +12,8 @@ public class LobbyManagement : MonoBehaviour {
     public GameObject displayCamera;
     public ModelTransformator modelTransformator;
     public Vector3 offsetToModelTransform;
+    public TextMeshProUGUI errorLabel;
+    private bool connected = false;
 
     public void StartServer() {
         networkManager.StartServer();
@@ -27,9 +30,23 @@ public class LobbyManagement : MonoBehaviour {
     }
 
     public void StartClient() {
+        errorLabel.enabled = false;
+        networkManager.OnClientConnectedCallback += ClientConnectionSuccess;
+        networkManager.OnClientDisconnectCallback += ClientConnectionFailure;
+
         networkManager.StartClient();
+    }
+
+    private void ClientConnectionSuccess(ulong clientId) {
+        connected = true;
         modelTransformator.isConnected = true;
         Destroy(gameObject);
+    }
+
+    private void ClientConnectionFailure(ulong clientId) {
+        if (!connected) {
+            errorLabel.enabled = true;
+        }
     }
 
     private GameObject ReplaceXRRigWithDisplayCamera() {
