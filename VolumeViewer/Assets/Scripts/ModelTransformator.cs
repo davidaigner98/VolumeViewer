@@ -30,6 +30,8 @@ public class ModelTransformator : MonoBehaviour {
         foreach (Material mat in mats) {
             mat.shader = transparentShader;
         }
+
+        currentModel.GetComponent<MeshRenderer>().enabled = true;
     }
 
     public void SetupClient() {
@@ -46,6 +48,7 @@ public class ModelTransformator : MonoBehaviour {
             mat.shader = transparentShader;
         }
 
+        currentModel.GetComponent<MeshRenderer>().enabled = true;
         SetAlpha(0);
     }
 
