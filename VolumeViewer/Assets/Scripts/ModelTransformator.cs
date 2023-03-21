@@ -38,6 +38,9 @@ public class ModelTransformator : MonoBehaviour {
         displayCenter = profileManager.GetCurrentDisplayCenter();
         displaySize = profileManager.GetCurrentDisplaySize().transform;
 
+        currentModel.transform.SetParent(displayCenter.transform);
+        currentModel.transform.localPosition = Vector3.zero;
+
         Material[] mats = currentModel.GetComponent<Renderer>().materials;
         foreach (Material mat in mats) {
             mat.shader = transparentShader;
