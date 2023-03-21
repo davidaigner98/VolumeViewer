@@ -5,12 +5,10 @@ using UnityEngine.UI;
 
 public class ModelSynchronizer : NetworkBehaviour {
     private ModelTransformator transformator;
-    private GameObject displayCenter;
     public NetworkVariable<bool> attached = new NetworkVariable<bool>(true);
 
     public void Start() {
         transformator = GameObject.Find("ModelManager").GetComponent<ModelTransformator>();
-        displayCenter = transform.parent.gameObject;
         attached.OnValueChanged += ChangeModelAttachment;
     }
 
@@ -24,7 +22,10 @@ public class ModelSynchronizer : NetworkBehaviour {
     }
 
     public void ChangeModelAttachment() {
-        if (displayCenter != null) {
+        GameObject displayProjection = GameObject.Find("DisplayProjection");
+        if (displayProjection != null) {
+            GameObject displayCenter = displayProjection.GetComponent<DisplayProfileManager>().GetCurrentDisplayCenter();
+
             if (attached.Value) {
                 GameObject modelParent = GameObject.Find("ModelParent");
                 transform.SetParent(displayCenter.transform);

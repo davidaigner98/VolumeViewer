@@ -39,6 +39,7 @@ public class ModelTransformator : MonoBehaviour {
         DisplayProfileManager profileManager = GameObject.Find("DisplayProjection").GetComponent<DisplayProfileManager>();
         displayCenter = profileManager.GetCurrentDisplayCenter();
         displaySize = profileManager.GetCurrentDisplaySize().transform;
+        palmGrabDistance = displaySize.localScale.y / 3;
 
         currentModel.transform.SetParent(displayCenter.transform);
         currentModel.transform.localPosition = Vector3.zero;
