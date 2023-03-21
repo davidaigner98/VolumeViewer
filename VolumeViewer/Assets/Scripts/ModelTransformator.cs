@@ -4,16 +4,17 @@ using System.Collections;
 using UnityEngine;
 
 public class ModelTransformator : MonoBehaviour {
+    public bool isServer = false;
+    public bool isStarted = false;
     public GameObject currentModel;
     public Shader transparentShader;
-    public bool isConnected = false;
-    public Transform displaySize;
     public float palmGrabDistance = 1.0f;
     public float oneFingerRotationDistance = 1.0f;
     public float releaseDistanceThreshold = 1.0f;
     public float resetSpeed = 1.0f;
     private ModelSynchronizer synchronizer;
     private GameObject displayCenter;
+    private Transform displaySize;
     private bool separatedFromDisplay = false;
     private bool inDisplay = true;
     private Hand interactingHand;
@@ -22,17 +23,37 @@ public class ModelTransformator : MonoBehaviour {
     private Vector3 lastPalmPosition;
     private Vector3 lastIndexPosition;
 
-    private void Start() {
+    public void SetupServer() {
         synchronizer = currentModel.GetComponent<ModelSynchronizer>();
-        if (currentModel.transform.parent != null) {
-            displayCenter = currentModel.transform.parent.gameObject;
-        }
 
         Material[] mats = currentModel.GetComponent<Renderer>().materials;
         foreach (Material mat in mats) {
             mat.shader = transparentShader;
         }
 
+        currentModel.GetComponent<MeshRenderer>().enabled = true;
+    }
+
+    public void SetupClient() {
+        synchronizer = currentModel.GetComponent<ModelSynchronizer>();
+        DisplayProfileManager profileManager = GameObject.Find("DisplayProjection").GetComponent<DisplayProfileManager>();
+        displayCenter = profileManager.GetCurrentDisplayCenter();
+        displaySize = profileManager.GetCurrentDisplaySize().transform;
+        
+        Rescale();
+        palmGrabDistance = currentModel.transform.localScale.x * 2;
+        oneFingerRotationDistance = currentModel.transform.localScale.x * 3 / 2;
+        releaseDistanceThreshold = currentModel.transform.localScale.x * 4 / 5;
+
+        currentModel.transform.SetParent(displayCenter.transform);
+        currentModel.transform.localPosition = Vector3.zero;
+
+        Material[] mats = currentModel.GetComponent<Renderer>().materials;
+        foreach (Material mat in mats) {
+            mat.shader = transparentShader;
+        }
+
+        currentModel.GetComponent<MeshRenderer>().enabled = true;
         SetAlpha(0);
     }
 
@@ -41,7 +62,7 @@ public class ModelTransformator : MonoBehaviour {
             currentModel.transform.localPosition = Vector3.zero;
         }
 
-        if (isConnected) {
+        if (isStarted && !isServer) {
             if (isBeingGrabbed) { PalmGrabMovement(); }
             else if (isBeingRotated) { OneFingerRotation(); }
         }
@@ -77,7 +98,7 @@ public class ModelTransformator : MonoBehaviour {
     }
 
     public void PalmGrabModelOn(string hand) {
-        if (isConnected) {
+        if (isStarted && !isServer) {
             if (hand.Equals("left")) { interactingHand = Hands.Left; }
             else if (hand.Equals("right")) { interactingHand = Hands.Right; }
 
@@ -93,7 +114,7 @@ public class ModelTransformator : MonoBehaviour {
     }
 
     public void PalmGrabModelOff() {
-        if (isConnected) { 
+        if (isStarted && !isServer) { 
             float distance = Vector3.Distance(currentModel.transform.position, displayCenter.transform.position);
             isBeingGrabbed = false;
 
@@ -137,7 +158,7 @@ public class ModelTransformator : MonoBehaviour {
     }
 
     private void Rescale() {
-        currentModel.transform.localScale = Vector3.one * displaySize.localScale.y / 2;
+        currentModel.transform.localScale = Vector3.one * displaySize.localScale.y / 3;
     }
     
     public void OneFingerRotationOn(string hand) {
