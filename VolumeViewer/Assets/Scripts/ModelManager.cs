@@ -5,7 +5,7 @@ using UnityEngine;
 public class ModelManager : NetworkBehaviour {
     public static ModelManager Instance { get; private set; }
     public List<GameObject> modelPrefabs = new List<GameObject>();
-    public NetworkVariable<List<GameObject>> models = new NetworkVariable<List<GameObject>>();
+    public NetworkVariable<GameObject[]> models = new NetworkVariable<GameObject[]>();
     public NetworkVariable<bool> attached = new NetworkVariable<bool>(true);
 
     private void Awake() {
@@ -24,7 +24,9 @@ public class ModelManager : NetworkBehaviour {
         ModelTransformator transformator = model.GetComponent<ModelTransformator>();
         model.GetComponent<NetworkObject>().Spawn();
 
-        models.Value.Add(model);
+        List<GameObject> modelList = new List<GameObject>(models.Value);
+        modelList.Add(model);
+        models.Value = modelList.ToArray();
     }
 
     public GameObject GetSelectedModel() {
