@@ -120,7 +120,7 @@ public class ModelTransformator : MonoBehaviour {
 
             if (distance >= releaseDistanceThreshold) {
                 separatedFromDisplay = true;
-                synchronizer.ChangeAttachmentButtonInteractabilityServerRpc(true);
+                CrossPlatformMediator.Instance.ChangeAttachmentButtonInteractabilityServerRpc(true);
             } else {
                 StartCoroutine(MoveToOrigin());
             }
@@ -142,9 +142,9 @@ public class ModelTransformator : MonoBehaviour {
 
         SetAlpha(0);
         inDisplay = true;
-        synchronizer.SetAttachedStateServerRpc(true);
-        synchronizer.ChangeModelAttachment();
-        synchronizer.ChangeAttachmentButtonInteractabilityServerRpc(false);
+        ModelManager.Instance.SetAttachedStateServerRpc(true);
+        synchronizer.ChangeModelAttachment(true, true);
+        CrossPlatformMediator.Instance.ChangeAttachmentButtonInteractabilityServerRpc(false);
         currentModel.transform.localPosition = Vector3.zero;
     }
 
