@@ -7,7 +7,7 @@ using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 public class Draggable : MonoBehaviour {
     public GameObject displayCamera;
     public float rotSpeed = 0.25f;
-    public float moveSpeed = 0.01f;
+    public float moveSpeed = 0.06f;
     private InputAction mouseMoveAction;
     private InputAction mouseDragAction;
     private InputAction touchMoveAction;
