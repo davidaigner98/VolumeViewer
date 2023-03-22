@@ -34,7 +34,6 @@ public class LobbyManager : MonoBehaviour {
 
     private void ClientConnectionSuccess(ulong clientId) {
         networkManager.OnClientDisconnectCallback -= ClientConnectionFailure;
-        ModelManager.Instance.SpawnDefaultModel();
         DetectorManager.Instance.UpdateDetectors();
         Destroy(gameObject);
     }
