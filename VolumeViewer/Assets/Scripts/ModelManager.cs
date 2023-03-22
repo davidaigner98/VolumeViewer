@@ -22,6 +22,7 @@ public class ModelManager : NetworkBehaviour {
     private void SpawnModel(GameObject modelPrefab) {
         GameObject model = Instantiate(modelPrefab);
         ModelTransformator transformator = model.GetComponent<ModelTransformator>();
+        model.GetComponent<NetworkObject>().Spawn();
 
         models.Add(model);
     }

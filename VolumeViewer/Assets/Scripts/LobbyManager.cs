@@ -2,7 +2,7 @@ using UnityEngine;
 using Unity.Netcode;
 using TMPro;
 
-public class LobbyManagement : MonoBehaviour {
+public class LobbyManager : MonoBehaviour {
     public NetworkManager networkManager;
     public GameObject serviceProvider;
     public GameObject interactionManager;
@@ -33,6 +33,7 @@ public class LobbyManagement : MonoBehaviour {
     }
 
     private void ClientConnectionSuccess(ulong clientId) {
+        networkManager.OnClientDisconnectCallback -= ClientConnectionFailure;
         ModelManager.Instance.SpawnDefaultModel();
         DetectorManager.Instance.UpdateDetectors();
         Destroy(gameObject);
