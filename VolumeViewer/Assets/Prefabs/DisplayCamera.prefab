@@ -1192,7 +1192,6 @@ GameObject:
   - component: {fileID: 7428485709230775504}
   - component: {fileID: 1906107416641504924}
   - component: {fileID: 4959470151963946720}
-  - component: {fileID: 220859465686307936}
   - component: {fileID: 4982795654860263572}
   m_Layer: 0
   m_Name: DisplayCamera
@@ -1298,19 +1297,6 @@ MonoBehaviour:
   m_DefaultActionMap: Display
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &220859465686307936
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1634275933079748902}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69a99e9231474d04a976fc0b8e7be0c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  displayCamera: {fileID: 0}
 --- !u!114 &4982795654860263572
 MonoBehaviour:
   m_ObjectHideFlags: 0
