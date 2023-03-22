@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1711352742234688235}
   - component: {fileID: 503641229915240566}
   - component: {fileID: 35580066031769194}
+  - component: {fileID: -5993723681606187905}
   - component: {fileID: 5858151768860054549}
   m_Layer: 0
   m_Name: ColoredCubeModel
@@ -120,6 +121,23 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 0
+--- !u!114 &-5993723681606187905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 918468449551100734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d2e27d8ddfdfdf4dad4656de9d0be39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  transparentShader: {fileID: 4800000, guid: 3bf3990958cb10b4f8212c83b1ef0f76, type: 3}
+  palmGrabDistance: 0.5
+  oneFingerRotationDistance: 0.25
+  releaseDistanceThreshold: 0.2
+  resetSpeed: 3
 --- !u!114 &5858151768860054549
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -48,6 +48,7 @@ public class LobbyManagement : MonoBehaviour {
         Destroy(xrRig);
         GameObject newCamera = GameObject.Instantiate(displayCamera);
         newCamera.transform.position = displayCameraPosition;
+        newCamera.transform.LookAt(Vector3.zero);
         lightsource.transform.SetParent(newCamera.transform);
 
         return newCamera;

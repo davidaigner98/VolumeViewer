@@ -52,7 +52,7 @@ public class Draggable : MonoBehaviour {
         Vector2 rotation = Mouse.current.delta.ReadValue() * rotSpeed;
         
         transform.Rotate(Vector3.up, -rotation.x, Space.World);
-        transform.Rotate(Vector3.right, rotation.y, Space.World);
+        transform.Rotate(Vector3.right, -rotation.y, Space.World);
     }
 
     private void TouchMovePerformed(InputAction.CallbackContext c) {
@@ -69,7 +69,7 @@ public class Draggable : MonoBehaviour {
         Vector2 rotation = Touchscreen.current.delta.ReadValue() * rotSpeed;
 
         transform.Rotate(Vector3.up, -rotation.x, Space.World);
-        transform.Rotate(Vector3.right, rotation.y, Space.World);
+        transform.Rotate(Vector3.right, -rotation.y, Space.World);
     }
 
     private void MultipleFingerGesture(int touchCount) {
