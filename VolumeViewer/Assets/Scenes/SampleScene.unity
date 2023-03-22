@@ -196,7 +196,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3557434566810426997, guid: 15d3b5cf5cea75344a4482323bc124a8, type: 3}
       propertyPath: m_Name
-      value: Service Provider (XR)
+      value: ServiceProvider(XR)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 15d3b5cf5cea75344a4482323bc124a8, type: 3}
@@ -467,7 +467,7 @@ GameObject:
   - component: {fileID: 68563009}
   - component: {fileID: 68563008}
   m_Layer: 0
-  m_Name: Input Action Manager
+  m_Name: InputActionManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -861,7 +861,7 @@ MonoBehaviour:
   OnDeactivate:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1617042984}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ModelTransformator, Assembly-CSharp
         m_MethodName: PalmGrabModelOff
         m_Mode: 1
@@ -898,7 +898,7 @@ MonoBehaviour:
   OnActivate:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1617042984}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ModelTransformator, Assembly-CSharp
         m_MethodName: PalmGrabModelOn
         m_Mode: 5
@@ -1208,7 +1208,7 @@ MonoBehaviour:
   OnDeactivate:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1617042984}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ModelTransformator, Assembly-CSharp
         m_MethodName: OneFingerRotationOff
         m_Mode: 1
@@ -1245,7 +1245,7 @@ MonoBehaviour:
   OnActivate:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1617042984}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ModelTransformator, Assembly-CSharp
         m_MethodName: OneFingerRotationOn
         m_Mode: 5
@@ -1473,7 +1473,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1148719034140820, guid: 33edf201cbc6fe645ad9078697cd2aea, type: 3}
       propertyPath: m_Name
-      value: Interaction Manager
+      value: InteractionManager
       objectReference: {fileID: 0}
     - target: {fileID: 4822923098130148, guid: 33edf201cbc6fe645ad9078697cd2aea, type: 3}
       propertyPath: m_RootOrder
@@ -1547,7 +1547,7 @@ GameObject:
   - component: {fileID: 705507995}
   - component: {fileID: 705507994}
   m_Layer: 0
-  m_Name: Directional Light
+  m_Name: DirectionalLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3035,7 +3035,7 @@ MonoBehaviour:
   OnDeactivate:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1617042984}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ModelTransformator, Assembly-CSharp
         m_MethodName: OneFingerRotationOff
         m_Mode: 1
@@ -3072,7 +3072,7 @@ MonoBehaviour:
   OnActivate:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1617042984}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ModelTransformator, Assembly-CSharp
         m_MethodName: OneFingerRotationOn
         m_Mode: 5
@@ -3837,7 +3837,7 @@ MonoBehaviour:
   displayProjection: {fileID: 1163098837}
   lightsource: {fileID: 705507993}
   displayCamera: {fileID: 1634275933079748902, guid: d1f8b1dc475ad6141afe3ec3058e4376, type: 3}
-  modelTransformator: {fileID: 1617042984}
+  modelTransformator: {fileID: 0}
   offsetToModelTransform: {x: 0, y: 0, z: 2}
   errorLabel: {fileID: 1161662062}
 --- !u!1 &1617042983
@@ -3849,7 +3849,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1617042985}
-  - component: {fileID: 1617042984}
+  - component: {fileID: 1617042986}
   m_Layer: 0
   m_Name: ModelManager
   m_TagString: Untagged
@@ -3857,26 +3857,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1617042984
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1617042983}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d2e27d8ddfdfdf4dad4656de9d0be39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isServer: 0
-  isStarted: 0
-  currentModel: {fileID: 919132149616932528}
-  transparentShader: {fileID: 4800000, guid: 3bf3990958cb10b4f8212c83b1ef0f76, type: 3}
-  palmGrabDistance: 0.5
-  oneFingerRotationDistance: 0.25
-  releaseDistanceThreshold: 0.2
-  resetSpeed: 3
 --- !u!4 &1617042985
 Transform:
   m_ObjectHideFlags: 0
@@ -3892,6 +3872,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1617042986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1617042983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3484625852c6b6a4bb517cdec879564e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1964519987
 GameObject:
   m_ObjectHideFlags: 0
@@ -4222,7 +4214,7 @@ MonoBehaviour:
   OnDeactivate:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1617042984}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ModelTransformator, Assembly-CSharp
         m_MethodName: PalmGrabModelOff
         m_Mode: 1
@@ -4259,7 +4251,7 @@ MonoBehaviour:
   OnActivate:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1617042984}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ModelTransformator, Assembly-CSharp
         m_MethodName: PalmGrabModelOn
         m_Mode: 5
