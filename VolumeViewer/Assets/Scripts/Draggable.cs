@@ -61,8 +61,8 @@ public class Draggable : MonoBehaviour {
 
         if (touchCount == 1) {
             OneFingerGesture();
-        } else if (touchCount == 5) {
-            TwoFingerGesture();
+        } else if (touchCount >= 2 && touchCount < 6) {
+            MultipleFingerGesture(touchCount);
         }
     }
 
@@ -73,20 +73,15 @@ public class Draggable : MonoBehaviour {
         transform.Rotate(displayCamera.transform.TransformDirection(Vector3.right), rotation.y, Space.World);
     }
 
-    private void TwoFingerGesture() {
-        TouchControl touch0 = Touchscreen.current.touches[0];
-        TouchControl touch1 = Touchscreen.current.touches[1];
-        TouchControl touch2 = Touchscreen.current.touches[1];
-        TouchControl touch3 = Touchscreen.current.touches[1];
-        TouchControl touch4 = Touchscreen.current.touches[1];
-
+    private void MultipleFingerGesture(int touchCount) {
         Vector2 totalDelta = Vector3.zero;
-        totalDelta += touch0.delta.ReadValue();
-        totalDelta += touch1.delta.ReadValue();
-        totalDelta += touch2.delta.ReadValue();
-        totalDelta += touch3.delta.ReadValue();
-        totalDelta += touch4.delta.ReadValue();
-        totalDelta /= 5;
+
+        for (int i = 0; i < touchCount; i++) {
+            TouchControl currTouch = Touchscreen.current.touches[i];
+            totalDelta += currTouch.delta.ReadValue();
+        }
+
+        totalDelta /= touchCount;
         transform.position += new Vector3(-totalDelta.x, totalDelta.y, 0) * moveSpeed;
     }
 
