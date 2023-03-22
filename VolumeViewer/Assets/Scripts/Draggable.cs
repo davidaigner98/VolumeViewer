@@ -5,7 +5,6 @@ using UnityEngine.InputSystem.LowLevel;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 public class Draggable : MonoBehaviour {
-    public GameObject displayCamera;
     public float rotSpeed = 0.25f;
     public float moveSpeed = 0.06f;
     private InputAction mouseMoveAction;
@@ -14,7 +13,7 @@ public class Draggable : MonoBehaviour {
     private InputAction touchDragAction;
 
     private void Start() {
-        PlayerInput playerInput = displayCamera.GetComponent<PlayerInput>();
+        PlayerInput playerInput = GameObject.Find("DisplayCamera(Clone)").GetComponent<PlayerInput>();
         InputActionMap map = playerInput.currentActionMap;
         mouseMoveAction = map.FindAction("MouseMove");
         mouseMoveAction.Enable();
@@ -52,8 +51,8 @@ public class Draggable : MonoBehaviour {
     private void MouseMovePerformed(InputAction.CallbackContext c) {
         Vector2 rotation = Mouse.current.delta.ReadValue() * rotSpeed;
         
-        transform.Rotate(displayCamera.transform.TransformDirection(Vector3.up), -rotation.x, Space.World);
-        transform.Rotate(displayCamera.transform.TransformDirection(Vector3.right), rotation.y, Space.World);
+        transform.Rotate(Vector3.up, -rotation.x, Space.World);
+        transform.Rotate(Vector3.right, rotation.y, Space.World);
     }
 
     private void TouchMovePerformed(InputAction.CallbackContext c) {
@@ -69,8 +68,8 @@ public class Draggable : MonoBehaviour {
     private void OneFingerGesture() {
         Vector2 rotation = Touchscreen.current.delta.ReadValue() * rotSpeed;
 
-        transform.Rotate(displayCamera.transform.TransformDirection(Vector3.up), -rotation.x, Space.World);
-        transform.Rotate(displayCamera.transform.TransformDirection(Vector3.right), rotation.y, Space.World);
+        transform.Rotate(Vector3.up, -rotation.x, Space.World);
+        transform.Rotate(Vector3.right, rotation.y, Space.World);
     }
 
     private void MultipleFingerGesture(int touchCount) {

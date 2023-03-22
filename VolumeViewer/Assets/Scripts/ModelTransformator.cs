@@ -1,21 +1,17 @@
 using Leap;
 using Leap.Unity;
 using System.Collections;
+using Unity.Netcode;
 using UnityEngine;
 
-public class ModelTransformator : MonoBehaviour {
-    public bool isServer = false;
-    public bool isStarted = false;
-    public GameObject currentModel;
+public class ModelTransformator : NetworkBehaviour {
     public Shader transparentShader;
     public float palmGrabDistance = 1.0f;
     public float oneFingerRotationDistance = 1.0f;
     public float releaseDistanceThreshold = 1.0f;
     public float resetSpeed = 1.0f;
-    private ModelSynchronizer synchronizer;
     private GameObject displayCenter;
     private Transform displaySize;
-    private bool separatedFromDisplay = false;
     private bool inDisplay = true;
     private Hand interactingHand;
     private bool isBeingGrabbed = false;
@@ -23,48 +19,48 @@ public class ModelTransformator : MonoBehaviour {
     private Vector3 lastPalmPosition;
     private Vector3 lastIndexPosition;
 
-    public void SetupServer() {
-        synchronizer = currentModel.GetComponent<ModelSynchronizer>();
+    private void Start() {
+        ModelManager.Instance.attached.OnValueChanged += ChangeModelAttachment;
 
-        Material[] mats = currentModel.GetComponent<Renderer>().materials;
+        Material[] mats = GetComponent<Renderer>().materials;
         foreach (Material mat in mats) {
             mat.shader = transparentShader;
         }
 
-        currentModel.GetComponent<MeshRenderer>().enabled = true;
+        GetComponent<MeshRenderer>().enabled = true;
+
+        if (CrossPlatformMediator.Instance.isServer) { SetupServer(); }
+        else { SetupClient(); }
+    }
+
+    public void SetupServer() {
+        gameObject.AddComponent<Draggable>();
+        SetAlpha(1);
     }
 
     public void SetupClient() {
-        synchronizer = currentModel.GetComponent<ModelSynchronizer>();
-        DisplayProfileManager profileManager = GameObject.Find("DisplayProjection").GetComponent<DisplayProfileManager>();
-        displayCenter = profileManager.GetCurrentDisplayCenter();
-        displaySize = profileManager.GetCurrentDisplaySize().transform;
+        displayCenter = DisplayProfileManager.Instance.GetCurrentDisplayCenter();
+        displaySize = DisplayProfileManager.Instance.GetCurrentDisplaySize().transform;
         
         Rescale();
-        palmGrabDistance = currentModel.transform.localScale.x * 2;
-        oneFingerRotationDistance = currentModel.transform.localScale.x * 3 / 2;
-        releaseDistanceThreshold = currentModel.transform.localScale.x * 4 / 5;
+        palmGrabDistance = transform.localScale.x * 2;
+        oneFingerRotationDistance = transform.localScale.x * 3 / 2;
+        releaseDistanceThreshold = transform.localScale.x * 4 / 5;
 
-        currentModel.transform.SetParent(displayCenter.transform);
-        currentModel.transform.localPosition = Vector3.zero;
+        transform.SetParent(displayCenter.transform);
+        transform.localPosition = Vector3.zero;
 
-        Material[] mats = currentModel.GetComponent<Renderer>().materials;
-        foreach (Material mat in mats) {
-            mat.shader = transparentShader;
-        }
-
-        currentModel.GetComponent<MeshRenderer>().enabled = true;
         SetAlpha(0);
     }
 
     private void Update() {
-        if (inDisplay) {
-            currentModel.transform.localPosition = Vector3.zero;
-        }
-
-        if (isStarted && !isServer) {
+        if (!CrossPlatformMediator.Instance.isServer) {
             if (isBeingGrabbed) { PalmGrabMovement(); }
             else if (isBeingRotated) { OneFingerRotation(); }
+
+            if (inDisplay) {
+                transform.localPosition = Vector3.zero;
+            }
         }
     }
 
@@ -72,9 +68,9 @@ public class ModelTransformator : MonoBehaviour {
         Vector3 delta = interactingHand.PalmPosition - lastPalmPosition;
         lastPalmPosition = interactingHand.PalmPosition;
 
-        currentModel.transform.position += delta;
+        transform.position += delta;
 
-        float distance = Vector3.Distance(currentModel.transform.position, displayCenter.transform.position);
+        float distance = Vector3.Distance(transform.position, displayCenter.transform.position);
         if (distance < releaseDistanceThreshold) {
             SetAlpha(distance / releaseDistanceThreshold);
         } else {
@@ -83,26 +79,31 @@ public class ModelTransformator : MonoBehaviour {
     }
 
     private void OneFingerRotation() {
-        float distance = Vector3.Distance(currentModel.transform.position, interactingHand.GetIndex().TipPosition);
+        float distance = Vector3.Distance(transform.position, interactingHand.GetIndex().TipPosition);
 
         if (distance <= oneFingerRotationDistance) {
-            Vector3 indexPosition = interactingHand.GetIndex().TipPosition - currentModel.transform.position;
+            Vector3 indexPosition = interactingHand.GetIndex().TipPosition - transform.position;
 
             Vector3 axis = Vector3.Cross(indexPosition, lastIndexPosition);
             float angle = -Vector3.Angle(indexPosition, lastIndexPosition);
 
-            synchronizer.RotateModelServerRpc(axis, angle);
+            RotateModelServerRpc(axis, angle);
 
             lastIndexPosition = indexPosition;
         }
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void RotateModelServerRpc(Vector3 axis, float angle) {
+        transform.Rotate(axis, angle, Space.World);
+    }
+
     public void PalmGrabModelOn(string hand) {
-        if (isStarted && !isServer) {
+        if (!CrossPlatformMediator.Instance.isServer) {
             if (hand.Equals("left")) { interactingHand = Hands.Left; }
             else if (hand.Equals("right")) { interactingHand = Hands.Right; }
 
-            float distance = Vector3.Distance(currentModel.transform.position, interactingHand.PalmPosition);
+            float distance = Vector3.Distance(transform.position, interactingHand.PalmPosition);
             if (distance <= palmGrabDistance) {
                 Rescale();
 
@@ -114,12 +115,11 @@ public class ModelTransformator : MonoBehaviour {
     }
 
     public void PalmGrabModelOff() {
-        if (isStarted && !isServer) { 
-            float distance = Vector3.Distance(currentModel.transform.position, displayCenter.transform.position);
+        if (!CrossPlatformMediator.Instance.isServer) { 
+            float distance = Vector3.Distance(transform.position, displayCenter.transform.position);
             isBeingGrabbed = false;
 
             if (distance >= releaseDistanceThreshold) {
-                separatedFromDisplay = true;
                 CrossPlatformMediator.Instance.ChangeAttachmentButtonInteractabilityServerRpc(true);
             } else {
                 StartCoroutine(MoveToOrigin());
@@ -132,8 +132,8 @@ public class ModelTransformator : MonoBehaviour {
         float distanceToOrigin;
 
         do {
-            Vector3 delta = currentModel.transform.position - destination;
-            currentModel.transform.position -= delta.normalized * Time.deltaTime * resetSpeed;
+            Vector3 delta = transform.position - destination;
+            transform.position -= delta.normalized * Time.deltaTime * resetSpeed;
             distanceToOrigin = Vector3.Distance(Vector3.zero, delta);
             SetAlpha(distanceToOrigin / releaseDistanceThreshold);
 
@@ -143,13 +143,32 @@ public class ModelTransformator : MonoBehaviour {
         SetAlpha(0);
         inDisplay = true;
         ModelManager.Instance.SetAttachedStateServerRpc(true);
-        synchronizer.ChangeModelAttachment(true, true);
+        ChangeModelAttachment(true, true);
         CrossPlatformMediator.Instance.ChangeAttachmentButtonInteractabilityServerRpc(false);
-        currentModel.transform.localPosition = Vector3.zero;
+        transform.position = destination;
+    }
+
+    public void ChangeModelAttachment(bool prev, bool current) {
+        if (!CrossPlatformMediator.Instance.isServer) {
+            GameObject displayProjection = GameObject.Find("DisplayProjection");
+            if (displayProjection != null) {
+                GameObject displayCenter = displayProjection.GetComponent<DisplayProfileManager>().GetCurrentDisplayCenter();
+
+                if (current) {
+                    GameObject modelParent = GameObject.Find("ModelParent");
+                    transform.SetParent(displayCenter.transform);
+                    Destroy(modelParent);
+                } else {
+                    GameObject modelParent = new GameObject("ModelParent");
+                    modelParent.transform.rotation = displayCenter.transform.rotation;
+                    transform.SetParent(modelParent.transform);
+                }
+            }
+        }
     }
 
     public void SetAlpha(float alpha) {
-        Material[] mats = currentModel.GetComponent<Renderer>().materials;
+        Material[] mats = GetComponent<Renderer>().materials;
         foreach (Material mat in mats) {
             Color newColor = mat.color;
             newColor.a = alpha;
@@ -158,30 +177,34 @@ public class ModelTransformator : MonoBehaviour {
     }
 
     private void Rescale() {
-        currentModel.transform.localScale = Vector3.one * displaySize.localScale.y / 3;
+        transform.localScale = Vector3.one * displaySize.localScale.y / 3;
     }
     
     public void OneFingerRotationOn(string hand) {
-        if (hand.Equals("left")) { interactingHand = Hands.Left; }
-        else if (hand.Equals("right")) { interactingHand = Hands.Right; }
+        if (!CrossPlatformMediator.Instance.isServer) {
+            if (hand.Equals("left")) { interactingHand = Hands.Left; }
+            else if (hand.Equals("right")) { interactingHand = Hands.Right; }
 
-        lastIndexPosition = interactingHand.GetIndex().TipPosition - currentModel.transform.position;
-        isBeingRotated = true;
+            lastIndexPosition = interactingHand.GetIndex().TipPosition - transform.position;
+            isBeingRotated = true;
+        }
     }
 
     public void OneFingerRotationOff() {
-        isBeingRotated = false;
+        if (!CrossPlatformMediator.Instance.isServer) {
+            isBeingRotated = false;
+        }
     }
 
     public void AlignCoronal() {
-        currentModel.transform.rotation = Quaternion.Euler(0, 0, 0);
+        transform.rotation = Quaternion.Euler(0, 0, 0);
     }
 
     public void AlignSagittal() {
-        currentModel.transform.rotation = Quaternion.Euler(0, 270, 0);
+        transform.rotation = Quaternion.Euler(0, 270, 0);
     }
 
     public void AlignAxial() {
-        currentModel.transform.rotation = Quaternion.Euler(90, 0, 0);
+        transform.rotation = Quaternion.Euler(90, 0, 0);
     }
 }
