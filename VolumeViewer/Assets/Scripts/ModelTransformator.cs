@@ -58,8 +58,9 @@ public class ModelTransformator : MonoBehaviour {
     }
 
     private void Update() {
-        if (inDisplay) {
-            currentModel.transform.localPosition = Vector3.zero;
+        if (inDisplay && !isServer) {
+            Vector3 inDisplayPosition = synchronizer.GetRelativeScreenOffsetServerRpc() * displaySize.localScale;
+            currentModel.transform.localPosition = inDisplayPosition;
         }
 
         if (isStarted && !isServer) {
@@ -128,7 +129,8 @@ public class ModelTransformator : MonoBehaviour {
     }
 
     private IEnumerator MoveToOrigin() {
-        Vector3 destination = displayCenter.transform.position;
+        Vector3 offset = synchronizer.GetRelativeScreenOffsetServerRpc() * displaySize.localScale;
+        Vector3 destination = displayCenter.transform.position + offset;
         float distanceToOrigin;
 
         do {

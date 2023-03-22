@@ -49,4 +49,9 @@ public class ModelSynchronizer : NetworkBehaviour {
     public void SetAttachedStateServerRpc(bool attached) {
         this.attached.Value = attached;
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    public Vector2 GetRelativeScreenOffsetServerRpc() {
+        return ModelLocalizer.Instance.GetRelativeScreenOffsetOfModel(this.gameObject);
+    }
 }
