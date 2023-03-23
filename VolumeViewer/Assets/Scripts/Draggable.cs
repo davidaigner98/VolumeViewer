@@ -88,6 +88,9 @@ public class Draggable : MonoBehaviour {
         palmPosition /= touchCount;
         Camera displayCamera = DisplayLocalizer.Instance.displayCamera;
         transform.position = displayCamera.ScreenToWorldPoint(new Vector3(palmPosition.x, palmPosition.y, transform.position.z));
+
+        Vector2 screenOffset = DisplayLocalizer.Instance.GetRelativeScreenOffset(gameObject);
+        GetComponent<ModelTransformator>().screenOffset.Value = screenOffset;
     }
 
     private void MultipleFingerRotating(int touchCount) {
