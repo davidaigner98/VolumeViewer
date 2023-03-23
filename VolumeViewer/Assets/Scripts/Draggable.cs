@@ -58,11 +58,10 @@ public class Draggable : MonoBehaviour {
     private void TouchMovePerformed(InputAction.CallbackContext c) {
         int touchCount = GetNumbersOfTouches();
 
-        if (touchCount == 1) {
-            OneFingerGesture();
-        } else if (touchCount >= 2 && touchCount < 6) {
-            MultipleFingerGesture(touchCount);
-        }
+        if (touchCount == 1) { OneFingerGesture(); }
+        
+        if (touchCount >= 3 && touchCount <= 5) { MultipleFingerPositioning(touchCount); }
+        if (touchCount == 2) { MultipleFingerRotating(touchCount); }
     }
 
     private void OneFingerGesture() {
@@ -72,7 +71,7 @@ public class Draggable : MonoBehaviour {
         transform.Rotate(Vector3.right, -rotation.y, Space.World);
     }
 
-    private void MultipleFingerGesture(int touchCount) {
+    private void MultipleFingerPositioning(int touchCount) {
         Vector2 totalDelta = Vector3.zero;
 
         for (int i = 0; i < touchCount; i++) {
@@ -82,6 +81,22 @@ public class Draggable : MonoBehaviour {
 
         totalDelta /= touchCount;
         transform.position += new Vector3(-totalDelta.x, totalDelta.y, 0) * moveSpeed;
+    }
+
+    private void MultipleFingerRotating(int touchCount) {
+        if(touchCount != 2) { return; }
+        
+        TouchControl touch0 = Touchscreen.current.touches[0];
+        TouchControl touch1 = Touchscreen.current.touches[1];
+        Vector2 newPosition0 = touch0.position.ReadValue();
+        Vector2 newPosition1 = touch1.position.ReadValue();
+        Vector2 oldPosition0 = newPosition0 - touch0.delta.ReadValue();
+        Vector2 oldPosition1 = newPosition1 - touch1.delta.ReadValue();
+        Vector2 newVector = newPosition0 - newPosition1;
+        Vector2 oldVector = oldPosition0 - oldPosition1;
+
+        float angle = Vector2.SignedAngle(newVector, oldVector);
+        transform.Rotate(Vector3.forward, angle, Space.World);
     }
 
     private int GetNumbersOfTouches() {
