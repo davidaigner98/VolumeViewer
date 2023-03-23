@@ -5,4 +5,8 @@ public class ModelInfo : MonoBehaviour {
     public int modelInstanceId;
     public string modelName;
     public string description;
+
+    private void Start() {
+        ModelManager.Instance.RegisterModel(this);
+    }
 }

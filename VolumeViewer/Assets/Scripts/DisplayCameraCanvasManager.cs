@@ -14,7 +14,6 @@ public class DisplayCameraCanvasManager : MonoBehaviour {
 
     private void Start() {
         ModelManager.Instance.attached.OnValueChanged += RefreshAttachmentButtonText;
-        AlignCoronal();
     }
 
     public void AlignCoronal() {

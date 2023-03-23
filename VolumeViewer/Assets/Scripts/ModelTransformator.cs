@@ -36,6 +36,7 @@ public class ModelTransformator : NetworkBehaviour {
     public void SetupServer() {
         gameObject.AddComponent<Draggable>();
         SetAlpha(1);
+        AlignCoronal();
     }
 
     public void SetupClient() {
