@@ -12,6 +12,7 @@ public class ModelTransformator : NetworkBehaviour {
     public float resetSpeed = 1.0f;
     private GameObject displayCenter;
     private Transform displaySize;
+    public NetworkVariable<Vector2> screenOffset = new NetworkVariable<Vector2>(Vector2.zero);
     private bool inDisplay = true;
     private Hand interactingHand;
     private bool isBeingGrabbed = false;
@@ -60,7 +61,9 @@ public class ModelTransformator : NetworkBehaviour {
             else if (isBeingRotated) { OneFingerRotation(); }
 
             if (inDisplay) {
-                transform.localPosition = Vector3.zero;
+                Vector3 screenOffset = this.screenOffset.Value;
+                screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, 0);
+                transform.position = displayCenter.transform.position + displayCenter.transform.TransformDirection(screenOffset);
             }
         }
     }
@@ -71,7 +74,9 @@ public class ModelTransformator : NetworkBehaviour {
 
         transform.position += delta;
 
-        float distance = Vector3.Distance(transform.position, displayCenter.transform.position);
+        Vector3 screenOffset = this.screenOffset.Value;
+        screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, 0);
+        float distance = Vector3.Distance(transform.position, displayCenter.transform.position + displayCenter.transform.TransformDirection(screenOffset));
         if (distance < releaseDistanceThreshold) {
             SetAlpha(distance / releaseDistanceThreshold);
         } else {
@@ -116,8 +121,10 @@ public class ModelTransformator : NetworkBehaviour {
     }
 
     public void PalmGrabModelOff() {
-        if (!CrossPlatformMediator.Instance.isServer) { 
-            float distance = Vector3.Distance(transform.position, displayCenter.transform.position);
+        if (!CrossPlatformMediator.Instance.isServer) {
+            Vector3 screenOffset = this.screenOffset.Value;
+            screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, 0);
+            float distance = Vector3.Distance(transform.position, displayCenter.transform.position + displayCenter.transform.TransformDirection(screenOffset));
             isBeingGrabbed = false;
 
             if (distance >= releaseDistanceThreshold) {
@@ -129,7 +136,9 @@ public class ModelTransformator : NetworkBehaviour {
     }
 
     private IEnumerator MoveToOrigin() {
-        Vector3 destination = displayCenter.transform.position;
+        Vector3 screenOffset = this.screenOffset.Value;
+        screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, 0);
+        Vector3 destination = displayCenter.transform.position + displayCenter.transform.TransformDirection(screenOffset);
         float distanceToOrigin;
 
         do {

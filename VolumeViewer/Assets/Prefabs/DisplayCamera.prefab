@@ -1193,6 +1193,7 @@ GameObject:
   - component: {fileID: 1906107416641504924}
   - component: {fileID: 4959470151963946720}
   - component: {fileID: 4982795654860263572}
+  - component: {fileID: -5084495790488258972}
   m_Layer: 0
   m_Name: DisplayCamera
   m_TagString: Untagged
@@ -1311,3 +1312,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   detachButton: {fileID: 2104624920}
   detachButtonText: {fileID: 414625044}
+--- !u!114 &-5084495790488258972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1634275933079748902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27f1b6f5cd66fb24288a05668ba9949d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  displayCamera: {fileID: 0}
