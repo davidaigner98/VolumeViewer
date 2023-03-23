@@ -86,7 +86,7 @@ public class Draggable : MonoBehaviour {
         }
 
         palmPosition /= touchCount;
-        Camera displayCamera = DisplayCameraCanvasManager.Instance.displayCamera;
+        Camera displayCamera = DisplayLocalizer.Instance.displayCamera;
         transform.position = displayCamera.ScreenToWorldPoint(new Vector3(palmPosition.x, palmPosition.y, transform.position.z));
     }
 

@@ -6,11 +6,8 @@ public class DisplayCameraCanvasManager : MonoBehaviour {
     public static DisplayCameraCanvasManager Instance { get; private set; }
     public Button detachButton;
     public TextMeshProUGUI detachButtonText;
-    public Camera displayCamera;
 
     private void Awake() {
-        displayCamera = GetComponent<Camera>();
-
         if (Instance != null && Instance != this) { Destroy(this); }
         else { Instance = this; }
     }
