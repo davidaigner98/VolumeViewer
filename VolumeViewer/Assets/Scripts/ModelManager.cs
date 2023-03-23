@@ -36,10 +36,18 @@ public class ModelManager : NetworkBehaviour {
         info.gameObject.name = info.modelInstanceId + "_" + info.modelName;
         modelInfos.Add(info);
         modelCount++;
+
+        if (modelCount == 1) {
+            SetSelectedModel(info);
+        }
     }
 
     public GameObject GetSelectedModel() {
-        return selectedModel.gameObject;
+        if (selectedModel != null) {
+            return selectedModel.gameObject;
+        } else {
+            return null;
+        }
     }
 
     private void SetSelectedModel(ModelInfo newSelectedModel) {
