@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
 public class ModelManager : NetworkBehaviour {
     public static ModelManager Instance { get; private set; }
     public List<GameObject> modelPrefabs = new List<GameObject>();
-    public NetworkVariable<GameObject[]> models = new NetworkVariable<GameObject[]>();
+    public NetworkVariable<string[]> models = new NetworkVariable<string[]>();
     public NetworkVariable<bool> attached = new NetworkVariable<bool>(true);
 
     private void Awake() {
@@ -24,13 +25,17 @@ public class ModelManager : NetworkBehaviour {
         ModelTransformator transformator = model.GetComponent<ModelTransformator>();
         model.GetComponent<NetworkObject>().Spawn();
 
-        List<GameObject> modelList = new List<GameObject>(models.Value);
-        modelList.Add(model);
+        ModelInfo info = model.GetComponent<ModelInfo>();
+        info.modelInstanceId = models.Value.Length;
+        model.name = info.modelInstanceId + "_" + info.modelName;
+
+        List<string> modelList = new List<string>(models.Value);
+        modelList.Add(model.name);
         models.Value = modelList.ToArray();
     }
 
     public GameObject GetSelectedModel() {
-        return models.Value[0];
+        return GameObject.Find(models.Value[0]);
     }
 
     [ServerRpc(RequireOwnership = false)]
