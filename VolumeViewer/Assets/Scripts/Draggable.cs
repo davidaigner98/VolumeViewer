@@ -5,7 +5,8 @@ using UnityEngine.InputSystem.LowLevel;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 public class Draggable : MonoBehaviour {
-    public float rotSpeed = 0.25f;
+    public float ofRotSpeed = 0.25f;
+    public float mfRotSpeed = 3.5f;
     public float moveSpeed = 0.006f;
     private InputAction mouseMoveAction;
     private InputAction mouseDragAction;
@@ -53,7 +54,7 @@ public class Draggable : MonoBehaviour {
     }
 
     private void MouseMovePerformed(InputAction.CallbackContext c) {
-        Vector2 rotation = Mouse.current.delta.ReadValue() * rotSpeed;
+        Vector2 rotation = Mouse.current.delta.ReadValue() * ofRotSpeed;
         
         transform.Rotate(Vector3.up, -rotation.x, Space.World);
         transform.Rotate(Vector3.right, -rotation.y, Space.World);
@@ -70,22 +71,23 @@ public class Draggable : MonoBehaviour {
     }
 
     private void OneFingerGesture() {
-        Vector2 rotation = Touchscreen.current.delta.ReadValue() * rotSpeed;
+        Vector2 rotation = Touchscreen.current.delta.ReadValue() * ofRotSpeed;
 
         transform.Rotate(Vector3.up, -rotation.x, Space.World);
         transform.Rotate(Vector3.right, -rotation.y, Space.World);
     }
 
     private void MultipleFingerPositioning(int touchCount) {
-        Vector2 totalDelta = Vector3.zero;
+        Vector2 palmPosition = Vector3.zero;
 
         for (int i = 0; i < touchCount; i++) {
             TouchControl currTouch = Touchscreen.current.touches[i];
-            totalDelta += currTouch.delta.ReadValue();
+            palmPosition += currTouch.position.ReadValue();
         }
 
-        totalDelta /= touchCount;
-        transform.position += new Vector3(-totalDelta.x, totalDelta.y, 0) * moveSpeed;
+        palmPosition /= touchCount;
+        Camera displayCamera = DisplayCameraCanvasManager.Instance.displayCamera;
+        transform.position = displayCamera.ScreenToWorldPoint(new Vector3(palmPosition.x, palmPosition.y, transform.position.z));
     }
 
     private void MultipleFingerRotating(int touchCount) {
@@ -100,7 +102,7 @@ public class Draggable : MonoBehaviour {
         Vector2 newVector = newPosition0 - newPosition1;
         Vector2 oldVector = oldPosition0 - oldPosition1;
 
-        float angle = Vector2.SignedAngle(newVector, oldVector);
+        float angle = Vector2.SignedAngle(newVector, oldVector) * mfRotSpeed;
         transform.Rotate(Vector3.forward, angle, Space.World);
     }
 
@@ -120,7 +122,6 @@ public class Draggable : MonoBehaviour {
             initialScaleDistance = Vector2.Distance(oldPosition0, oldPosition1);
         }
 
-        Debug.Log("Rescaling by factor "+(newDistance / initialScaleDistance));
         transform.localScale = initialScale * newDistance / initialScaleDistance;
     }
 
