@@ -8,7 +8,11 @@ public class ModelManager : NetworkBehaviour {
     public List<GameObject> modelPrefabs = new List<GameObject>();
     public List<ModelInfo> modelInfos = new List<ModelInfo>();
     private static int modelCount = 0;
+    private ModelInfo selectedModel;
     public NetworkVariable<bool> attached = new NetworkVariable<bool>(true);
+
+    public delegate void SelectionChangeAction();
+    public event SelectionChangeAction OnSelectionChanged;
 
     private void Awake() {
         if (Instance != null && Instance != this) { Destroy(this); } 
@@ -35,7 +39,12 @@ public class ModelManager : NetworkBehaviour {
     }
 
     public GameObject GetSelectedModel() {
-        return modelInfos[0].gameObject;
+        return selectedModel.gameObject;
+    }
+
+    private void SetSelectedModel(ModelInfo newSelectedModel) {
+        selectedModel = newSelectedModel;
+        OnSelectionChanged();
     }
 
     [ServerRpc(RequireOwnership = false)]

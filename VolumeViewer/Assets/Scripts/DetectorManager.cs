@@ -12,6 +12,10 @@ public class DetectorManager : MonoBehaviour {
         else { Instance = this; }
     }
 
+    private void Start() {
+        ModelManager.Instance.OnSelectionChanged += UpdateDetectors;
+    }
+
     public void UpdateDetectors() {
         if (!CrossPlatformMediator.Instance.isServer) {
             GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
