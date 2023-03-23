@@ -11,6 +11,8 @@ public class Draggable : MonoBehaviour {
     private InputAction mouseDragAction;
     private InputAction touchMoveAction;
     private InputAction touchDragAction;
+    private float initialScaleDistance = -1;
+    private Vector3 initialScale = Vector3.one;
 
     private void Start() {
         PlayerInput playerInput = GameObject.Find("DisplayCamera(Clone)").GetComponent<PlayerInput>();
@@ -39,6 +41,8 @@ public class Draggable : MonoBehaviour {
     }
 
     private void TouchDragStarted(InputAction.CallbackContext c) {
+        initialScaleDistance = -1;
+        initialScale = transform.localScale;
         touchMoveAction.performed += TouchMovePerformed;
         mouseDragAction.started -= MouseDragStarted;
     }
@@ -62,6 +66,7 @@ public class Draggable : MonoBehaviour {
         
         if (touchCount >= 3 && touchCount <= 5) { MultipleFingerPositioning(touchCount); }
         if (touchCount == 2) { MultipleFingerRotating(touchCount); }
+        if (touchCount == 2) { MultipleFingerScaling(touchCount); }
     }
 
     private void OneFingerGesture() {
@@ -97,6 +102,26 @@ public class Draggable : MonoBehaviour {
 
         float angle = Vector2.SignedAngle(newVector, oldVector);
         transform.Rotate(Vector3.forward, angle, Space.World);
+    }
+
+    private void MultipleFingerScaling(int touchCount) {
+        if(touchCount != 2) { return; }
+        
+        TouchControl touch0 = Touchscreen.current.touches[0];
+        TouchControl touch1 = Touchscreen.current.touches[1];
+
+        Vector2 newPosition0 = touch0.position.ReadValue();
+        Vector2 newPosition1 = touch1.position.ReadValue();
+        float newDistance = Vector2.Distance(newPosition0, newPosition1);
+
+        if (initialScaleDistance < 0) {
+            Vector2 oldPosition0 = newPosition0 - touch0.delta.ReadValue();
+            Vector2 oldPosition1 = newPosition1 - touch1.delta.ReadValue();
+            initialScaleDistance = Vector2.Distance(oldPosition0, oldPosition1);
+        }
+
+        Debug.Log("Rescaling by factor "+(newDistance / initialScaleDistance));
+        transform.localScale = initialScale * newDistance / initialScaleDistance;
     }
 
     private int GetNumbersOfTouches() {
