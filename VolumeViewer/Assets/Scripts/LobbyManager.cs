@@ -2,7 +2,7 @@ using UnityEngine;
 using Unity.Netcode;
 using TMPro;
 
-public class LobbyManagement : MonoBehaviour {
+public class LobbyManager : MonoBehaviour {
     public NetworkManager networkManager;
     public GameObject serviceProvider;
     public GameObject interactionManager;
@@ -10,46 +10,36 @@ public class LobbyManagement : MonoBehaviour {
     public GameObject displayProjection;
     public GameObject lightsource;
     public GameObject displayCamera;
-    public ModelTransformator modelTransformator;
-    public Vector3 offsetToModelTransform;
+    public Vector3 displayCameraPosition;
     public TextMeshProUGUI errorLabel;
-    private bool connected = false;
 
     public void StartServer() {
         networkManager.StartServer();
         GameObject newCamera = ReplaceXRRigWithDisplayCamera();
-        modelTransformator.currentModel.AddComponent<Draggable>().displayCamera = newCamera;        
-        modelTransformator.SetAlpha(1);
-        modelTransformator.currentModel.transform.SetParent(null);
-        modelTransformator.currentModel.transform.rotation = Quaternion.identity;
-        modelTransformator.isStarted = true;
-        modelTransformator.isServer = true;
-        modelTransformator.SetupServer();
+        CrossPlatformMediator.Instance.isServer = true;
+        ModelManager.Instance.SpawnDefaultModel();
 
         Destroy(displayProjection);
-        Destroy(modelTransformator);
         Destroy(gameObject);
     }
 
     public void StartClient() {
         errorLabel.enabled = false;
+        CrossPlatformMediator.Instance.isServer = false;
         networkManager.OnClientConnectedCallback += ClientConnectionSuccess;
         networkManager.OnClientDisconnectCallback += ClientConnectionFailure;
-        modelTransformator.SetupClient();
 
         networkManager.StartClient();
     }
 
     private void ClientConnectionSuccess(ulong clientId) {
-        connected = true;
-        modelTransformator.isStarted = true;
+        networkManager.OnClientDisconnectCallback -= ClientConnectionFailure;
+        DetectorManager.Instance.UpdateDetectors();
         Destroy(gameObject);
     }
 
     private void ClientConnectionFailure(ulong clientId) {
-        if (!connected) {
-            errorLabel.enabled = true;
-        }
+        errorLabel.enabled = true;
     }
 
     private GameObject ReplaceXRRigWithDisplayCamera() {
@@ -57,11 +47,10 @@ public class LobbyManagement : MonoBehaviour {
         Destroy(serviceProvider);
         Destroy(xrRig);
         GameObject newCamera = GameObject.Instantiate(displayCamera);
-        newCamera.transform.position = modelTransformator.currentModel.transform.position + offsetToModelTransform;
-        newCamera.transform.LookAt(modelTransformator.currentModel.transform);
+        newCamera.transform.position = displayCameraPosition;
+        newCamera.transform.LookAt(Vector3.zero);
         lightsource.transform.SetParent(newCamera.transform);
 
-        modelTransformator.currentModel.GetComponent<MeshRenderer>().enabled = true;
         return newCamera;
     }
 }

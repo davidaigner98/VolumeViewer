@@ -132,7 +132,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3557434566810426987, guid: 15d3b5cf5cea75344a4482323bc124a8, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3557434566810426987, guid: 15d3b5cf5cea75344a4482323bc124a8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -196,7 +196,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3557434566810426997, guid: 15d3b5cf5cea75344a4482323bc124a8, type: 3}
       propertyPath: m_Name
-      value: Service Provider (XR)
+      value: ServiceProvider(XR)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 15d3b5cf5cea75344a4482323bc124a8, type: 3}
@@ -214,8 +214,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 52710722}
+  - component: {fileID: 52710723}
   m_Layer: 0
-  m_Name: Detectors
+  m_Name: DetectorManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -238,8 +239,26 @@ Transform:
   - {fileID: 482933748}
   - {fileID: 1118736562}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &52710723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 52710721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 542f9e821a23dce45bd675d108b15e90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dependentPalmDetectors:
+  - {fileID: 2027376174}
+  - {fileID: 278777776}
+  dependentFingerDetectors:
+  - {fileID: 482933749}
+  - {fileID: 1118736563}
 --- !u!1 &59413026
 GameObject:
   m_ObjectHideFlags: 0
@@ -467,7 +486,7 @@ GameObject:
   - component: {fileID: 68563009}
   - component: {fileID: 68563008}
   m_Layer: 0
-  m_Name: Input Action Manager
+  m_Name: InputActionManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -500,7 +519,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &135434837
 GameObject:
@@ -646,7 +665,7 @@ Transform:
   m_Children:
   - {fileID: 511817009}
   m_Father: {fileID: 1163098839}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: -5, y: -4, z: 185}
 --- !u!1 &207694212
 GameObject:
@@ -839,7 +858,7 @@ MonoBehaviour:
   HandModel: {fileID: 1078999436}
   PointingType: 3
   PointingDirection: {x: 0, y: 0, z: 1}
-  TargetObject: {fileID: 543450653272222730}
+  TargetObject: {fileID: 52710722}
   OnAngle: 45
   OffAngle: 65
   ShowGizmos: 1
@@ -861,9 +880,9 @@ MonoBehaviour:
   OnDeactivate:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1617042984}
-        m_TargetAssemblyTypeName: ModelTransformator, Assembly-CSharp
-        m_MethodName: PalmGrabModelOff
+      - m_Target: {fileID: 52710723}
+        m_TargetAssemblyTypeName: DetectorManager, Assembly-CSharp
+        m_MethodName: PerformPalmGrabOff
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -898,9 +917,9 @@ MonoBehaviour:
   OnActivate:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1617042984}
-        m_TargetAssemblyTypeName: ModelTransformator, Assembly-CSharp
-        m_MethodName: PalmGrabModelOn
+      - m_Target: {fileID: 52710723}
+        m_TargetAssemblyTypeName: DetectorManager, Assembly-CSharp
+        m_MethodName: PerformPalmGrabOn
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1036,22 +1055,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &461622244
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919132149616932528}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2749096495
-  AlwaysReplicateAsRoot: 0
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 0
 --- !u!1 &482506408
 GameObject:
   m_ObjectHideFlags: 0
@@ -1092,13 +1095,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 482506408}
-  m_LocalRotation: {x: -0, y: -0.42261827, z: -0, w: 0.9063079}
-  m_LocalPosition: {x: -0.4, y: 0, z: -1.9}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &482506412
 MonoBehaviour:
@@ -1186,7 +1189,7 @@ MonoBehaviour:
   FingerName: 1
   PointingType: 3
   PointingDirection: {x: 0, y: 0, z: 1}
-  TargetObject: {fileID: 543450653272222730}
+  TargetObject: {fileID: 52710722}
   OnAngle: 25
   OffAngle: 45
   ShowGizmos: 1
@@ -1208,9 +1211,9 @@ MonoBehaviour:
   OnDeactivate:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1617042984}
-        m_TargetAssemblyTypeName: ModelTransformator, Assembly-CSharp
-        m_MethodName: OneFingerRotationOff
+      - m_Target: {fileID: 52710723}
+        m_TargetAssemblyTypeName: DetectorManager, Assembly-CSharp
+        m_MethodName: PerformOneFingerRotationOff
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1245,9 +1248,9 @@ MonoBehaviour:
   OnActivate:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1617042984}
-        m_TargetAssemblyTypeName: ModelTransformator, Assembly-CSharp
-        m_MethodName: OneFingerRotationOn
+      - m_Target: {fileID: 52710723}
+        m_TargetAssemblyTypeName: DetectorManager, Assembly-CSharp
+        m_MethodName: PerformOneFingerRotationOn
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1462,7 +1465,7 @@ Transform:
   m_Children:
   - {fileID: 1533616803}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &641364788
 PrefabInstance:
@@ -1473,11 +1476,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1148719034140820, guid: 33edf201cbc6fe645ad9078697cd2aea, type: 3}
       propertyPath: m_Name
-      value: Interaction Manager
+      value: InteractionManager
       objectReference: {fileID: 0}
     - target: {fileID: 4822923098130148, guid: 33edf201cbc6fe645ad9078697cd2aea, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4822923098130148, guid: 33edf201cbc6fe645ad9078697cd2aea, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1547,7 +1550,7 @@ GameObject:
   - component: {fileID: 705507995}
   - component: {fileID: 705507994}
   m_Layer: 0
-  m_Name: Directional Light
+  m_Name: DirectionalLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1628,7 +1631,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1 &815086059
 GameObject:
@@ -1726,6 +1729,68 @@ Transform:
   m_Children: []
   m_Father: {fileID: 511817009}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &832737245
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 832737248}
+  - component: {fileID: 832737246}
+  - component: {fileID: 832737247}
+  m_Layer: 0
+  m_Name: CrossPlatformMediator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &832737246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 832737245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 636421488
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+--- !u!114 &832737247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 832737245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62147560345dd2747aed79b851535e84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isServer: 0
+--- !u!4 &832737248
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 832737245}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &936605682
 GameObject:
@@ -3013,7 +3078,7 @@ MonoBehaviour:
   FingerName: 1
   PointingType: 3
   PointingDirection: {x: 0, y: 0, z: 1}
-  TargetObject: {fileID: 543450653272222730}
+  TargetObject: {fileID: 52710722}
   OnAngle: 25
   OffAngle: 45
   ShowGizmos: 1
@@ -3035,9 +3100,9 @@ MonoBehaviour:
   OnDeactivate:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1617042984}
-        m_TargetAssemblyTypeName: ModelTransformator, Assembly-CSharp
-        m_MethodName: OneFingerRotationOff
+      - m_Target: {fileID: 52710723}
+        m_TargetAssemblyTypeName: DetectorManager, Assembly-CSharp
+        m_MethodName: PerformOneFingerRotationOff
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3072,9 +3137,9 @@ MonoBehaviour:
   OnActivate:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1617042984}
-        m_TargetAssemblyTypeName: ModelTransformator, Assembly-CSharp
-        m_MethodName: OneFingerRotationOn
+      - m_Target: {fileID: 52710723}
+        m_TargetAssemblyTypeName: DetectorManager, Assembly-CSharp
+        m_MethodName: PerformOneFingerRotationOn
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3315,11 +3380,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 543450653272222730}
   - {fileID: 1452968027}
   - {fileID: 181144428}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1163098840
 MonoBehaviour:
@@ -3545,7 +3609,12 @@ MonoBehaviour:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 1354586662}
     PlayerPrefab: {fileID: 0}
-    NetworkPrefabs: []
+    NetworkPrefabs:
+    - Override: 0
+      Prefab: {fileID: 918468449551100734, guid: d589463f670647e4b8fb117440f43991, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
     TickRate: 30
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 0
@@ -3634,7 +3703,7 @@ Transform:
   m_Children:
   - {fileID: 1109841966}
   m_Father: {fileID: 1163098839}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 5, y: 17, z: 74}
 --- !u!114 &1452968028
 MonoBehaviour:
@@ -3701,7 +3770,7 @@ Transform:
   m_Children:
   - {fileID: 1289131267}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1458297433
 MonoBehaviour:
@@ -3837,8 +3906,7 @@ MonoBehaviour:
   displayProjection: {fileID: 1163098837}
   lightsource: {fileID: 705507993}
   displayCamera: {fileID: 1634275933079748902, guid: d1f8b1dc475ad6141afe3ec3058e4376, type: 3}
-  modelTransformator: {fileID: 1617042984}
-  offsetToModelTransform: {x: 0, y: 0, z: 2}
+  displayCameraPosition: {x: 0, y: 0, z: 3}
   errorLabel: {fileID: 1161662062}
 --- !u!1 &1617042983
 GameObject:
@@ -3849,7 +3917,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1617042985}
-  - component: {fileID: 1617042984}
+  - component: {fileID: 1617042987}
+  - component: {fileID: 1617042986}
   m_Layer: 0
   m_Name: ModelManager
   m_TagString: Untagged
@@ -3857,26 +3926,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1617042984
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1617042983}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d2e27d8ddfdfdf4dad4656de9d0be39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isServer: 0
-  isStarted: 0
-  currentModel: {fileID: 919132149616932528}
-  transparentShader: {fileID: 4800000, guid: 3bf3990958cb10b4f8212c83b1ef0f76, type: 3}
-  palmGrabDistance: 0.5
-  oneFingerRotationDistance: 0.25
-  releaseDistanceThreshold: 0.2
-  resetSpeed: 3
 --- !u!4 &1617042985
 Transform:
   m_ObjectHideFlags: 0
@@ -3890,8 +3939,41 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1617042986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1617042983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3484625852c6b6a4bb517cdec879564e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  modelPrefabs:
+  - {fileID: 918468449551100734, guid: d589463f670647e4b8fb117440f43991, type: 3}
+  models: []
+  attached:
+    m_InternalValue: 1
+--- !u!114 &1617042987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1617042983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 1706908420
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &1964519987
 GameObject:
   m_ObjectHideFlags: 0
@@ -4200,7 +4282,7 @@ MonoBehaviour:
   HandModel: {fileID: 1078999437}
   PointingType: 3
   PointingDirection: {x: 0, y: 0, z: 1}
-  TargetObject: {fileID: 543450653272222730}
+  TargetObject: {fileID: 52710722}
   OnAngle: 45
   OffAngle: 65
   ShowGizmos: 1
@@ -4222,9 +4304,9 @@ MonoBehaviour:
   OnDeactivate:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1617042984}
-        m_TargetAssemblyTypeName: ModelTransformator, Assembly-CSharp
-        m_MethodName: PalmGrabModelOff
+      - m_Target: {fileID: 52710723}
+        m_TargetAssemblyTypeName: DetectorManager, Assembly-CSharp
+        m_MethodName: PerformPalmGrabOff
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4259,9 +4341,9 @@ MonoBehaviour:
   OnActivate:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1617042984}
-        m_TargetAssemblyTypeName: ModelTransformator, Assembly-CSharp
-        m_MethodName: PalmGrabModelOn
+      - m_Target: {fileID: 52710723}
+        m_TargetAssemblyTypeName: DetectorManager, Assembly-CSharp
+        m_MethodName: PerformPalmGrabOn
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4280,148 +4362,3 @@ MonoBehaviour:
   AddAllSiblingDetectorsOnAwake: 1
   GateType: 0
   Negate: 0
---- !u!65 &469268152736146936
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919132149616932528}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.0000002, y: 1.0000001, z: 1}
-  m_Center: {x: 0.000000044703484, y: -0.000000029802322, z: -0.0000000018626451}
---- !u!4 &543450653272222730
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919132149616932528}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1163098839}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &919132149616932528
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 543450653272222730}
-  - component: {fileID: 3469287837121225647}
-  - component: {fileID: 1711813855474177893}
-  - component: {fileID: 469268152736146936}
-  - component: {fileID: 461622244}
-  - component: {fileID: 5850793975712156059}
-  - component: {fileID: 2758069468921362768}
-  m_Layer: 0
-  m_Name: ColoredCubeModel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!23 &1711813855474177893
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919132149616932528}
-  m_Enabled: 0
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: -382652638819485698, guid: e1310a09011e68248b57dbb2ad4582e7, type: 3}
-  - {fileID: -2505642851634945670, guid: e1310a09011e68248b57dbb2ad4582e7, type: 3}
-  - {fileID: -2653651044934150266, guid: e1310a09011e68248b57dbb2ad4582e7, type: 3}
-  - {fileID: -3258212522785882450, guid: e1310a09011e68248b57dbb2ad4582e7, type: 3}
-  - {fileID: 2926557707537190794, guid: e1310a09011e68248b57dbb2ad4582e7, type: 3}
-  - {fileID: 6748745313861066071, guid: e1310a09011e68248b57dbb2ad4582e7, type: 3}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2758069468921362768
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919132149616932528}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 504febbc3c9983f4c840c73c4ddfd29e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attached:
-    m_InternalValue: 1
---- !u!33 &3469287837121225647
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919132149616932528}
-  m_Mesh: {fileID: -5495902117074765545, guid: e1310a09011e68248b57dbb2ad4582e7, type: 3}
---- !u!114 &5850793975712156059
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919132149616932528}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SyncPositionX: 0
-  SyncPositionY: 0
-  SyncPositionZ: 0
-  SyncRotAngleX: 1
-  SyncRotAngleY: 1
-  SyncRotAngleZ: 1
-  SyncScaleX: 0
-  SyncScaleY: 0
-  SyncScaleZ: 0
-  PositionThreshold: 0.001
-  RotAngleThreshold: 0.01
-  ScaleThreshold: 0.01
-  InLocalSpace: 1
-  Interpolate: 1

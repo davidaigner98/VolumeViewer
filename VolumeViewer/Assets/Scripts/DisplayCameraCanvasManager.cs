@@ -1,36 +1,39 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DisplayCameraCanvasManager : MonoBehaviour {
-    private ModelTransformator transformator;
-    private ModelSynchronizer synchronizer;
+    public static DisplayCameraCanvasManager Instance { get; private set; }
+    public Button detachButton;
     public TextMeshProUGUI detachButtonText;
 
-    public void Start() {
-        transformator = GameObject.Find("ModelManager").GetComponent<ModelTransformator>();
-        synchronizer = transformator.currentModel.GetComponent<ModelSynchronizer>();
-        synchronizer.attached.OnValueChanged += RefreshAttachmentButtonText;
-        AlignCoronal();
+    private void Awake() {
+        if (Instance != null && Instance != this) { Destroy(this); }
+        else { Instance = this; }
+    }
+
+    private void Start() {
+        ModelManager.Instance.attached.OnValueChanged += RefreshAttachmentButtonText;
     }
 
     public void AlignCoronal() {
-        transformator.AlignCoronal();
+        ModelManager.Instance.GetSelectedModel().GetComponent<ModelTransformator>().AlignCoronal();
     }
 
     public void AlignSagittal() {
-        transformator.AlignSagittal();
+        ModelManager.Instance.GetSelectedModel().GetComponent<ModelTransformator>().AlignSagittal();
     }
 
     public void AlignAxial() {
-        transformator.AlignAxial();
+        ModelManager.Instance.GetSelectedModel().GetComponent<ModelTransformator>().AlignAxial();
     }
 
     public void ToggleAttachmentMode() {
-        synchronizer.attached.Value = !synchronizer.attached.Value;
+        ModelManager.Instance.attached.Value = !ModelManager.Instance.attached.Value;
     }
 
     private void RefreshAttachmentButtonText(bool prev, bool current) {
-        if (synchronizer.attached.Value) {
+        if (current) {
             detachButtonText.text = "Detach";
         } else {
             detachButtonText.text = "Attach";

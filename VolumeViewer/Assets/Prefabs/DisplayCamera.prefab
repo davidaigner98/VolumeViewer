@@ -1309,4 +1309,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82c1093770c419542b2cb1acb6a5e8f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  detachButton: {fileID: 2104624920}
   detachButtonText: {fileID: 414625044}

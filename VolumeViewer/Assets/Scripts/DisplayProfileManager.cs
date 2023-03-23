@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DisplayProfileManager : MonoBehaviour {
+    public static DisplayProfileManager Instance { get; private set; }
     public List<DisplayProfile> displayProfiles = new List<DisplayProfile>();
 
     public enum DisplayProfileEnum {
@@ -10,6 +11,11 @@ public class DisplayProfileManager : MonoBehaviour {
     };
 
     public DisplayProfileEnum currentProfile = DisplayProfileEnum.TouchTV;
+
+    private void Awake() {
+        if (Instance != null && Instance != this) { Destroy(this); }
+        else { Instance = this; }
+    }
 
     public DisplayProfile GetCurrentDisplayProfile() {
         foreach (DisplayProfile profile in displayProfiles) {
