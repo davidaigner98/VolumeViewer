@@ -42,6 +42,7 @@ public class ModelManager : NetworkBehaviour {
     }
 
     public void UnregisterModel(ModelInfo info) {
+        if (selectedModel.modelInstanceId == info.modelInstanceId) { SetSelectedModel(null); }
         modelInfos.Remove(info);
     }
 
