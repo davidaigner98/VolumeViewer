@@ -9,4 +9,8 @@ public class ModelInfo : MonoBehaviour {
     private void Start() {
         ModelManager.Instance.RegisterModel(this);
     }
+
+    private void OnDestroy() {
+        ModelManager.Instance.UnregisterModel(this);
+    }
 }

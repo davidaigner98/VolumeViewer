@@ -35,11 +35,14 @@ public class ModelManager : NetworkBehaviour {
         info.gameObject.name = info.modelInstanceId + "_" + info.modelName;
         modelInfos.Add(info);
         modelCount++;
-        ModelListUIManager.Instance.AddEntry(info.modelInstanceId, info.gameObject.name);
 
-        if (modelCount == 1) {
-            SetSelectedModel(info);
-        }
+        if (CrossPlatformMediator.Instance.isServer) { ModelListUIManager.Instance.AddEntry(info.modelInstanceId, info.gameObject.name); }
+
+        if (selectedModel == null) { SetSelectedModel(info); }
+    }
+
+    public void UnregisterModel(ModelInfo info) {
+        modelInfos.Remove(info);
     }
 
     public void DeleteModel(int instanceId) {
