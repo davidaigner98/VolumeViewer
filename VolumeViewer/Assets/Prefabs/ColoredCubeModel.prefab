@@ -135,7 +135,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   modelId: 0
-  modelInstsanceId: 0
+  modelInstanceId: 0
   modelName: ColoredCubeModel
   description: This model shows a colored cube
 --- !u!114 &-5993723681606187905
@@ -155,6 +155,11 @@ MonoBehaviour:
   oneFingerRotationDistance: 0.25
   releaseDistanceThreshold: 0.2
   resetSpeed: 3
+  screenOffset:
+    m_InternalValue: {x: 0, y: 0}
+  scaleOnDisplay:
+    m_InternalValue: 1
+  scaleFactor: 0.085
 --- !u!114 &5858151768860054549
 MonoBehaviour:
   m_ObjectHideFlags: 0
