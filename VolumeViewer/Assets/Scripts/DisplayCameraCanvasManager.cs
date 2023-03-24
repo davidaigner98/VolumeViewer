@@ -17,15 +17,21 @@ public class DisplayCameraCanvasManager : MonoBehaviour {
     }
 
     public void AlignCoronal() {
-        ModelManager.Instance.GetSelectedModel().GetComponent<ModelTransformator>().AlignCoronal();
+        GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
+
+        if (selectedModel != null) { selectedModel.GetComponent<ModelTransformator>().AlignCoronal(); }
     }
 
     public void AlignSagittal() {
-        ModelManager.Instance.GetSelectedModel().GetComponent<ModelTransformator>().AlignSagittal();
+        GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
+
+        if (selectedModel != null) { selectedModel.GetComponent<ModelTransformator>().AlignSagittal(); }
     }
 
     public void AlignAxial() {
-        ModelManager.Instance.GetSelectedModel().GetComponent<ModelTransformator>().AlignAxial();
+        GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
+
+        if (selectedModel != null) { selectedModel.GetComponent<ModelTransformator>().AlignAxial(); }
     }
 
     public void ToggleAttachmentMode() {

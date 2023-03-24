@@ -27,7 +27,6 @@ public class ModelManager : NetworkBehaviour {
 
     private void SpawnModel(GameObject modelPrefab) {
         GameObject model = Instantiate(modelPrefab);
-        ModelTransformator transformator = model.GetComponent<ModelTransformator>();
         model.GetComponent<NetworkObject>().Spawn();
     }
 
@@ -36,9 +35,21 @@ public class ModelManager : NetworkBehaviour {
         info.gameObject.name = info.modelInstanceId + "_" + info.modelName;
         modelInfos.Add(info);
         modelCount++;
+        ModelListUIManager.Instance.AddEntry(info.modelInstanceId, info.gameObject.name);
 
         if (modelCount == 1) {
             SetSelectedModel(info);
+        }
+    }
+
+    public void DeleteModel(int instanceId) {
+        foreach (ModelInfo info in modelInfos) {
+            if (info.modelInstanceId == instanceId) {
+                modelInfos.Remove(info);
+                Destroy(info.gameObject);
+
+                return;
+            }
         }
     }
 
