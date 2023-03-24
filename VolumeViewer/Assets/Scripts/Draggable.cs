@@ -33,6 +33,15 @@ public class Draggable : MonoBehaviour {
         touchDragAction.canceled += TouchDragCanceled;
     }
 
+    private void OnDestroy() {
+        mouseDragAction.started -= MouseDragStarted;
+        mouseDragAction.canceled -= MouseDragCanceled;
+        mouseMoveAction.performed -= MouseMovePerformed;
+        touchDragAction.started -= TouchDragStarted;
+        touchDragAction.canceled -= TouchDragCanceled;
+        touchMoveAction.performed -= TouchMovePerformed;
+    }
+
     private void MouseDragStarted(InputAction.CallbackContext c) {
         mouseMoveAction.performed += MouseMovePerformed;
     }
