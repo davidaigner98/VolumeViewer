@@ -1,6 +1,5 @@
 using System.Collections;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,32 +10,31 @@ public class ModelListUIManager : MonoBehaviour {
     public GameObject dummyEntry;
     private bool expanded = false;
     private Coroutine currCoroutine;
-    private float minX, maxX;
 
     private void Awake() {
         if (Instance != null && Instance != this) { Destroy(this); }
         else { Instance = this; }
-
-        minX = transform.localPosition.x;
-        maxX = minX + 250;
     }
 
     public void ToggleModelList() {
         expanded = !expanded;
 
         if (expanded) {
-            if (currCoroutine != null) { StopCoroutine(currCoroutine); }
-            currCoroutine = StartCoroutine(ShowModelListPanel());
-            expandButton.transform.Find("Icon").localScale = new Vector3(-1, 1, 1);
+            if (currCoroutine == null) {
+                currCoroutine = StartCoroutine(ShowModelListPanel());
+                expandButton.transform.Find("Icon").localScale = new Vector3(-1, 1, 1);
+            }
         } else {
-            if (currCoroutine != null) { StopCoroutine(currCoroutine); }
-            currCoroutine = StartCoroutine(HideModelListPanel());
-            expandButton.transform.Find("Icon").localScale = new Vector3(1, 1, 1);
+            if (currCoroutine == null) {
+                currCoroutine = StartCoroutine(HideModelListPanel());
+                expandButton.transform.Find("Icon").localScale = new Vector3(1, 1, 1);
+            }
         }
     }
 
     private IEnumerator ShowModelListPanel() {
         RectTransform rect = GetComponent<RectTransform>();
+        float maxX = rect.localPosition.x + 250;
 
         while (rect.localPosition.x < maxX) {
             rect.localPosition += new Vector3(Time.deltaTime * 600, 0, 0);
@@ -45,10 +43,12 @@ public class ModelListUIManager : MonoBehaviour {
         }
 
         rect.localPosition = new Vector3(maxX, rect.localPosition.y, rect.localPosition.z);
+        currCoroutine = null;
     }
 
     private IEnumerator HideModelListPanel() {
         RectTransform rect = GetComponent<RectTransform>();
+        float minX = rect.localPosition.x - 250;
 
         while (rect.localPosition.x > minX) {
             rect.localPosition -= new Vector3(Time.deltaTime * 600, 0, 0);
@@ -57,6 +57,7 @@ public class ModelListUIManager : MonoBehaviour {
         }
 
         rect.localPosition = new Vector3(minX, rect.localPosition.y, rect.localPosition.z);
+        currCoroutine = null;
     }
 
     public void AddEntry (int modelInstanceId, string modelName) {
