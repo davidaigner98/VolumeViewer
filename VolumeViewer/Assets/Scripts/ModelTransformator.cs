@@ -13,6 +13,8 @@ public class ModelTransformator : NetworkBehaviour {
     private GameObject displayCenter;
     private Transform displaySize;
     public NetworkVariable<Vector2> screenOffset = new NetworkVariable<Vector2>(Vector2.zero);
+    public NetworkVariable<float> scaleOnDisplay = new NetworkVariable<float>(1);
+    public float scaleFactor = 0.085f;
     private bool inDisplay = true;
     private Hand interactingHand;
     private bool isBeingGrabbed = false;
@@ -48,6 +50,7 @@ public class ModelTransformator : NetworkBehaviour {
         palmGrabDistance = transform.localScale.x * 2;
         oneFingerRotationDistance = transform.localScale.x * 3 / 2;
         releaseDistanceThreshold = transform.localScale.x * 4 / 5;
+        scaleOnDisplay.OnValueChanged += Rescale;
 
         transform.SetParent(displayCenter.transform);
         transform.localPosition = Vector3.zero;
@@ -186,8 +189,8 @@ public class ModelTransformator : NetworkBehaviour {
         }
     }
 
-    private void Rescale() {
-        transform.localScale = Vector3.one * displaySize.localScale.y / 3;
+    private void Rescale(float prev = 1.0f, float curr = 1.0f) {
+        transform.localScale = Vector3.one * scaleOnDisplay.Value * displaySize.localScale.y * scaleFactor;
     }
     
     public void OneFingerRotationOn(string hand) {

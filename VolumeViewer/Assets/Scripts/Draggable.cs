@@ -126,6 +126,7 @@ public class Draggable : MonoBehaviour {
         }
 
         transform.localScale = initialScale * newDistance / initialScaleDistance;
+        GetComponent<ModelTransformator>().scaleOnDisplay.Value = transform.localScale.x;
     }
 
     private int GetNumbersOfTouches() {
