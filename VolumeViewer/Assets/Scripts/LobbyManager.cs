@@ -12,6 +12,18 @@ public class LobbyManager : MonoBehaviour {
     public GameObject displayCamera;
     public Vector3 displayCameraPosition;
     public TextMeshProUGUI errorLabel;
+    public bool manualServerStart;
+    public bool manualClientStart;
+
+    private void Update() {
+        if (manualServerStart) {
+            manualServerStart = false;
+            StartServer();
+        } else if (manualClientStart) {
+            manualClientStart = false;
+            StartClient();
+        }
+    }
 
     public void StartServer() {
         networkManager.StartServer();
