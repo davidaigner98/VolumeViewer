@@ -158,7 +158,7 @@ MonoBehaviour:
     m_InternalValue: {x: 0, y: 0}
   scaleOnDisplay:
     m_InternalValue: 1
-  scaleFactor: 0.085
+  scaleFactor: 0.3
 --- !u!114 &844784276372826019
 MonoBehaviour:
   m_ObjectHideFlags: 0
