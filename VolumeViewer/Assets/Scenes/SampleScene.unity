@@ -3615,6 +3615,16 @@ MonoBehaviour:
       SourcePrefabToOverride: {fileID: 0}
       SourceHashToOverride: 0
       OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 2445960196229900246, guid: 12490b4182e142940ac366d7ad4f612f, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 2780622952699860421, guid: 82d8d422775fc4f4eac8b46f2d40d6dd, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
     TickRate: 30
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 0
@@ -3908,6 +3918,8 @@ MonoBehaviour:
   displayCamera: {fileID: 1634275933079748902, guid: d1f8b1dc475ad6141afe3ec3058e4376, type: 3}
   displayCameraPosition: {x: 0, y: 0, z: 3}
   errorLabel: {fileID: 1161662062}
+  manualServerStart: 0
+  manualClientStart: 0
 --- !u!1 &1617042983
 GameObject:
   m_ObjectHideFlags: 0
@@ -3955,6 +3967,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelPrefabs:
   - {fileID: 918468449551100734, guid: d589463f670647e4b8fb117440f43991, type: 3}
+  - {fileID: 2445960196229900246, guid: 12490b4182e142940ac366d7ad4f612f, type: 3}
+  - {fileID: 2780622952699860421, guid: 82d8d422775fc4f4eac8b46f2d40d6dd, type: 3}
   modelInfos: []
   attached:
     m_InternalValue: 1
