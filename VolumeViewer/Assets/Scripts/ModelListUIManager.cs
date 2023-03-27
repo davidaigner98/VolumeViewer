@@ -17,15 +17,13 @@ public class ModelListUIManager : MonoBehaviour {
     }
 
     public void ToggleModelList() {
-        expanded = !expanded;
+        if (currCoroutine == null) {
+            expanded = !expanded;
 
-        if (expanded) {
-            if (currCoroutine == null) {
+            if (expanded) {
                 currCoroutine = StartCoroutine(ShowModelListPanel());
                 expandButton.transform.Find("Icon").localScale = new Vector3(-1, 1, 1);
-            }
-        } else {
-            if (currCoroutine == null) {
+            } else {
                 currCoroutine = StartCoroutine(HideModelListPanel());
                 expandButton.transform.Find("Icon").localScale = new Vector3(1, 1, 1);
             }

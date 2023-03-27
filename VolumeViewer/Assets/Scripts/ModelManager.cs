@@ -25,7 +25,7 @@ public class ModelManager : NetworkBehaviour {
         }
     }
 
-    private void SpawnModel(GameObject modelPrefab) {
+    public void SpawnModel(GameObject modelPrefab) {
         GameObject model = Instantiate(modelPrefab);
         model.GetComponent<NetworkObject>().Spawn();
     }
@@ -42,7 +42,7 @@ public class ModelManager : NetworkBehaviour {
     }
 
     public void UnregisterModel(ModelInfo info) {
-        if (selectedModel.modelInstanceId == info.modelInstanceId) { SetSelectedModel(null); }
+        if (selectedModel != null && selectedModel.modelInstanceId == info.modelInstanceId) { SetSelectedModel(null); }
         modelInfos.Remove(info);
     }
 

@@ -136,8 +136,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelId: 0
   modelInstanceId: 0
-  modelName: ColoredCubeModel
+  modelName: ColoredCube
   description: This model shows a colored cube
+  icon: {fileID: 0}
 --- !u!114 &-5993723681606187905
 MonoBehaviour:
   m_ObjectHideFlags: 0

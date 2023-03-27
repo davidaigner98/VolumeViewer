@@ -3908,6 +3908,8 @@ MonoBehaviour:
   displayCamera: {fileID: 1634275933079748902, guid: d1f8b1dc475ad6141afe3ec3058e4376, type: 3}
   displayCameraPosition: {x: 0, y: 0, z: 3}
   errorLabel: {fileID: 1161662062}
+  manualServerStart: 0
+  manualClientStart: 0
 --- !u!1 &1617042983
 GameObject:
   m_ObjectHideFlags: 0
