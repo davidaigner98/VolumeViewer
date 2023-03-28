@@ -57,8 +57,10 @@ public class DisplayInputManager : MonoBehaviour {
     }
 
     private void TouchDragStarted(InputAction.CallbackContext c) {
+        GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
+        if (selectedModel != null) { initialScale = selectedModel.transform.localScale; }
         initialScaleDistance = -1;
-        initialScale = transform.localScale;
+        
         touchMoveAction.performed += TouchMovePerformed;
         mouseDragAction.started -= MouseDragStarted;
     }
