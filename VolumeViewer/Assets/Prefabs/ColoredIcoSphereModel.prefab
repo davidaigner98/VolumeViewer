@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6396818906830094369}
   - component: {fileID: 5963580643563713035}
   - component: {fileID: 5885022621359051704}
+  - component: {fileID: 8002326720613512595}
   m_Layer: 0
   m_Name: ColoredIcoSphereModel
   m_TagString: Untagged
@@ -170,3 +171,16 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 1
   Interpolate: 1
+--- !u!65 &8002326720613512595
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2780622952699860421}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.894425, y: 0.85064, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}

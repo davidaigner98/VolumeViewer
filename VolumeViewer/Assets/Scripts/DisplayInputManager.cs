@@ -49,6 +49,8 @@ public class DisplayInputManager : MonoBehaviour {
     }
 
     private void MouseDragStarted(InputAction.CallbackContext c) {
+        TrySelectModel(Mouse.current.position.ReadValue());
+
         mouseMoveAction.performed += MouseMovePerformed;
     }
 
@@ -57,6 +59,8 @@ public class DisplayInputManager : MonoBehaviour {
     }
 
     private void TouchDragStarted(InputAction.CallbackContext c) {
+        TrySelectModel(GetPalmPosition());
+
         GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
         if (selectedModel != null) { initialScale = selectedModel.transform.localScale; }
         initialScaleDistance = -1;
@@ -104,18 +108,14 @@ public class DisplayInputManager : MonoBehaviour {
         GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
         if (selectedModel == null) { return; }
 
-        Vector2 palmPosition = Vector3.zero;
+        Vector2 palmPosition = GetPalmPosition();
+        if (palmPosition.Equals(new Vector2(-1, -1))) { return; }
 
-        for (int i = 0; i < touchCount; i++) {
-            TouchControl currTouch = Touchscreen.current.touches[i];
-            palmPosition += currTouch.position.ReadValue();
-        }
-
-        palmPosition /= touchCount;
         Camera displayCamera = DisplayLocalizer.Instance.displayCamera;
-        selectedModel.transform.position = displayCamera.ScreenToWorldPoint(new Vector3(palmPosition.x, palmPosition.y, transform.position.z));
+        Vector3 palmPosition3D = new Vector3(palmPosition.x, palmPosition.y, displayCamera.transform.position.z);
+        selectedModel.transform.position = displayCamera.ScreenToWorldPoint(palmPosition3D);
 
-        Vector2 screenOffset = DisplayLocalizer.Instance.GetRelativeScreenOffset(gameObject);
+        Vector2 screenOffset = DisplayLocalizer.Instance.GetRelativeScreenOffset(selectedModel);
         selectedModel.GetComponent<ModelTransformator>().screenOffset.Value = screenOffset;
     }
 
@@ -164,12 +164,35 @@ public class DisplayInputManager : MonoBehaviour {
 
         for (int i = 0; i < Touchscreen.current.touches.Count; i++) {
             TouchState currTouch = Touchscreen.current.touches[i].ReadValue();
-
+            
             if (currTouch.phase != 0 && currTouch.phase != TouchPhase.Canceled && currTouch.phase != TouchPhase.Ended) {
                 touchCount++;
             }
         }
 
         return touchCount;
+    }
+
+    private Vector2 GetPalmPosition() {
+        Vector2 palmPosition = Vector3.zero;
+        int touchCount = GetNumbersOfTouches();
+        if (touchCount <= 0) { return new Vector2(-1, -1); }
+        
+        for (int i = 0; i < touchCount; i++) {
+            TouchControl currTouch = Touchscreen.current.touches[i];
+            palmPosition += currTouch.position.ReadValue();
+        }
+
+        palmPosition /= touchCount;
+        return palmPosition;
+    }
+
+    private void TrySelectModel(Vector2 screenCoordinates) {
+        if (screenCoordinates.Equals(new Vector2(-1, -1))) { return; }
+        
+        ModelInfo hitModel = DisplayLocalizer.Instance.FindModelByRaycast(screenCoordinates);
+        if (hitModel != null) {
+            ModelManager.Instance.SetSelectedModel(hitModel);
+        }
     }
 }
