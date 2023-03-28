@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
@@ -7,14 +8,16 @@ using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 public class DisplayInputManager : MonoBehaviour {
     public static DisplayInputManager Instance { get; private set; }
     public float ofRotSpeed = 0.25f;
-    public float mfRotSpeed = 3.5f;
+    public float mfRotSpeed = 0.7f;
     public float moveSpeed = 0.006f;
     private InputAction mouseMoveAction;
     private InputAction mouseDragAction;
     private InputAction touchMoveAction;
     private InputAction touchDragAction;
+    private Vector2 oldRotatingFingerDifference = Vector2.zero;
     private float initialScaleDistance = -1;
     private Vector3 initialScale = Vector3.one;
+    private bool first1FingerCall, first2FingerCall, first3To5FingerCall;
 
     private void Awake() {
         if (Instance != null && Instance != this) { Destroy(this); } 
@@ -59,12 +62,15 @@ public class DisplayInputManager : MonoBehaviour {
     }
 
     private void TouchDragStarted(InputAction.CallbackContext c) {
-        TrySelectModel(GetPalmPosition());
-
         GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
         if (selectedModel != null) { initialScale = selectedModel.transform.localScale; }
-        initialScaleDistance = -1;
         
+        initialScaleDistance = -1;
+        oldRotatingFingerDifference = Vector2.zero;
+        first1FingerCall = true;
+        first2FingerCall = true;
+        first3To5FingerCall = true;
+
         touchMoveAction.performed += TouchMovePerformed;
         mouseDragAction.started -= MouseDragStarted;
     }
@@ -87,11 +93,34 @@ public class DisplayInputManager : MonoBehaviour {
     private void TouchMovePerformed(InputAction.CallbackContext c) {
         int touchCount = GetNumbersOfTouches();
 
-        if (touchCount == 1) { OneFingerGesture(); }
-        
-        if (touchCount >= 3 && touchCount <= 5) { MultipleFingerPositioning(touchCount); }
-        if (touchCount == 2) { MultipleFingerRotating(touchCount); }
-        if (touchCount == 2) { MultipleFingerScaling(touchCount); }
+        if (touchCount == 1) {
+            if (first1FingerCall) {
+                TrySelectModel(GetPalmPosition());
+
+                first1FingerCall = false;
+            }
+
+            OneFingerGesture();
+        }
+
+        if (touchCount == 2) {
+            if (first2FingerCall) {
+                TrySelectModel(GetPalmPosition());
+                first2FingerCall = false;
+            }
+
+            MultipleFingerRotating(touchCount);
+            MultipleFingerScaling(touchCount);
+        }
+
+        if (touchCount >= 3 && touchCount <= 5) {
+            if (first3To5FingerCall) {
+                TrySelectModel(GetPalmPosition());
+                first3To5FingerCall = false;
+            }
+
+            MultipleFingerPositioning(touchCount);
+        }
     }
 
     private void OneFingerGesture() {
@@ -124,17 +153,18 @@ public class DisplayInputManager : MonoBehaviour {
         if (selectedModel == null) { return; }
         if (touchCount != 2) { return; }
         
-        TouchControl touch0 = Touchscreen.current.touches[0];
-        TouchControl touch1 = Touchscreen.current.touches[1];
-        Vector2 newPosition0 = touch0.position.ReadValue();
-        Vector2 newPosition1 = touch1.position.ReadValue();
-        Vector2 oldPosition0 = newPosition0 - touch0.delta.ReadValue();
-        Vector2 oldPosition1 = newPosition1 - touch1.delta.ReadValue();
+        TouchState touch0 = Touchscreen.current.touches[0].ReadValue();
+        TouchState touch1 = Touchscreen.current.touches[1].ReadValue();
+        Vector2 newPosition0 = touch0.position;
+        Vector2 newPosition1 = touch1.position;
         Vector2 newVector = newPosition0 - newPosition1;
-        Vector2 oldVector = oldPosition0 - oldPosition1;
 
-        float angle = Vector2.SignedAngle(newVector, oldVector) * mfRotSpeed;
-        selectedModel.transform.Rotate(Vector3.forward, angle, Space.World);
+        if (!oldRotatingFingerDifference.Equals(Vector2.zero)) {
+            float angle = Vector2.SignedAngle(newVector, oldRotatingFingerDifference) * mfRotSpeed;
+            selectedModel.transform.Rotate(Vector3.forward, angle, Space.World);
+        }
+
+        oldRotatingFingerDifference = newVector;
     }
 
     private void MultipleFingerScaling(int touchCount) {
@@ -161,11 +191,11 @@ public class DisplayInputManager : MonoBehaviour {
 
     private int GetNumbersOfTouches() {
         int touchCount = 0;
-
+        
         for (int i = 0; i < Touchscreen.current.touches.Count; i++) {
-            TouchState currTouch = Touchscreen.current.touches[i].ReadValue();
-            
-            if (currTouch.phase != 0 && currTouch.phase != TouchPhase.Canceled && currTouch.phase != TouchPhase.Ended) {
+            TouchPhase currPhase = Touchscreen.current.touches[i].phase.ReadValue();
+
+            if (currPhase != 0 && currPhase != TouchPhase.Canceled && currPhase != TouchPhase.Ended) {
                 touchCount++;
             }
         }
@@ -177,7 +207,7 @@ public class DisplayInputManager : MonoBehaviour {
         Vector2 palmPosition = Vector3.zero;
         int touchCount = GetNumbersOfTouches();
         if (touchCount <= 0) { return new Vector2(-1, -1); }
-        
+
         for (int i = 0; i < touchCount; i++) {
             TouchControl currTouch = Touchscreen.current.touches[i];
             palmPosition += currTouch.position.ReadValue();
@@ -193,6 +223,8 @@ public class DisplayInputManager : MonoBehaviour {
         ModelInfo hitModel = DisplayLocalizer.Instance.FindModelByRaycast(screenCoordinates);
         if (hitModel != null) {
             ModelManager.Instance.SetSelectedModel(hitModel);
+        } else {
+            ModelManager.Instance.SetSelectedModel(null);
         }
     }
 }

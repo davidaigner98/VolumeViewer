@@ -3603,8 +3603,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ofRotSpeed: 0.25
-  mfRotSpeed: 3.5
+  mfRotSpeed: 0.7
   moveSpeed: 0.006
+  touchPhases: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
 --- !u!4 &1321296409
 Transform:
   m_ObjectHideFlags: 0
