@@ -62,9 +62,6 @@ public class DisplayInputManager : MonoBehaviour {
     }
 
     private void TouchDragStarted(InputAction.CallbackContext c) {
-        GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
-        if (selectedModel != null) { initialScale = selectedModel.transform.localScale; }
-        
         initialScaleDistance = -1;
         oldRotatingFingerDifference = Vector2.zero;
         first1FingerCall = true;
@@ -182,6 +179,7 @@ public class DisplayInputManager : MonoBehaviour {
         if (initialScaleDistance < 0) {
             Vector2 oldPosition0 = newPosition0 - touch0.delta.ReadValue();
             Vector2 oldPosition1 = newPosition1 - touch1.delta.ReadValue();
+            initialScale = selectedModel.transform.localScale;
             initialScaleDistance = Vector2.Distance(oldPosition0, oldPosition1);
         }
 
