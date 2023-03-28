@@ -4,7 +4,8 @@ using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem.LowLevel;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
-public class Draggable : MonoBehaviour {
+public class DisplayInputManager : MonoBehaviour {
+    public static DisplayInputManager Instance { get; private set; }
     public float ofRotSpeed = 0.25f;
     public float mfRotSpeed = 3.5f;
     public float moveSpeed = 0.006f;
@@ -14,6 +15,11 @@ public class Draggable : MonoBehaviour {
     private InputAction touchDragAction;
     private float initialScaleDistance = -1;
     private Vector3 initialScale = Vector3.one;
+
+    private void Awake() {
+        if (Instance != null && Instance != this) { Destroy(this); } 
+        else { Instance = this; }
+    }
 
     private void Start() {
         PlayerInput playerInput = GameObject.Find("DisplayCamera(Clone)").GetComponent<PlayerInput>();
@@ -63,10 +69,13 @@ public class Draggable : MonoBehaviour {
     }
 
     private void MouseMovePerformed(InputAction.CallbackContext c) {
+        GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
+        if (selectedModel == null) { return; }
+        
         Vector2 rotation = Mouse.current.delta.ReadValue() * ofRotSpeed;
         
-        transform.Rotate(Vector3.up, -rotation.x, Space.World);
-        transform.Rotate(Vector3.right, -rotation.y, Space.World);
+        selectedModel.transform.Rotate(Vector3.up, -rotation.x, Space.World);
+        selectedModel.transform.Rotate(Vector3.right, -rotation.y, Space.World);
     }
 
     private void TouchMovePerformed(InputAction.CallbackContext c) {
@@ -80,13 +89,19 @@ public class Draggable : MonoBehaviour {
     }
 
     private void OneFingerGesture() {
+        GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
+        if (selectedModel == null) { return; }
+        
         Vector2 rotation = Touchscreen.current.delta.ReadValue() * ofRotSpeed;
 
-        transform.Rotate(Vector3.up, -rotation.x, Space.World);
-        transform.Rotate(Vector3.right, -rotation.y, Space.World);
+        selectedModel.transform.Rotate(Vector3.up, -rotation.x, Space.World);
+        selectedModel.transform.Rotate(Vector3.right, -rotation.y, Space.World);
     }
 
     private void MultipleFingerPositioning(int touchCount) {
+        GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
+        if (selectedModel == null) { return; }
+
         Vector2 palmPosition = Vector3.zero;
 
         for (int i = 0; i < touchCount; i++) {
@@ -96,14 +111,16 @@ public class Draggable : MonoBehaviour {
 
         palmPosition /= touchCount;
         Camera displayCamera = DisplayLocalizer.Instance.displayCamera;
-        transform.position = displayCamera.ScreenToWorldPoint(new Vector3(palmPosition.x, palmPosition.y, transform.position.z));
+        selectedModel.transform.position = displayCamera.ScreenToWorldPoint(new Vector3(palmPosition.x, palmPosition.y, transform.position.z));
 
         Vector2 screenOffset = DisplayLocalizer.Instance.GetRelativeScreenOffset(gameObject);
-        GetComponent<ModelTransformator>().screenOffset.Value = screenOffset;
+        selectedModel.GetComponent<ModelTransformator>().screenOffset.Value = screenOffset;
     }
 
     private void MultipleFingerRotating(int touchCount) {
-        if(touchCount != 2) { return; }
+        GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
+        if (selectedModel == null) { return; }
+        if (touchCount != 2) { return; }
         
         TouchControl touch0 = Touchscreen.current.touches[0];
         TouchControl touch1 = Touchscreen.current.touches[1];
@@ -115,11 +132,13 @@ public class Draggable : MonoBehaviour {
         Vector2 oldVector = oldPosition0 - oldPosition1;
 
         float angle = Vector2.SignedAngle(newVector, oldVector) * mfRotSpeed;
-        transform.Rotate(Vector3.forward, angle, Space.World);
+        selectedModel.transform.Rotate(Vector3.forward, angle, Space.World);
     }
 
     private void MultipleFingerScaling(int touchCount) {
-        if(touchCount != 2) { return; }
+        GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
+        if (selectedModel == null) { return; }
+        if (touchCount != 2) { return; }
         
         TouchControl touch0 = Touchscreen.current.touches[0];
         TouchControl touch1 = Touchscreen.current.touches[1];
@@ -134,8 +153,8 @@ public class Draggable : MonoBehaviour {
             initialScaleDistance = Vector2.Distance(oldPosition0, oldPosition1);
         }
 
-        transform.localScale = initialScale * newDistance / initialScaleDistance;
-        GetComponent<ModelTransformator>().scaleOnDisplay.Value = transform.localScale.x;
+        selectedModel.transform.localScale = initialScale * newDistance / initialScaleDistance;
+        selectedModel.GetComponent<ModelTransformator>().scaleOnDisplay.Value = transform.localScale.x;
     }
 
     private int GetNumbersOfTouches() {
