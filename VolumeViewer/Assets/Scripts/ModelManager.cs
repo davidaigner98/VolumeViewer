@@ -65,9 +65,9 @@ public class ModelManager : NetworkBehaviour {
         }
     }
 
-    private void SetSelectedModel(ModelInfo newSelectedModel) {
+    public void SetSelectedModel(ModelInfo newSelectedModel) {
         selectedModel = newSelectedModel;
-        OnSelectionChanged();
+        if (OnSelectionChanged != null) { OnSelectionChanged(); }
     }
 
     [ServerRpc(RequireOwnership = false)]

@@ -6,6 +6,7 @@ public class LobbyManager : MonoBehaviour {
     public NetworkManager networkManager;
     public GameObject serviceProvider;
     public GameObject interactionManager;
+    public GameObject displayInputManager;
     public GameObject xrRig;
     public GameObject displayProjection;
     public GameObject lightsource;
@@ -30,7 +31,9 @@ public class LobbyManager : MonoBehaviour {
         GameObject newCamera = ReplaceXRRigWithDisplayCamera();
         CrossPlatformMediator.Instance.isServer = true;
         ModelManager.Instance.SpawnDefaultModel();
-
+        
+        displayInputManager.SetActive(true);
+        Destroy(DetectorManager.Instance.gameObject);
         Destroy(displayProjection);
         Destroy(gameObject);
     }
@@ -42,11 +45,12 @@ public class LobbyManager : MonoBehaviour {
         networkManager.OnClientDisconnectCallback += ClientConnectionFailure;
 
         networkManager.StartClient();
+
+        Destroy(displayInputManager);
     }
 
     private void ClientConnectionSuccess(ulong clientId) {
         networkManager.OnClientDisconnectCallback -= ClientConnectionFailure;
-        DetectorManager.Instance.UpdateDetectors();
         Destroy(gameObject);
     }
 

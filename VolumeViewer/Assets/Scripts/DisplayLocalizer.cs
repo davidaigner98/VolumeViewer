@@ -17,4 +17,13 @@ public class DisplayLocalizer : MonoBehaviour {
         Vector3 modelPosition3D = displayCamera.WorldToViewportPoint(model.transform.position);
         return new Vector2(-modelPosition3D.x + 0.5f, modelPosition3D.y - 0.5f);
     }
+
+    public ModelInfo FindModelByRaycast(Vector2 screenCoordinates) {
+        RaycastHit hitInfo;
+        if (Physics.Raycast(displayCamera.ScreenPointToRay(screenCoordinates), out hitInfo)) {
+            return hitInfo.collider.gameObject.GetComponent<ModelInfo>();
+        }
+
+        return null;
+    }
 }
