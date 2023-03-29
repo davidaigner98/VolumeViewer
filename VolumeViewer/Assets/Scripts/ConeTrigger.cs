@@ -10,20 +10,22 @@ public class ConeTrigger : MonoBehaviour {
     private void Update() {
         if (side == HandSide.Left && Hands.Left != null) {
             transform.position = Hands.Left.PalmPosition;
-            transform.LookAt(Hands.Left.PalmarAxis());
+            transform.LookAt(Hands.Left.PalmPosition + Hands.Left.PalmarAxis());
         } else if (side == HandSide.Right && Hands.Right != null) {
             transform.position = Hands.Right.PalmPosition;
-            transform.LookAt(Hands.Right.PalmarAxis());
+            transform.LookAt(Hands.Right.PalmPosition + Hands.Right.PalmarAxis());
         }
     }
 
-    private void OnCollisionEnter(Collision collision) {
-        ModelInfo model = collision.collider.gameObject.GetComponent<ModelInfo>();
+    private void OnTriggerEnter(Collider collider) {
+        Debug.Log(collider.gameObject.name+" has entered!");
+        ModelInfo model = collider.gameObject.GetComponent<ModelInfo>();
         if (model) { includedModels.Add(model); }
     }
 
-    private void OnCollisionExit(Collision collision) {
-        ModelInfo model = collision.collider.gameObject.GetComponent<ModelInfo>();
+    private void OnTriggerExit(Collider collider) {
+        Debug.Log(collider.gameObject.name + " has exited!");
+        ModelInfo model = collider.gameObject.GetComponent<ModelInfo>();
         if (model && includedModels.Contains(model)) { includedModels.Remove(model); }
     }
 
