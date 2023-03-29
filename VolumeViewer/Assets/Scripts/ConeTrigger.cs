@@ -18,13 +18,11 @@ public class ConeTrigger : MonoBehaviour {
     }
 
     private void OnTriggerEnter(Collider collider) {
-        Debug.Log(collider.gameObject.name+" has entered!");
         ModelInfo model = collider.gameObject.GetComponent<ModelInfo>();
         if (model) { includedModels.Add(model); }
     }
 
     private void OnTriggerExit(Collider collider) {
-        Debug.Log(collider.gameObject.name + " has exited!");
         ModelInfo model = collider.gameObject.GetComponent<ModelInfo>();
         if (model && includedModels.Contains(model)) { includedModels.Remove(model); }
     }
