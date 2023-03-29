@@ -50,7 +50,6 @@ public class LobbyManager : MonoBehaviour {
 
     private void ClientConnectionSuccess(ulong clientId) {
         networkManager.OnClientDisconnectCallback -= ClientConnectionFailure;
-        DetectorManager.Instance.UpdateDetectors();
         Destroy(gameObject);
     }
 

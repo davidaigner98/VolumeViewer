@@ -14,32 +14,7 @@ public class DetectorManager : MonoBehaviour {
     }
 
     private void Start() {
-        ModelManager.Instance.OnSelectionChanged += UpdateDetectors;
-    }
-
-    public void UpdateDetectors() {
-        if (!CrossPlatformMediator.Instance.isServer) {
-            GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
-            if (selectedModel != null) {
-                foreach (PalmDirectionDetector detector in dependentPalmDetectors) {
-                    detector.gameObject.SetActive(true);
-                    detector.TargetObject = selectedModel.transform;
-                }
-
-                foreach (FingerDirectionDetector detector in dependentFingerDetectors) {
-                    detector.gameObject.SetActive(true);
-                    detector.TargetObject = selectedModel.transform;
-                }
-            } else {
-                foreach (PalmDirectionDetector detector in dependentPalmDetectors) {
-                    detector.gameObject.SetActive(false);
-                }
-
-                foreach (FingerDirectionDetector detector in dependentFingerDetectors) {
-                    detector.gameObject.SetActive(false);
-                }
-            }
-        }
+        
     }
 
     public void PerformPalmGrabOn(string hand) {
