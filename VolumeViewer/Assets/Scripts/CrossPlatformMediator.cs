@@ -4,6 +4,7 @@ using UnityEngine;
 public class CrossPlatformMediator : NetworkBehaviour{
     public static CrossPlatformMediator Instance { get; private set; }
     public bool isServer;
+    public bool isInLobby = true;
     public NetworkVariable<Vector3> xrCameraOffset = new NetworkVariable<Vector3>(Vector3.zero);
 
     void Awake() {
