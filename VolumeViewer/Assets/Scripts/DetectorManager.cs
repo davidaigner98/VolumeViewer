@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class DetectorManager : MonoBehaviour {
     public static DetectorManager Instance { get; private set; }
-    public List<PalmDirectionDetector> dependentPalmDetectors = new List<PalmDirectionDetector>();
-    public List<FingerDirectionDetector> dependentFingerDetectors = new List<FingerDirectionDetector>();
+    public ConeTrigger leftConeTrigger, rightConeTrigger;
 
     private void Awake() {
         if (Instance != null && Instance != this) { Destroy(this); }
@@ -14,18 +13,19 @@ public class DetectorManager : MonoBehaviour {
     }
 
     private void Start() {
-        
+        if (!CrossPlatformMediator.Instance.isServer) {
+            //leftConeTrigger.gameObject.SetActive(true);
+            //rightConeTrigger.gameObject.SetActive(true);
+        }
     }
 
     public void PerformPalmGrabOn(string hand) {
         if (!CrossPlatformMediator.Instance.isServer) {
-            Hand interactingHand = Hands.Right;
-            if (hand.Equals("left")) { interactingHand = Hands.Left; }
-            else if (hand.Equals("right")) { interactingHand = Hands.Right; }
+            ConeTrigger coneTrigger = rightConeTrigger;
+            if (hand.Equals("left")) { coneTrigger = leftConeTrigger; }
+            else if (hand.Equals("right")) { coneTrigger = rightConeTrigger; }
 
-            Ray palmRay = new Ray(interactingHand.PalmPosition, interactingHand.PalmarAxis());
-            ModelInfo grabbedModel = GetModelByRaycast(palmRay);
-
+            ModelInfo grabbedModel = coneTrigger.GetSelectedModel();
             if (grabbedModel != null) {
                 ModelManager.Instance.SetSelectedModel(grabbedModel);
                 grabbedModel.gameObject.GetComponent<ModelTransformator>().PalmGrabModelOn(hand);

@@ -33,6 +33,7 @@ public class LobbyManager : MonoBehaviour {
         ModelManager.Instance.SpawnDefaultModel();
         
         displayInputManager.SetActive(true);
+        Destroy(DetectorManager.Instance.gameObject);
         Destroy(displayProjection);
         Destroy(gameObject);
     }
