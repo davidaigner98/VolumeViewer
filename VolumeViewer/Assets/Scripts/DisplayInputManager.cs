@@ -184,7 +184,7 @@ public class DisplayInputManager : MonoBehaviour {
         }
 
         selectedModel.transform.localScale = initialScale * newDistance / initialScaleDistance;
-        selectedModel.GetComponent<ModelTransformator>().scaleOnDisplay.Value = transform.localScale.x;
+        selectedModel.GetComponent<ModelTransformator>().scaleOnDisplay.Value = selectedModel.transform.localScale.x;
     }
 
     private int GetNumbersOfTouches() {
