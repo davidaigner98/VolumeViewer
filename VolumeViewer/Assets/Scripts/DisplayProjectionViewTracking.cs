@@ -5,8 +5,9 @@ public class DisplayProjectionViewTracking : MonoBehaviour {
 
     void Update() {
         if (!CrossPlatformMediator.Instance.isServer && !CrossPlatformMediator.Instance.isInLobby) {
-            Vector3 displayCenterPosition = DisplayProfileManager.Instance.GetCurrentDisplayCenter().transform.position;
-            Vector3 cameraOffset = xrCamera.transform.position - displayCenterPosition;
+            GameObject displayCenter = DisplayProfileManager.Instance.GetCurrentDisplayCenter();
+            Vector3 cameraOffset = xrCamera.transform.position - displayCenter.transform.position;
+            cameraOffset = displayCenter.transform.TransformDirection(cameraOffset);
 
             CrossPlatformMediator.Instance.SynchronizeCameraPositionServerRpc(cameraOffset);
         }
