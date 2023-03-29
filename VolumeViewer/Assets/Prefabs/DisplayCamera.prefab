@@ -3671,6 +3671,7 @@ GameObject:
   - component: {fileID: 4959470151963946720}
   - component: {fileID: 4982795654860263572}
   - component: {fileID: -5084495790488258972}
+  - component: {fileID: -2479674824698446719}
   m_Layer: 0
   m_Name: DisplayCamera
   m_TagString: Untagged
@@ -3802,3 +3803,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   displayCamera: {fileID: 0}
+--- !u!114 &-2479674824698446719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1634275933079748902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 056dd5e9fb470054d948b572430931d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
