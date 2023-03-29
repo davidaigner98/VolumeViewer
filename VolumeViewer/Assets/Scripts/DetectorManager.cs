@@ -1,3 +1,4 @@
+using Leap;
 using Leap.Unity;
 using System.Collections.Generic;
 using UnityEngine;
@@ -43,9 +44,16 @@ public class DetectorManager : MonoBehaviour {
 
     public void PerformPalmGrabOn(string hand) {
         if (!CrossPlatformMediator.Instance.isServer) {
-            GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
-            if (selectedModel != null) {
-                selectedModel.GetComponent<ModelTransformator>().PalmGrabModelOn(hand);
+            Hand interactingHand = Hands.Right;
+            if (hand.Equals("left")) { interactingHand = Hands.Left; }
+            else if (hand.Equals("right")) { interactingHand = Hands.Right; }
+
+            Ray palmRay = new Ray(interactingHand.PalmPosition, interactingHand.PalmarAxis());
+            ModelInfo grabbedModel = GetModelByRaycast(palmRay);
+
+            if (grabbedModel != null) {
+                ModelManager.Instance.SetSelectedModel(grabbedModel);
+                grabbedModel.gameObject.GetComponent<ModelTransformator>().PalmGrabModelOn(hand);
             }
         }
     }
@@ -61,9 +69,16 @@ public class DetectorManager : MonoBehaviour {
 
     public void PerformOneFingerRotationOn(string hand) {
         if (!CrossPlatformMediator.Instance.isServer) {
-            GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
-            if (selectedModel != null) {
-                selectedModel.GetComponent<ModelTransformator>().OneFingerRotationOn(hand);
+            Hand interactingHand = Hands.Right;
+            if (hand.Equals("left")) { interactingHand = Hands.Left; }
+            else if (hand.Equals("right")) { interactingHand = Hands.Right; }
+
+            Ray indexRay = new Ray(interactingHand.GetIndex().TipPosition, interactingHand.GetIndex().Direction);
+            ModelInfo grabbedModel = GetModelByRaycast(indexRay);
+
+            if (grabbedModel != null) {
+                ModelManager.Instance.SetSelectedModel(grabbedModel);
+                grabbedModel.gameObject.GetComponent<ModelTransformator>().OneFingerRotationOn(hand);
             }
         }
     }
@@ -75,5 +90,14 @@ public class DetectorManager : MonoBehaviour {
                 selectedModel.GetComponent<ModelTransformator>().OneFingerRotationOff();
             }
         }
+    }
+
+    private ModelInfo GetModelByRaycast(Ray ray) {
+        RaycastHit hitInfo;
+        if (Physics.Raycast(ray, out hitInfo)) {
+            return hitInfo.collider.gameObject.GetComponent<ModelInfo>();
+        }
+
+        return null;
     }
 }

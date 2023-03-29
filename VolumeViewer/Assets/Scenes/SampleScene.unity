@@ -254,11 +254,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dependentPalmDetectors:
-  - {fileID: 2027376174}
-  - {fileID: 278777776}
+  - {fileID: 0}
+  - {fileID: 0}
   dependentFingerDetectors:
-  - {fileID: 482933749}
-  - {fileID: 1118736563}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1 &59413026
 GameObject:
   m_ObjectHideFlags: 0
@@ -811,9 +811,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 278777775}
-  - component: {fileID: 278777778}
   - component: {fileID: 278777777}
-  - component: {fileID: 278777776}
   m_Layer: 0
   m_Name: PalmGrabDetectorRight
   m_TagString: Untagged
@@ -836,32 +834,6 @@ Transform:
   m_Father: {fileID: 52710722}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &278777776
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 278777774}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c057ae8396c1146c98a146b81dcc5870, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnActivate:
-    m_PersistentCalls:
-      m_Calls: []
-  OnDeactivate:
-    m_PersistentCalls:
-      m_Calls: []
-  Period: 0.1
-  HandModel: {fileID: 1078999436}
-  PointingType: 3
-  PointingDirection: {x: 0, y: 0, z: 1}
-  TargetObject: {fileID: 52710722}
-  OnAngle: 45
-  OffAngle: 65
-  ShowGizmos: 1
 --- !u!114 &278777777
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -876,7 +848,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OnActivate:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 52710723}
+        m_TargetAssemblyTypeName: DetectorManager, Assembly-CSharp
+        m_MethodName: PerformPalmGrabOn
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: right
+          m_BoolArgument: 0
+        m_CallState: 2
   OnDeactivate:
     m_PersistentCalls:
       m_Calls:
@@ -902,42 +886,6 @@ MonoBehaviour:
   MinimumExtendedCount: 0
   MaximumExtendedCount: 0
   ShowGizmos: 1
---- !u!114 &278777778
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 278777774}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2474ece6beb54f10ac1437338b3cb89, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnActivate:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 52710723}
-        m_TargetAssemblyTypeName: DetectorManager, Assembly-CSharp
-        m_MethodName: PerformPalmGrabOn
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: right
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnDeactivate:
-    m_PersistentCalls:
-      m_Calls: []
-  Detectors:
-  - {fileID: 278777777}
-  - {fileID: 278777776}
-  AddAllSiblingDetectorsOnAwake: 1
-  GateType: 0
-  Negate: 0
 --- !u!1 &339050689
 GameObject:
   m_ObjectHideFlags: 0
@@ -1141,9 +1089,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 482933748}
-  - component: {fileID: 482933751}
   - component: {fileID: 482933750}
-  - component: {fileID: 482933749}
   m_Layer: 0
   m_Name: OneFingerRotationDetectorLeft
   m_TagString: Untagged
@@ -1166,33 +1112,6 @@ Transform:
   m_Father: {fileID: 52710722}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &482933749
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 482933747}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b77174815b904166ad047382f534c36, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnActivate:
-    m_PersistentCalls:
-      m_Calls: []
-  OnDeactivate:
-    m_PersistentCalls:
-      m_Calls: []
-  Period: 0.04
-  HandModel: {fileID: 1078999437}
-  FingerName: 1
-  PointingType: 3
-  PointingDirection: {x: 0, y: 0, z: 1}
-  TargetObject: {fileID: 52710722}
-  OnAngle: 25
-  OffAngle: 45
-  ShowGizmos: 1
 --- !u!114 &482933750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1207,7 +1126,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OnActivate:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 52710723}
+        m_TargetAssemblyTypeName: DetectorManager, Assembly-CSharp
+        m_MethodName: PerformOneFingerRotationOn
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: left
+          m_BoolArgument: 0
+        m_CallState: 2
   OnDeactivate:
     m_PersistentCalls:
       m_Calls:
@@ -1233,42 +1164,6 @@ MonoBehaviour:
   MinimumExtendedCount: 1
   MaximumExtendedCount: 1
   ShowGizmos: 1
---- !u!114 &482933751
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 482933747}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2474ece6beb54f10ac1437338b3cb89, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnActivate:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 52710723}
-        m_TargetAssemblyTypeName: DetectorManager, Assembly-CSharp
-        m_MethodName: PerformOneFingerRotationOn
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: left
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnDeactivate:
-    m_PersistentCalls:
-      m_Calls: []
-  Detectors:
-  - {fileID: 482933750}
-  - {fileID: 482933749}
-  AddAllSiblingDetectorsOnAwake: 1
-  GateType: 0
-  Negate: 0
 --- !u!1 &511817008
 GameObject:
   m_ObjectHideFlags: 0
@@ -3030,9 +2925,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1118736562}
-  - component: {fileID: 1118736565}
   - component: {fileID: 1118736564}
-  - component: {fileID: 1118736563}
   m_Layer: 0
   m_Name: OneFingerRotationDetectorRight
   m_TagString: Untagged
@@ -3055,33 +2948,6 @@ Transform:
   m_Father: {fileID: 52710722}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1118736563
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1118736561}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b77174815b904166ad047382f534c36, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnActivate:
-    m_PersistentCalls:
-      m_Calls: []
-  OnDeactivate:
-    m_PersistentCalls:
-      m_Calls: []
-  Period: 0.04
-  HandModel: {fileID: 1078999436}
-  FingerName: 1
-  PointingType: 3
-  PointingDirection: {x: 0, y: 0, z: 1}
-  TargetObject: {fileID: 52710722}
-  OnAngle: 25
-  OffAngle: 45
-  ShowGizmos: 1
 --- !u!114 &1118736564
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3096,7 +2962,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OnActivate:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 52710723}
+        m_TargetAssemblyTypeName: DetectorManager, Assembly-CSharp
+        m_MethodName: PerformOneFingerRotationOn
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: right
+          m_BoolArgument: 0
+        m_CallState: 2
   OnDeactivate:
     m_PersistentCalls:
       m_Calls:
@@ -3122,42 +3000,6 @@ MonoBehaviour:
   MinimumExtendedCount: 1
   MaximumExtendedCount: 1
   ShowGizmos: 1
---- !u!114 &1118736565
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1118736561}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2474ece6beb54f10ac1437338b3cb89, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnActivate:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 52710723}
-        m_TargetAssemblyTypeName: DetectorManager, Assembly-CSharp
-        m_MethodName: PerformOneFingerRotationOn
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: right
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnDeactivate:
-    m_PersistentCalls:
-      m_Calls: []
-  Detectors:
-  - {fileID: 1118736564}
-  - {fileID: 1118736563}
-  AddAllSiblingDetectorsOnAwake: 1
-  GateType: 0
-  Negate: 0
 --- !u!1 &1161662060
 GameObject:
   m_ObjectHideFlags: 0
@@ -3605,7 +3447,6 @@ MonoBehaviour:
   ofRotSpeed: 0.25
   mfRotSpeed: 0.7
   moveSpeed: 0.006
-  touchPhases: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
 --- !u!4 &1321296409
 Transform:
   m_ObjectHideFlags: 0
@@ -4298,9 +4139,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2027376173}
-  - component: {fileID: 2027376176}
   - component: {fileID: 2027376175}
-  - component: {fileID: 2027376174}
   m_Layer: 0
   m_Name: PalmGrabDetectorLeft
   m_TagString: Untagged
@@ -4323,32 +4162,6 @@ Transform:
   m_Father: {fileID: 52710722}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2027376174
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2027376172}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c057ae8396c1146c98a146b81dcc5870, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnActivate:
-    m_PersistentCalls:
-      m_Calls: []
-  OnDeactivate:
-    m_PersistentCalls:
-      m_Calls: []
-  Period: 0.1
-  HandModel: {fileID: 1078999437}
-  PointingType: 3
-  PointingDirection: {x: 0, y: 0, z: 1}
-  TargetObject: {fileID: 52710722}
-  OnAngle: 45
-  OffAngle: 65
-  ShowGizmos: 1
 --- !u!114 &2027376175
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4363,7 +4176,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OnActivate:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 52710723}
+        m_TargetAssemblyTypeName: DetectorManager, Assembly-CSharp
+        m_MethodName: PerformPalmGrabOn
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: left
+          m_BoolArgument: 0
+        m_CallState: 2
   OnDeactivate:
     m_PersistentCalls:
       m_Calls:
@@ -4389,39 +4214,3 @@ MonoBehaviour:
   MinimumExtendedCount: 0
   MaximumExtendedCount: 0
   ShowGizmos: 1
---- !u!114 &2027376176
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2027376172}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2474ece6beb54f10ac1437338b3cb89, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnActivate:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 52710723}
-        m_TargetAssemblyTypeName: DetectorManager, Assembly-CSharp
-        m_MethodName: PerformPalmGrabOn
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: left
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnDeactivate:
-    m_PersistentCalls:
-      m_Calls: []
-  Detectors:
-  - {fileID: 2027376175}
-  - {fileID: 2027376174}
-  AddAllSiblingDetectorsOnAwake: 1
-  GateType: 0
-  Negate: 0
