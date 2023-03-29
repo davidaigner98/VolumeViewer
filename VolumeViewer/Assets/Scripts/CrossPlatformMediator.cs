@@ -4,14 +4,10 @@ using UnityEngine;
 public class CrossPlatformMediator : NetworkBehaviour{
     public static CrossPlatformMediator Instance { get; private set; }
     public bool isServer;
-    public bool isInLobby = true;
-    public NetworkVariable<Vector3> xrCameraOffset = new NetworkVariable<Vector3>(Vector3.zero);
 
     void Awake() {
         if (Instance != null && Instance != this) { Destroy(this); }
         else { Instance = this; }
-
-        xrCameraOffset.OnValueChanged += SynchronizeCameraPosition;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -21,9 +17,10 @@ public class CrossPlatformMediator : NetworkBehaviour{
         }
     }
 
-    private void SynchronizeCameraPosition(Vector3 prev, Vector3 curr) {
+    [ServerRpc(RequireOwnership = false)]
+    public void SynchronizeCameraPositionServerRpc(Vector3 cameraOffset) {
         if (isServer) {
-            DisplayCameraPositioning.Instance.SynchronizeDisplayCameraPosition(curr);
+            DisplayCameraPositioning.Instance.SynchronizeDisplayCameraPosition(cameraOffset);
         }
     }
 }
