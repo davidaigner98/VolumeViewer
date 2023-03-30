@@ -19,9 +19,9 @@ public class CrossPlatformMediator : NetworkBehaviour{
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void SynchronizeCameraPositionServerRpc(Vector3 cameraOffset, Quaternion cameraOrientation) {
+    public void SynchronizeCameraPositionServerRpc(Vector3 cameraOffset) {
         if (isServer && !isInLobby) {
-            DisplayCameraPositioning.Instance.SynchronizeDisplayCameraPosition(cameraOffset, cameraOrientation);
+            DisplayCameraPositioning.Instance.SynchronizeDisplayCameraPosition(cameraOffset);
         }
     }
 }

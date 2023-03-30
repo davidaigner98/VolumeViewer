@@ -1,4 +1,3 @@
-using Leap.Unity;
 using UnityEngine;
 
 public class DisplayProjectionViewTracking : MonoBehaviour {
@@ -13,10 +12,7 @@ public class DisplayProjectionViewTracking : MonoBehaviour {
                 cameraOffset = displayCenter.transform.InverseTransformDirection(cameraOffset);
                 cameraOffset /= DisplayProfileManager.Instance.GetCurrentDisplaySize().transform.localScale.x;
 
-                Quaternion orientation = xrCamera.transform.rotation;
-                orientation = displayCenter.transform.InverseTransformRotation(orientation);
-
-                CrossPlatformMediator.Instance.SynchronizeCameraPositionServerRpc(cameraOffset, orientation);
+                CrossPlatformMediator.Instance.SynchronizeCameraPositionServerRpc(cameraOffset);
                 time = 0;
             }
 
