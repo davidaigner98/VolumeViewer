@@ -1782,8 +1782,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isServer: 0
-  xrCameraOffset:
-    m_InternalValue: {x: 0, y: 0, z: 0}
+  isInLobby: 1
 --- !u!4 &832737248
 Transform:
   m_ObjectHideFlags: 0
