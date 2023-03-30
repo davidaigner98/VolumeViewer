@@ -20,11 +20,12 @@ public class DisplayCameraPositioning : MonoBehaviour {
         if (drawCage) { DrawCage(); }
     }
 
-    public void SynchronizeDisplayCameraPosition(Vector3 realPosition) {
+    public void SynchronizeDisplayCameraPosition(Vector3 realPosition, Quaternion orientation) {
         realPosition *= cageSize.x;
         realPosition += trackingOffset;
         transform.position = realPosition;
-        transform.LookAt(new Vector3(0, 0, -500));
+        //transform.LookAt(new Vector3(0, 0, -500));
+        transform.rotation = orientation;
     }
 
     private void DrawCage() {
