@@ -3815,5 +3815,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 056dd5e9fb470054d948b572430931d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cageSize: {x: 6, y: 4, z: 5}
+  cageSize: {x: 30, y: 20, z: 50}
+  viewportSize: {x: 3, y: 2}
   drawCage: 1
+  trackingOffset: {x: 0, y: 0, z: 1}

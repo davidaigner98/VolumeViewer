@@ -5,6 +5,7 @@ using UnityEngine;
 public class DisplayCameraPositioning : MonoBehaviour {
     public static DisplayCameraPositioning Instance { get; private set; }
     public Vector3 cageSize;
+    public Vector2 viewportSize;
     public bool drawCage;
     private Vector3 startPosition;
     public Vector3 trackingOffset;
@@ -21,10 +22,10 @@ public class DisplayCameraPositioning : MonoBehaviour {
     }
 
     public void SynchronizeDisplayCameraPosition(Vector3 realPosition) {
-        realPosition *= cageSize.x;
+        realPosition *= viewportSize.x;
         realPosition += trackingOffset;
         transform.position = realPosition;
-        transform.LookAt(new Vector3(0, 0, -500));
+        transform.LookAt(Vector3.zero);
     }
 
     private void DrawCage() {
@@ -64,8 +65,8 @@ public class DisplayCameraPositioning : MonoBehaviour {
         LineRenderer renderer = newLineGO.AddComponent<LineRenderer>();
         renderer.SetPosition(0, from);
         renderer.SetPosition(1, to);
-        renderer.startWidth = 0.01f;
-        renderer.endWidth = 0.01f;
+        renderer.startWidth = 0.1f;
+        renderer.endWidth = 0.1f;
 
         Material mat = new Material(Shader.Find("Transparent/Diffuse"));
         mat.color = new Color(0.2f, 0.2f, 0.2f, 0.5f);
