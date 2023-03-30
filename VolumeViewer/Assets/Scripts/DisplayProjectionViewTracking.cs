@@ -2,20 +2,21 @@ using UnityEngine;
 
 public class DisplayProjectionViewTracking : MonoBehaviour {
     public GameObject xrCamera;
-    private int frame = 0;
+    private float time = 0;
 
     void Update() {
         if (!CrossPlatformMediator.Instance.isServer && !CrossPlatformMediator.Instance.isInLobby) {
-            if (frame >= 50) {
+            if (time >= 0.02) {
                 GameObject displayCenter = DisplayProfileManager.Instance.GetCurrentDisplayCenter();
                 Vector3 cameraOffset = xrCamera.transform.position - displayCenter.transform.position;
-                cameraOffset = displayCenter.transform.TransformDirection(cameraOffset);
+                cameraOffset = displayCenter.transform.InverseTransformDirection(cameraOffset);
+                cameraOffset /= DisplayProfileManager.Instance.GetCurrentDisplaySize().transform.localScale.x;
 
                 CrossPlatformMediator.Instance.SynchronizeCameraPositionServerRpc(cameraOffset);
-                frame = 0;
+                time = 0;
             }
 
-            frame++;
+            time += Time.deltaTime;
         }
     }
 }

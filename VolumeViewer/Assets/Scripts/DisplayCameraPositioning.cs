@@ -1,4 +1,5 @@
 using System.Net.Security;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class DisplayCameraPositioning : MonoBehaviour {
@@ -6,6 +7,7 @@ public class DisplayCameraPositioning : MonoBehaviour {
     public Vector3 cageSize;
     public bool drawCage;
     private Vector3 startPosition;
+    public Vector3 trackingOffset;
 
     private void Awake() {
         if (Instance != null && Instance != this) { Destroy(this); }
@@ -19,14 +21,10 @@ public class DisplayCameraPositioning : MonoBehaviour {
     }
 
     public void SynchronizeDisplayCameraPosition(Vector3 realPosition) {
-        Debug.Log("RealPosition: " + realPosition);
-        //if (realPosition.z < 0) { return; }
-
-        realPosition += startPosition;
-        realPosition /= realPosition.z;
-        realPosition *= startPosition.z;
-        Debug.Log("Calculated: "+realPosition);
-        //transform.position = realPosition;
+        realPosition *= cageSize.x;
+        realPosition += trackingOffset;
+        transform.position = realPosition;
+        transform.LookAt(new Vector3(0, 0, -500));
     }
 
     private void DrawCage() {
