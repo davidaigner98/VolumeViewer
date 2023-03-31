@@ -26,6 +26,8 @@ public class DisplayCameraPositioning : MonoBehaviour {
         realPosition += trackingOffset;
         transform.position = realPosition;
         transform.LookAt(new Vector3(0, 0, -1000));
+
+        ModelManager.Instance.RefreshModelScreenOffsets();
     }
 
     private void DrawCage() {
