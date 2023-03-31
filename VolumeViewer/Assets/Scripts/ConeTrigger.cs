@@ -49,9 +49,9 @@ public class ConeTrigger : MonoBehaviour {
     }
 
     private void RemoveNullEntries() {
-        foreach (ModelInfo currInfo in includedModels) {
-            if (currInfo == null) {
-                includedModels.Remove(currInfo);
+        for (int i = includedModels.Count - 1; i >= 0; i--) {
+            if (includedModels[i] == null) {
+                includedModels.RemoveAt(i);
             }
         }
     }
