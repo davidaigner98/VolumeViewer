@@ -1,5 +1,7 @@
 using Leap.Unity;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class ConeTrigger : MonoBehaviour {
@@ -29,6 +31,8 @@ public class ConeTrigger : MonoBehaviour {
 
     public ModelInfo GetSelectedModel() {
         if (includedModels.Count == 0) { return null; }
+        RemoveNullEntries();
+
         ModelInfo closestModel = includedModels[0];
         float smallestDistance = Vector3.Distance(closestModel.transform.position, transform.position);
 
@@ -42,5 +46,13 @@ public class ConeTrigger : MonoBehaviour {
         }
 
         return closestModel;
+    }
+
+    private void RemoveNullEntries() {
+        foreach (ModelInfo currInfo in includedModels) {
+            if (currInfo == null) {
+                includedModels.Remove(currInfo);
+            }
+        }
     }
 }
