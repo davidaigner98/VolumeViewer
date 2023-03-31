@@ -3817,5 +3817,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cageSize: {x: 30, y: 20, z: 50}
   viewportSize: {x: 3, y: 2}
-  drawCage: 1
+  drawCage: 0
   trackingOffset: {x: 0, y: 0, z: 1}
+  focalPoint: -1000

@@ -9,6 +9,7 @@ public class DisplayCameraPositioning : MonoBehaviour {
     public bool drawCage;
     private Vector3 startPosition;
     public Vector3 trackingOffset;
+    public float focalPoint;
 
     private void Awake() {
         if (Instance != null && Instance != this) { Destroy(this); }
@@ -25,7 +26,7 @@ public class DisplayCameraPositioning : MonoBehaviour {
         realPosition *= viewportSize.x;
         realPosition += trackingOffset;
         transform.position = realPosition;
-        transform.LookAt(new Vector3(0, 0, -1000));
+        transform.LookAt(new Vector3(0, 0, focalPoint));
 
         ModelManager.Instance.RefreshModelScreenOffsets();
     }
