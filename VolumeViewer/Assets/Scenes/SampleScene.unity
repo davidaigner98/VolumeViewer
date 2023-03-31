@@ -1076,7 +1076,7 @@ MonoBehaviour:
   m_TrackedDevicePositionAction: {fileID: 6564999863303420839, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
   m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
   m_DeselectOnBackgroundClick: 1
-  m_PointerBehavior: 2
+  m_PointerBehavior: 1
   m_CursorLockBehavior: 0
 --- !u!1 &482933747
 GameObject:
@@ -1782,6 +1782,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isServer: 0
+  isInLobby: 1
 --- !u!4 &832737248
 Transform:
   m_ObjectHideFlags: 0
@@ -3256,6 +3257,7 @@ GameObject:
   - component: {fileID: 1163098839}
   - component: {fileID: 1163098840}
   - component: {fileID: 1163098838}
+  - component: {fileID: 1163098841}
   m_Layer: 0
   m_Name: DisplayProjection
   m_TagString: Untagged
@@ -3353,6 +3355,19 @@ MonoBehaviour:
   - {fileID: 1452968028}
   - {fileID: 181144427}
   currentProfile: 1
+--- !u!114 &1163098841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1163098837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9609d783bd1e5814c811c30623065a7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  xrCamera: {fileID: 963194225}
 --- !u!1 &1202314630 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3557434566810426997, guid: 15d3b5cf5cea75344a4482323bc124a8, type: 3}
@@ -3659,7 +3674,7 @@ MonoBehaviour:
   m_MaxConnectAttempts: 10
   m_DisconnectTimeoutMS: 30000
   ConnectionData:
-    Address: 192.168.96.232
+    Address: 192.168.154.232
     Port: 7777
     ServerListenAddress: 
   DebugSimulator:

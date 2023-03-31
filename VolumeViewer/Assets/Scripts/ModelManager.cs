@@ -57,6 +57,14 @@ public class ModelManager : NetworkBehaviour {
         }
     }
 
+    public void RefreshModelScreenOffsets() {
+        foreach (ModelInfo info in modelInfos) {
+            ModelTransformator transformator = info.gameObject.GetComponent<ModelTransformator>();
+            Vector2 screenOffset = DisplayLocalizer.Instance.GetRelativeScreenOffset(info.gameObject);
+            transformator.screenOffset.Value = screenOffset;
+        }
+    }
+
     public GameObject GetSelectedModel() {
         if (selectedModel != null) {
             return selectedModel.gameObject;

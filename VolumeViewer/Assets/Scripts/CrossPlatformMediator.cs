@@ -1,8 +1,10 @@
 using Unity.Netcode;
+using UnityEngine;
 
 public class CrossPlatformMediator : NetworkBehaviour{
     public static CrossPlatformMediator Instance { get; private set; }
     public bool isServer;
+    public bool isInLobby = true;
 
     void Awake() {
         if (Instance != null && Instance != this) { Destroy(this); }
@@ -11,8 +13,15 @@ public class CrossPlatformMediator : NetworkBehaviour{
 
     [ServerRpc(RequireOwnership = false)]
     public void ChangeAttachmentButtonInteractabilityServerRpc(bool interactable) {
-        if (isServer) {
+        if (isServer && !isInLobby) {
             DisplayCameraCanvasManager.Instance.detachButton.interactable = interactable;
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SynchronizeCameraPositionServerRpc(Vector3 cameraOffset) {
+        if (isServer && !isInLobby) {
+            DisplayCameraPositioning.Instance.SynchronizeDisplayCameraPosition(cameraOffset);
         }
     }
 }

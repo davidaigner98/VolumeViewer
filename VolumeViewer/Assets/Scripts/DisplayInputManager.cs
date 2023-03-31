@@ -139,9 +139,6 @@ public class DisplayInputManager : MonoBehaviour {
         Camera displayCamera = DisplayLocalizer.Instance.displayCamera;
         Vector3 palmPosition3D = new Vector3(palmPosition.x, palmPosition.y, displayCamera.transform.position.z);
         selectedModel.transform.position = displayCamera.ScreenToWorldPoint(palmPosition3D);
-
-        Vector2 screenOffset = DisplayLocalizer.Instance.GetRelativeScreenOffset(selectedModel);
-        selectedModel.GetComponent<ModelTransformator>().screenOffset.Value = screenOffset;
     }
 
     private void MultipleFingerRotating(int touchCount) {
