@@ -61,7 +61,7 @@ public class ClippingBox : MonoBehaviour {
         renderer.numCapVertices = 8;
         renderer.enabled = false;
 
-        Material mat = new Material(Shader.Find("Transparent/Diffuse"));
+        Material mat = new Material(Shader.Find("Standard"));
         mat.color = new Color(0.2f, 0.2f, 0.2f, 1f);
         renderer.material = mat;
 

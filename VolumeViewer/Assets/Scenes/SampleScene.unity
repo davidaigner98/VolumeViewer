@@ -2499,7 +2499,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1001 &1078999435
 PrefabInstance:
   m_ObjectHideFlags: 0
