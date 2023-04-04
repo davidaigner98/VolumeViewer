@@ -2,19 +2,36 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ClippingBox : MonoBehaviour {
+    public static ClippingBox Instance;
     public Vector3 minBounds, maxBounds;
+    public List<ModelInfo> includedModels = new List<ModelInfo>();
     public bool drawBox;
-    public List<ModelInfo> includedModels = new List<ModelInfo>(); 
+    private bool active = false;
+
+    private void Awake() {
+        if (Instance != null && Instance != this) { Destroy(this); }
+        else { Instance = this; }
+    }
 
     private void Start() {
         if (drawBox) { DrawBox(); }
     }
 
     private void Update() {
-        UpdateModelMaterials();
+        if (active) {
+            UpdateModelMaterials();
 
-        if (drawBox) { UpdateBoxPositions(); }
-        UpdateTriggerBounds();
+            if (drawBox) { UpdateBoxPositions(); }
+            UpdateTriggerBounds();
+        }
+    }
+
+    public void SetActive(bool active) {
+        this.active = active;
+
+        foreach (Transform child in transform) {
+            child.gameObject.GetComponent<LineRenderer>().enabled = active;
+        }
     }
 
     private void DrawBox() {
