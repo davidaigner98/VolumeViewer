@@ -5,7 +5,6 @@ using Unity.Netcode;
 using UnityEngine;
 
 public class ModelTransformator : NetworkBehaviour {
-    public Shader transparentShader;
     public float palmGrabDistance = 1.0f;
     public float oneFingerRotationDistance = 1.0f;
     public float releaseDistanceThreshold = 1.0f;
@@ -27,7 +26,7 @@ public class ModelTransformator : NetworkBehaviour {
 
         Material[] mats = GetComponent<Renderer>().materials;
         foreach (Material mat in mats) {
-            mat.shader = transparentShader;
+            mat.shader = Shader.Find("Custom/ModelShader");
         }
 
         GetComponent<MeshRenderer>().enabled = true;

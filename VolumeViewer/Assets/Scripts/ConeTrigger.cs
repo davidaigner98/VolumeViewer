@@ -1,7 +1,5 @@
 using Leap.Unity;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Security.Cryptography;
 using UnityEngine;
 
 public class ConeTrigger : MonoBehaviour {
