@@ -10,12 +10,14 @@ public class ClippingBoxGrabbableCorner : MonoBehaviour {
 
     private void Start() {
         clippingBox = transform.parent.parent.GetComponent<ClippingBox>();
+        UpdatePosition();
     }
 
     private void Update() {
-        if (isBeingGrabbed) { PerformGrabMovement(); }
-
-        if (clippingBox.IsActive()) { UpdateVisibility(); } 
+        if (clippingBox.IsActive()) {
+            UpdateVisibility();
+            if (isBeingGrabbed) { PerformGrabMovement(); }
+        }
     }
 
     public void StartGrabMovement(Hand grabbingHand) {
@@ -33,19 +35,37 @@ public class ClippingBoxGrabbableCorner : MonoBehaviour {
     }
 
     private void UpdateVisibility() {
-        float leftDistance = Vector3.Distance(Hands.Left.PalmPosition, transform.position);
-        float rightDistance = Vector3.Distance(Hands.Right.PalmPosition, transform.position);
+        float distance;
+        
+        if (Hands.Left == null && Hands.Right == null) {
+            SetAlpha(0);
+            return;
+        }
 
-        float distance = rightDistance;
-        if (leftDistance < rightDistance) { distance = leftDistance; }
+        if (Hands.Left == null) {
+            distance = Vector3.Distance(Hands.Right.PalmPosition, transform.position);
+        } else if (Hands.Right == null) {
+            distance = Vector3.Distance(Hands.Left.PalmPosition, transform.position);
+        } else {
+            float leftDistance = Vector3.Distance(Hands.Left.PalmPosition, transform.position);
+            float rightDistance = Vector3.Distance(Hands.Right.PalmPosition, transform.position);
+
+            distance = rightDistance;
+            if (leftDistance < rightDistance) { distance = leftDistance; }
+        }
 
         float visibilityThreshold = 0.5f;
         if (distance < visibilityThreshold) {
-            Color oldColor = GetComponent<MeshRenderer>().material.color;
-            Color newColor = new Color(oldColor.r, oldColor.g, oldColor.b, distance / visibilityThreshold);
-
-            GetComponent<MeshRenderer>().material.color = newColor;
+            SetAlpha(1 - distance / visibilityThreshold);
+        } else {
+            SetAlpha(0);
         }
+    }
+
+    private void SetAlpha(float alpha) {
+        Color oldColor = GetComponent<MeshRenderer>().material.color;
+        Color newColor = new Color(oldColor.r, oldColor.g, oldColor.b, alpha);
+        GetComponent<MeshRenderer>().material.color = newColor;
     }
 
     public void UpdatePosition() {

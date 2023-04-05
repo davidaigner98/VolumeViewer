@@ -29,8 +29,8 @@ public class ClippingBox : MonoBehaviour {
     }
 
     public void SetActive(bool active) {
-        if (!active) { UpdateModelMaterials(); }
         this.active = active;
+        if (!active) { UpdateModelMaterials(); }
 
         foreach (Transform child in transform.Find("Lines")) {
             child.gameObject.GetComponent<LineRenderer>().enabled = active;
