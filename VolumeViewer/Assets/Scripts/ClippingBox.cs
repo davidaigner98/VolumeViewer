@@ -27,28 +27,37 @@ public class ClippingBox : MonoBehaviour {
     }
 
     public void SetActive(bool active) {
+        if (!active) { UpdateModelMaterials(); }
         this.active = active;
 
-        foreach (Transform child in transform) {
+        foreach (Transform child in transform.Find("Lines")) {
             child.gameObject.GetComponent<LineRenderer>().enabled = active;
+        }
+
+        foreach (Transform child in transform.Find("Corners")) {
+            child.gameObject.GetComponent<MeshRenderer>().enabled = active;
         }
     }
 
+    public bool IsActive() {
+        return active;
+    }
+
     private void DrawBox() {
-        DrawLine(transform.position + new Vector3(minBounds.x, minBounds.y, minBounds.z), transform.position + new Vector3(maxBounds.x, minBounds.y, minBounds.z)).transform.SetParent(transform);
-        DrawLine(transform.position + new Vector3(minBounds.x, minBounds.y, maxBounds.z), transform.position + new Vector3(maxBounds.x, minBounds.y, maxBounds.z)).transform.SetParent(transform);
-        DrawLine(transform.position + new Vector3(minBounds.x, maxBounds.y, minBounds.z), transform.position + new Vector3(maxBounds.x, maxBounds.y, minBounds.z)).transform.SetParent(transform);
-        DrawLine(transform.position + new Vector3(minBounds.x, maxBounds.y, maxBounds.z), transform.position + new Vector3(maxBounds.x, maxBounds.y, maxBounds.z)).transform.SetParent(transform);
+        DrawLine(transform.position + new Vector3(minBounds.x, minBounds.y, minBounds.z), transform.position + new Vector3(maxBounds.x, minBounds.y, minBounds.z)).transform.SetParent(transform.Find("Lines"));
+        DrawLine(transform.position + new Vector3(minBounds.x, minBounds.y, maxBounds.z), transform.position + new Vector3(maxBounds.x, minBounds.y, maxBounds.z)).transform.SetParent(transform.Find("Lines"));
+        DrawLine(transform.position + new Vector3(minBounds.x, maxBounds.y, minBounds.z), transform.position + new Vector3(maxBounds.x, maxBounds.y, minBounds.z)).transform.SetParent(transform.Find("Lines"));
+        DrawLine(transform.position + new Vector3(minBounds.x, maxBounds.y, maxBounds.z), transform.position + new Vector3(maxBounds.x, maxBounds.y, maxBounds.z)).transform.SetParent(transform.Find("Lines"));
 
-        DrawLine(transform.position + new Vector3(minBounds.x, minBounds.y, minBounds.z), transform.position + new Vector3(minBounds.x, maxBounds.y, minBounds.z)).transform.SetParent(transform);
-        DrawLine(transform.position + new Vector3(minBounds.x, minBounds.y, maxBounds.z), transform.position + new Vector3(minBounds.x, maxBounds.y, maxBounds.z)).transform.SetParent(transform);
-        DrawLine(transform.position + new Vector3(maxBounds.x, minBounds.y, minBounds.z), transform.position + new Vector3(maxBounds.x, maxBounds.y, minBounds.z)).transform.SetParent(transform);
-        DrawLine(transform.position + new Vector3(maxBounds.x, minBounds.y, maxBounds.z), transform.position + new Vector3(maxBounds.x, maxBounds.y, maxBounds.z)).transform.SetParent(transform);
+        DrawLine(transform.position + new Vector3(minBounds.x, minBounds.y, minBounds.z), transform.position + new Vector3(minBounds.x, maxBounds.y, minBounds.z)).transform.SetParent(transform.Find("Lines"));
+        DrawLine(transform.position + new Vector3(minBounds.x, minBounds.y, maxBounds.z), transform.position + new Vector3(minBounds.x, maxBounds.y, maxBounds.z)).transform.SetParent(transform.Find("Lines"));
+        DrawLine(transform.position + new Vector3(maxBounds.x, minBounds.y, minBounds.z), transform.position + new Vector3(maxBounds.x, maxBounds.y, minBounds.z)).transform.SetParent(transform.Find("Lines"));
+        DrawLine(transform.position + new Vector3(maxBounds.x, minBounds.y, maxBounds.z), transform.position + new Vector3(maxBounds.x, maxBounds.y, maxBounds.z)).transform.SetParent(transform.Find("Lines"));
 
-        DrawLine(transform.position + new Vector3(minBounds.x, minBounds.y, minBounds.z), transform.position + new Vector3(minBounds.x, minBounds.y, maxBounds.z)).transform.SetParent(transform);
-        DrawLine(transform.position + new Vector3(minBounds.x, maxBounds.y, minBounds.z), transform.position + new Vector3(minBounds.x, maxBounds.y, maxBounds.z)).transform.SetParent(transform);
-        DrawLine(transform.position + new Vector3(maxBounds.x, minBounds.y, minBounds.z), transform.position + new Vector3(maxBounds.x, minBounds.y, maxBounds.z)).transform.SetParent(transform);
-        DrawLine(transform.position + new Vector3(maxBounds.x, maxBounds.y, minBounds.z), transform.position + new Vector3(maxBounds.x, maxBounds.y, maxBounds.z)).transform.SetParent(transform);
+        DrawLine(transform.position + new Vector3(minBounds.x, minBounds.y, minBounds.z), transform.position + new Vector3(minBounds.x, minBounds.y, maxBounds.z)).transform.SetParent(transform.Find("Lines"));
+        DrawLine(transform.position + new Vector3(minBounds.x, maxBounds.y, minBounds.z), transform.position + new Vector3(minBounds.x, maxBounds.y, maxBounds.z)).transform.SetParent(transform.Find("Lines"));
+        DrawLine(transform.position + new Vector3(maxBounds.x, minBounds.y, minBounds.z), transform.position + new Vector3(maxBounds.x, minBounds.y, maxBounds.z)).transform.SetParent(transform.Find("Lines"));
+        DrawLine(transform.position + new Vector3(maxBounds.x, maxBounds.y, minBounds.z), transform.position + new Vector3(maxBounds.x, maxBounds.y, maxBounds.z)).transform.SetParent(transform.Find("Lines"));
     }
 
     private GameObject DrawLine(Vector3 from, Vector3 to) {
@@ -78,14 +87,19 @@ public class ClippingBox : MonoBehaviour {
             Material[] currMats = currModel.gameObject.GetComponent<Renderer>().materials;
 
             foreach (Material currMat in currMats) {
-                currMat.SetVector("_MinBounds", minBounds);
-                currMat.SetVector("_MaxBounds", maxBounds);
+                if (active) {
+                    currMat.SetVector("_MinBounds", minBounds);
+                    currMat.SetVector("_MaxBounds", maxBounds);
+                } else {
+                    currMat.SetVector("_MinBounds", new Vector3(1, 1, 1));
+                    currMat.SetVector("_MaxBounds", new Vector3(0, 0, 0));
+                }
             }
         }
     }
 
     private void UpdateBoxPositions() {
-        if (transform.childCount != 12) { return; }
+        if (transform.Find("Lines").childCount != 12) { return; }
 
         SetPositionOfLineRenderer(0, 0, new Vector3(minBounds.x, minBounds.y, minBounds.z));
         SetPositionOfLineRenderer(0, 1, new Vector3(maxBounds.x, minBounds.y, minBounds.z));
@@ -116,7 +130,7 @@ public class ClippingBox : MonoBehaviour {
     }
 
     private void SetPositionOfLineRenderer(int childIndex, int pointIndex, Vector3 position) {
-        transform.GetChild(childIndex).GetComponent<LineRenderer>().SetPosition(pointIndex, transform.position + position);
+        transform.Find("Lines").GetChild(childIndex).GetComponent<LineRenderer>().SetPosition(pointIndex, transform.position + position);
     }
 
     private void UpdateTriggerBounds() {
@@ -137,13 +151,45 @@ public class ClippingBox : MonoBehaviour {
     private void OnTriggerExit(Collider other) {
         ModelInfo modelInfo = other.gameObject.GetComponent<ModelInfo>();
         if (modelInfo) { includedModels.Remove(modelInfo); }
-    }
 
+        Material[] currMats = other.gameObject.GetComponent<Renderer>().materials;
+        foreach (Material currMat in currMats) {
+            currMat.SetVector("_MinBounds", new Vector3(1, 1, 1));
+            currMat.SetVector("_MaxBounds", new Vector3(0, 0, 0));
+        }
+    }
+    
     private void RemoveNullEntries() {
         for (int i = includedModels.Count - 1; i >= 0; i--) {
             if (includedModels[i] == null) {
                 includedModels.RemoveAt(i);
             }
+        }
+    }
+
+    public void UpdateCorners(Vector3 corner, Vector3 position) {
+        UpdateBoundary(corner.x == 1, 'x', position.x);
+        UpdateBoundary(corner.y == 1, 'y', position.y);
+        UpdateBoundary(corner.z == 1, 'z', position.z);
+
+        foreach (Transform child in transform.Find("Corners")) {
+            ClippingBoxGrabbableCorner cornerScript = child.GetComponent<ClippingBoxGrabbableCorner>();
+
+            if (!cornerScript.cornerIndex.Equals(corner)) {
+                cornerScript.UpdatePosition();
+            }
+        }
+    }
+
+    private void UpdateBoundary(bool max, char coordinate, float value) {
+        if (max) {
+            if (coordinate.Equals('x')) { maxBounds.Set(value, maxBounds.y, maxBounds.z); }
+            else if (coordinate.Equals('y')) { maxBounds.Set(maxBounds.x, value, maxBounds.z); }
+            else if (coordinate.Equals('z')) { maxBounds.Set(maxBounds.x, maxBounds.y, value); }
+        } else {
+            if (coordinate.Equals('x')) { minBounds.Set(value, minBounds.y, minBounds.z); }
+            else if (coordinate.Equals('y')) { minBounds.Set(minBounds.x, value, minBounds.z); }
+            else if (coordinate.Equals('z')) { minBounds.Set(minBounds.x, minBounds.y, value); }
         }
     }
 }
