@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ProjectionToolwindow : MonoBehaviour {
-    public static ProjectionToolwindow Instance { get; private set; }
+public class ProjectionToolwindowUIManager : MonoBehaviour {
+    public static ProjectionToolwindowUIManager Instance { get; private set; }
     private bool clippingBoxEnabled = false;
     public Toggle clippingBoxToggler;
 
