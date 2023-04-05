@@ -1,26 +1,35 @@
+using Leap;
 using Leap.Unity;
-using System;
 using UnityEngine;
 
 public class ClippingBoxGrabbableCorner : MonoBehaviour {
     private ClippingBox clippingBox;
     public Vector3 cornerIndex;
+    private bool isBeingGrabbed = false;
+    private Hand grabbingHand;
 
     private void Start() {
         clippingBox = transform.parent.parent.GetComponent<ClippingBox>();
     }
 
     private void Update() {
-        CheckForPositionChange();
+        if (isBeingGrabbed) { PerformGrabMovement(); }
 
         if (clippingBox.IsActive()) { UpdateVisibility(); } 
     }
 
-    private void CheckForPositionChange() {
-        if (transform.hasChanged) {
-            transform.hasChanged = false;
-            clippingBox.UpdateCorners(cornerIndex, transform.position);
-        }
+    public void StartGrabMovement(Hand grabbingHand) {
+        isBeingGrabbed = true;
+        this.grabbingHand = grabbingHand;
+    }
+    private void PerformGrabMovement() {
+        transform.position = grabbingHand.GetPinchPosition();
+        clippingBox.UpdateCorners(cornerIndex, transform.position);
+    }
+
+    public void EndGrabMovement() {
+        isBeingGrabbed = false;
+        grabbingHand = null;
     }
 
     private void UpdateVisibility() {
@@ -41,13 +50,9 @@ public class ClippingBoxGrabbableCorner : MonoBehaviour {
 
     public void UpdatePosition() {
         transform.position = GetSupposedPosition();
-        transform.hasChanged = false;
     }
 
     private Vector3 GetSupposedPosition() {
-        Vector3 minBounds = clippingBox.minBounds;
-        Vector3 maxBounds = clippingBox.maxBounds;
-
         float x = GetValueOfSupposedPosition('x');
         float y = GetValueOfSupposedPosition('y');
         float z = GetValueOfSupposedPosition('z');

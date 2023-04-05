@@ -1,3 +1,5 @@
+using Leap;
+using Leap.Unity;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -190,6 +192,33 @@ public class ClippingBox : MonoBehaviour {
             if (coordinate.Equals('x')) { minBounds.Set(value, minBounds.y, minBounds.z); }
             else if (coordinate.Equals('y')) { minBounds.Set(minBounds.x, value, minBounds.z); }
             else if (coordinate.Equals('z')) { minBounds.Set(minBounds.x, minBounds.y, value); }
+        }
+    }
+
+    public void StartPinchMovement(Hand grabbingHand) {
+        Vector3 pinchPosition = grabbingHand.GetPinchPosition();
+        GameObject pinchedCorner = null;
+        float shortestDistancce = -1;
+
+        foreach (Transform corner in transform.Find("Corners")) {
+            float currDistance = Vector3.Distance(pinchPosition, corner.position);
+
+            if (pinchedCorner == null || currDistance < shortestDistancce) {
+                pinchedCorner = corner.gameObject;
+                shortestDistancce = currDistance;
+            }
+        }
+
+        if (Vector3.Distance(pinchPosition, pinchedCorner.transform.position) < 0.5f) {
+            ClippingBoxGrabbableCorner cornerScript = pinchedCorner.GetComponent<ClippingBoxGrabbableCorner>();
+            cornerScript.StartGrabMovement(grabbingHand);
+        }
+    }
+
+    public void EndPinchMovement() {
+        foreach (Transform corner in transform.Find("Corners")) {
+            ClippingBoxGrabbableCorner cornerScript = corner.GetComponent<ClippingBoxGrabbableCorner>();
+            cornerScript.EndGrabMovement();
         }
     }
 }

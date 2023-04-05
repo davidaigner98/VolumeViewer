@@ -1,6 +1,5 @@
 using Leap;
 using Leap.Unity;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DetectorManager : MonoBehaviour {
@@ -10,13 +9,6 @@ public class DetectorManager : MonoBehaviour {
     private void Awake() {
         if (Instance != null && Instance != this) { Destroy(this); }
         else { Instance = this; }
-    }
-
-    private void Start() {
-        if (!CrossPlatformMediator.Instance.isServer) {
-            //leftConeTrigger.gameObject.SetActive(true);
-            //rightConeTrigger.gameObject.SetActive(true);
-        }
     }
 
     public void PerformPalmGrabOn(string hand) {
@@ -74,5 +66,19 @@ public class DetectorManager : MonoBehaviour {
         }
 
         return null;
+    }
+
+    public void PerformPinchOn(string hand) {
+        Hand currHand = null;
+        if (hand.Equals("left")) { currHand = Hands.Left; }
+        else if (hand.Equals("right")) { currHand = Hands.Right; }
+
+        if (currHand != null) {
+            ClippingBox.Instance.StartPinchMovement(currHand);
+        }
+    }
+
+    public void PerformPinchOff() {
+        ClippingBox.Instance.EndPinchMovement();
     }
 }
