@@ -9,8 +9,8 @@ public class LobbyManager : MonoBehaviour {
     public GameObject displayInputManager;
     public GameObject xrRig;
     public GameObject displayProjection;
-    public GameObject lightsource;
     public GameObject displayCamera;
+    public GameObject clippingBoxPrefab;
     public Vector3 displayCameraPosition;
     public TextMeshProUGUI errorLabel;
     public bool manualServerStart;
@@ -32,7 +32,7 @@ public class LobbyManager : MonoBehaviour {
         ModelManager.Instance.SpawnDefaultModel();
         CrossPlatformMediator.Instance.isServer = true;
         CrossPlatformMediator.Instance.isInLobby = false;
-        
+
         displayInputManager.SetActive(true);
         Destroy(DetectorManager.Instance.gameObject);
         Destroy(displayProjection);
@@ -52,6 +52,7 @@ public class LobbyManager : MonoBehaviour {
 
     private void ClientConnectionSuccess(ulong clientId) {
         networkManager.OnClientDisconnectCallback -= ClientConnectionFailure;
+        Instantiate(clippingBoxPrefab);
         CrossPlatformMediator.Instance.isInLobby = false;
         Destroy(gameObject);
     }
@@ -67,7 +68,6 @@ public class LobbyManager : MonoBehaviour {
         GameObject newCamera = GameObject.Instantiate(displayCamera);
         newCamera.transform.position = displayCameraPosition;
         newCamera.transform.LookAt(Vector3.zero);
-        lightsource.transform.SetParent(newCamera.transform);
 
         return newCamera;
     }

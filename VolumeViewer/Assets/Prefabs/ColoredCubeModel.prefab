@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d2e27d8ddfdfdf4dad4656de9d0be39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  transparentShader: {fileID: 4800000, guid: 3bf3990958cb10b4f8212c83b1ef0f76, type: 3}
+  modelShader: {fileID: 4800000, guid: 3bf3990958cb10b4f8212c83b1ef0f76, type: 3}
   palmGrabDistance: 0.5
   oneFingerRotationDistance: 0.25
   releaseDistanceThreshold: 0.2
