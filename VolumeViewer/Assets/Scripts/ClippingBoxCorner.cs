@@ -2,21 +2,20 @@ using Leap;
 using Leap.Unity;
 using UnityEngine;
 
-public class ClippingBoxGrabbableCorner : MonoBehaviour {
+public class ClippingBoxCorner : MonoBehaviour {
     private ClippingBox clippingBox;
-    public Vector3 cornerIndex;
     private bool isBeingGrabbed = false;
     private Hand grabbingHand;
 
     private void Start() {
         clippingBox = transform.parent.parent.GetComponent<ClippingBox>();
-        UpdatePosition();
     }
 
     private void Update() {
-        if (clippingBox.IsActive()) {
-            UpdateVisibility();
-            if (isBeingGrabbed) { PerformGrabMovement(); }
+        UpdateVisibility();
+
+        if (clippingBox.IsActive() && isBeingGrabbed) {
+            PerformGrabMovement();
         }
     }
 
@@ -25,8 +24,7 @@ public class ClippingBoxGrabbableCorner : MonoBehaviour {
         this.grabbingHand = grabbingHand;
     }
     private void PerformGrabMovement() {
-        transform.position = grabbingHand.GetPinchPosition();
-        clippingBox.UpdateCorners(cornerIndex, transform.position);
+        clippingBox.UpdateCorner(gameObject, grabbingHand.GetPinchPosition());
     }
 
     public void EndGrabMovement() {
@@ -35,13 +33,15 @@ public class ClippingBoxGrabbableCorner : MonoBehaviour {
     }
 
     private void UpdateVisibility() {
-        float distance;
-        
-        if (Hands.Left == null && Hands.Right == null) {
+        if (!clippingBox.IsActive()) {
+            SetAlpha(0);
+            return;
+        } else if (Hands.Left == null && Hands.Right == null) {
             SetAlpha(0);
             return;
         }
 
+        float distance;
         if (Hands.Left == null) {
             distance = Vector3.Distance(Hands.Right.PalmPosition, transform.position);
         } else if (Hands.Right == null) {
@@ -66,32 +66,5 @@ public class ClippingBoxGrabbableCorner : MonoBehaviour {
         Color oldColor = GetComponent<MeshRenderer>().material.color;
         Color newColor = new Color(oldColor.r, oldColor.g, oldColor.b, alpha);
         GetComponent<MeshRenderer>().material.color = newColor;
-    }
-
-    public void UpdatePosition() {
-        transform.position = GetSupposedPosition();
-    }
-
-    private Vector3 GetSupposedPosition() {
-        float x = GetValueOfSupposedPosition('x');
-        float y = GetValueOfSupposedPosition('y');
-        float z = GetValueOfSupposedPosition('z');
-
-        return new Vector3(x, y, z);
-    }
-
-    private float GetValueOfSupposedPosition(char coordinate) {
-        if (coordinate.Equals('x')) {
-            if (cornerIndex.x == 1) { return clippingBox.maxBounds.x; }
-            else { return clippingBox.minBounds.x; }
-        } else if (coordinate.Equals('y')) {
-            if (cornerIndex.y == 1) { return clippingBox.maxBounds.y; }
-            else { return clippingBox.minBounds.y; }
-        } else if (coordinate.Equals('z')) {
-            if (cornerIndex.z == 1) { return clippingBox.maxBounds.z; }
-            else { return clippingBox.minBounds.z; }
-        }
-
-        return 0;
     }
 }

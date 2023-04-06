@@ -10,21 +10,36 @@ public class ClippingBox : MonoBehaviour {
     public bool drawBox;
     private bool active = false;
 
+    private List<ClippingBoxCorner> corners = new List<ClippingBoxCorner>();
+    private List<Vector3> possibleIndices = new List<Vector3>() {
+        new Vector3(-1, -1, -1),
+        new Vector3(-1, -1, +1),
+        new Vector3(-1, +1, -1),
+        new Vector3(-1, +1, +1),
+        new Vector3(+1, -1, -1),
+        new Vector3(+1, -1, +1),
+        new Vector3(+1, +1, -1),
+        new Vector3(+1, +1, +1)
+    };
+
     private void Awake() {
         if (Instance != null && Instance != this) { Destroy(this); }
         else { Instance = this; }
     }
 
     private void Start() {
+        foreach (Transform cornerGO in transform.Find("Corners")) {
+            corners.Add(cornerGO.GetComponent<ClippingBoxCorner>());
+        }
+
         if (drawBox) { DrawBox(); }
+        UpdateTrigger();
+        UpdateLineVertices();
     }
 
     private void Update() {
         if (active) {
             UpdateModelMaterials();
-
-            if (drawBox) { UpdateBoxPositions(); }
-            UpdateTriggerBounds();
         }
     }
 
@@ -100,49 +115,39 @@ public class ClippingBox : MonoBehaviour {
         }
     }
 
-    private void UpdateBoxPositions() {
+    private void UpdateLineVertices() {
         if (transform.Find("Lines").childCount != 12) { return; }
 
-        SetPositionOfLineRenderer(0, 0, new Vector3(minBounds.x, minBounds.y, minBounds.z));
-        SetPositionOfLineRenderer(0, 1, new Vector3(maxBounds.x, minBounds.y, minBounds.z));
-        SetPositionOfLineRenderer(1, 0, new Vector3(minBounds.x, minBounds.y, maxBounds.z));
-        SetPositionOfLineRenderer(1, 1, new Vector3(maxBounds.x, minBounds.y, maxBounds.z));
-        SetPositionOfLineRenderer(2, 0, new Vector3(minBounds.x, maxBounds.y, minBounds.z));
-        SetPositionOfLineRenderer(2, 1, new Vector3(maxBounds.x, maxBounds.y, minBounds.z));
-        SetPositionOfLineRenderer(3, 0, new Vector3(minBounds.x, maxBounds.y, maxBounds.z));
-        SetPositionOfLineRenderer(3, 1, new Vector3(maxBounds.x, maxBounds.y, maxBounds.z));
+        SetVerticeOfLineRenderer(0, 0, new Vector3(minBounds.x, minBounds.y, minBounds.z));
+        SetVerticeOfLineRenderer(0, 1, new Vector3(maxBounds.x, minBounds.y, minBounds.z));
+        SetVerticeOfLineRenderer(1, 0, new Vector3(minBounds.x, minBounds.y, maxBounds.z));
+        SetVerticeOfLineRenderer(1, 1, new Vector3(maxBounds.x, minBounds.y, maxBounds.z));
+        SetVerticeOfLineRenderer(2, 0, new Vector3(minBounds.x, maxBounds.y, minBounds.z));
+        SetVerticeOfLineRenderer(2, 1, new Vector3(maxBounds.x, maxBounds.y, minBounds.z));
+        SetVerticeOfLineRenderer(3, 0, new Vector3(minBounds.x, maxBounds.y, maxBounds.z));
+        SetVerticeOfLineRenderer(3, 1, new Vector3(maxBounds.x, maxBounds.y, maxBounds.z));
 
-        SetPositionOfLineRenderer(4, 0, new Vector3(minBounds.x, minBounds.y, minBounds.z));
-        SetPositionOfLineRenderer(4, 1, new Vector3(minBounds.x, maxBounds.y, minBounds.z));
-        SetPositionOfLineRenderer(5, 0, new Vector3(minBounds.x, minBounds.y, maxBounds.z));
-        SetPositionOfLineRenderer(5, 1, new Vector3(minBounds.x, maxBounds.y, maxBounds.z));
-        SetPositionOfLineRenderer(6, 0, new Vector3(maxBounds.x, minBounds.y, minBounds.z));
-        SetPositionOfLineRenderer(6, 1, new Vector3(maxBounds.x, maxBounds.y, minBounds.z));
-        SetPositionOfLineRenderer(7, 0, new Vector3(maxBounds.x, minBounds.y, maxBounds.z));
-        SetPositionOfLineRenderer(7, 1, new Vector3(maxBounds.x, maxBounds.y, maxBounds.z));
+        SetVerticeOfLineRenderer(4, 0, new Vector3(minBounds.x, minBounds.y, minBounds.z));
+        SetVerticeOfLineRenderer(4, 1, new Vector3(minBounds.x, maxBounds.y, minBounds.z));
+        SetVerticeOfLineRenderer(5, 0, new Vector3(minBounds.x, minBounds.y, maxBounds.z));
+        SetVerticeOfLineRenderer(5, 1, new Vector3(minBounds.x, maxBounds.y, maxBounds.z));
+        SetVerticeOfLineRenderer(6, 0, new Vector3(maxBounds.x, minBounds.y, minBounds.z));
+        SetVerticeOfLineRenderer(6, 1, new Vector3(maxBounds.x, maxBounds.y, minBounds.z));
+        SetVerticeOfLineRenderer(7, 0, new Vector3(maxBounds.x, minBounds.y, maxBounds.z));
+        SetVerticeOfLineRenderer(7, 1, new Vector3(maxBounds.x, maxBounds.y, maxBounds.z));
 
-        SetPositionOfLineRenderer(8, 0, new Vector3(minBounds.x, minBounds.y, minBounds.z));
-        SetPositionOfLineRenderer(8, 1, new Vector3(minBounds.x, minBounds.y, maxBounds.z));
-        SetPositionOfLineRenderer(9, 0, new Vector3(minBounds.x, maxBounds.y, minBounds.z));
-        SetPositionOfLineRenderer(9, 1, new Vector3(minBounds.x, maxBounds.y, maxBounds.z));
-        SetPositionOfLineRenderer(10, 0, new Vector3(maxBounds.x, minBounds.y, minBounds.z));
-        SetPositionOfLineRenderer(10, 1, new Vector3(maxBounds.x, minBounds.y, maxBounds.z));
-        SetPositionOfLineRenderer(11, 0, new Vector3(maxBounds.x, maxBounds.y, minBounds.z));
-        SetPositionOfLineRenderer(11, 1, new Vector3(maxBounds.x, maxBounds.y, maxBounds.z));
+        SetVerticeOfLineRenderer(8, 0, new Vector3(minBounds.x, minBounds.y, minBounds.z));
+        SetVerticeOfLineRenderer(8, 1, new Vector3(minBounds.x, minBounds.y, maxBounds.z));
+        SetVerticeOfLineRenderer(9, 0, new Vector3(minBounds.x, maxBounds.y, minBounds.z));
+        SetVerticeOfLineRenderer(9, 1, new Vector3(minBounds.x, maxBounds.y, maxBounds.z));
+        SetVerticeOfLineRenderer(10, 0, new Vector3(maxBounds.x, minBounds.y, minBounds.z));
+        SetVerticeOfLineRenderer(10, 1, new Vector3(maxBounds.x, minBounds.y, maxBounds.z));
+        SetVerticeOfLineRenderer(11, 0, new Vector3(maxBounds.x, maxBounds.y, minBounds.z));
+        SetVerticeOfLineRenderer(11, 1, new Vector3(maxBounds.x, maxBounds.y, maxBounds.z));
     }
 
-    private void SetPositionOfLineRenderer(int childIndex, int pointIndex, Vector3 position) {
+    private void SetVerticeOfLineRenderer(int childIndex, int pointIndex, Vector3 position) {
         transform.Find("Lines").GetChild(childIndex).GetComponent<LineRenderer>().SetPosition(pointIndex, transform.position + position);
-    }
-
-    private void UpdateTriggerBounds() {
-        BoxCollider trigger = GetComponent<BoxCollider>();
-
-        Vector3 center = (maxBounds + minBounds) / 2;
-        trigger.center = center;
-
-        Vector3 size = maxBounds - minBounds;
-        trigger.size = size;
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -169,32 +174,6 @@ public class ClippingBox : MonoBehaviour {
         }
     }
 
-    public void UpdateCorners(Vector3 corner, Vector3 position) {
-        UpdateBoundary(corner.x == 1, 'x', position.x);
-        UpdateBoundary(corner.y == 1, 'y', position.y);
-        UpdateBoundary(corner.z == 1, 'z', position.z);
-
-        foreach (Transform child in transform.Find("Corners")) {
-            ClippingBoxGrabbableCorner cornerScript = child.GetComponent<ClippingBoxGrabbableCorner>();
-
-            if (!cornerScript.cornerIndex.Equals(corner)) {
-                cornerScript.UpdatePosition();
-            }
-        }
-    }
-
-    private void UpdateBoundary(bool max, char coordinate, float value) {
-        if (max) {
-            if (coordinate.Equals('x')) { maxBounds.Set(value, maxBounds.y, maxBounds.z); }
-            else if (coordinate.Equals('y')) { maxBounds.Set(maxBounds.x, value, maxBounds.z); }
-            else if (coordinate.Equals('z')) { maxBounds.Set(maxBounds.x, maxBounds.y, value); }
-        } else {
-            if (coordinate.Equals('x')) { minBounds.Set(value, minBounds.y, minBounds.z); }
-            else if (coordinate.Equals('y')) { minBounds.Set(minBounds.x, value, minBounds.z); }
-            else if (coordinate.Equals('z')) { minBounds.Set(minBounds.x, minBounds.y, value); }
-        }
-    }
-
     public void StartPinchMovement(Hand grabbingHand) {
         Vector3 pinchPosition = grabbingHand.GetPinchPosition();
         GameObject pinchedCorner = null;
@@ -210,15 +189,111 @@ public class ClippingBox : MonoBehaviour {
         }
 
         if (Vector3.Distance(pinchPosition, pinchedCorner.transform.position) < 0.5f) {
-            ClippingBoxGrabbableCorner cornerScript = pinchedCorner.GetComponent<ClippingBoxGrabbableCorner>();
+            ClippingBoxCorner cornerScript = pinchedCorner.GetComponent<ClippingBoxCorner>();
             cornerScript.StartGrabMovement(grabbingHand);
         }
     }
 
     public void EndPinchMovement() {
         foreach (Transform corner in transform.Find("Corners")) {
-            ClippingBoxGrabbableCorner cornerScript = corner.GetComponent<ClippingBoxGrabbableCorner>();
+            ClippingBoxCorner cornerScript = corner.GetComponent<ClippingBoxCorner>();
             cornerScript.EndGrabMovement();
         }
+    }
+
+    public void UpdateCorner(GameObject cornerGO, Vector3 newPosition) {
+        Vector3 cornerIndex = GetIndexOfCorner(cornerGO);
+        
+        UpdateBoundary(cornerIndex.x == 1, 'x', newPosition.x);
+        UpdateBoundary(cornerIndex.y == 1, 'y', newPosition.y);
+        UpdateBoundary(cornerIndex.z == 1, 'z', newPosition.z);
+
+        UpdateAllCornerPositions();
+        UpdateTrigger();
+        UpdateLineVertices();
+    }
+
+    private void UpdateBoundary(bool max, char coordinate, float value) {
+        if (max) {
+            if (coordinate.Equals('x')) { maxBounds.Set(value, maxBounds.y, maxBounds.z); }
+            else if (coordinate.Equals('y')) { maxBounds.Set(maxBounds.x, value, maxBounds.z); }
+            else if (coordinate.Equals('z')) { maxBounds.Set(maxBounds.x, maxBounds.y, value); }
+        } else {
+            if (coordinate.Equals('x')) { minBounds.Set(value, minBounds.y, minBounds.z); }
+            else if (coordinate.Equals('y')) { minBounds.Set(minBounds.x, value, minBounds.z); }
+            else if (coordinate.Equals('z')) { minBounds.Set(minBounds.x, minBounds.y, value); }
+        }
+    }
+
+    private void UpdateTrigger() {
+        BoxCollider trigger = GetComponent<BoxCollider>();
+
+        Vector3 center = (maxBounds + minBounds) / 2;
+        trigger.center = center;
+
+        Vector3 size = maxBounds - minBounds;
+        trigger.size = size;
+    }
+
+    private void UpdateAllCornerPositions() {
+        foreach (Vector3 index in possibleIndices) {
+            UpdateCornerPosition(index);
+        }
+    }
+
+    private void UpdateCornerPosition(Vector3 index) {
+        GameObject cornerGO = GetCorner(index);
+        float posX = maxBounds.x;
+        if (index.x == -1) { posX = minBounds.x; }
+        float posY = maxBounds.y;
+        if (index.y == -1) { posY = minBounds.y; }
+        float posZ = maxBounds.z;
+        if (index.z == -1) { posZ = minBounds.z; }
+
+        cornerGO.transform.position = new Vector3(posX, posY, posZ);
+    }
+
+    private GameObject GetCorner(Vector3 index) {
+        GameObject minimumCorner = null;
+        Vector3 boxCenter = GetBoxCenter();
+        float positionSum = 0;
+
+        foreach(ClippingBoxCorner corner in corners) {
+            Vector3 currPosition = corner.transform.position - boxCenter;
+            float currPositionSum = 0;
+            currPositionSum += currPosition.x * index.x;
+            currPositionSum += currPosition.y * index.y;
+            currPositionSum += currPosition.z * index.z;
+            
+            if (minimumCorner == null || currPositionSum < positionSum) {
+                minimumCorner = corner.gameObject;
+                positionSum = currPositionSum;
+            }
+        }
+        
+        return minimumCorner;
+    }
+
+    private Vector3 GetBoxCenter() {
+        Vector3 center = Vector3.zero;
+
+        foreach (ClippingBoxCorner corner in corners) {
+            center += corner.transform.position;
+        }
+
+        center = center / corners.Count;
+        return center;
+    }
+
+    private Vector3 GetIndexOfCorner(GameObject cornerGO) {
+        foreach (Vector3 currIndex in possibleIndices) {
+            GameObject currCornerGO = GetCorner(currIndex);
+
+            if (ReferenceEquals(cornerGO, currCornerGO)) {
+                return currIndex;
+            }
+        }
+
+        return Vector3.zero;
     }
 }
