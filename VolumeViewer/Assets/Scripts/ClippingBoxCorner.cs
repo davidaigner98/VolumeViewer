@@ -43,18 +43,18 @@ public class ClippingBoxCorner : MonoBehaviour {
 
         float distance;
         if (Hands.Left == null) {
-            distance = Vector3.Distance(Hands.Right.PalmPosition, transform.position);
+            distance = Vector3.Distance(Hands.Right.GetIndex().TipPosition, transform.position);
         } else if (Hands.Right == null) {
-            distance = Vector3.Distance(Hands.Left.PalmPosition, transform.position);
+            distance = Vector3.Distance(Hands.Left.GetIndex().TipPosition, transform.position);
         } else {
-            float leftDistance = Vector3.Distance(Hands.Left.PalmPosition, transform.position);
-            float rightDistance = Vector3.Distance(Hands.Right.PalmPosition, transform.position);
+            float leftDistance = Vector3.Distance(Hands.Left.GetIndex().TipPosition, transform.position);
+            float rightDistance = Vector3.Distance(Hands.Right.GetIndex().TipPosition, transform.position);
 
             distance = rightDistance;
             if (leftDistance < rightDistance) { distance = leftDistance; }
         }
 
-        float visibilityThreshold = 0.5f;
+        float visibilityThreshold = 0.2f;
         if (distance < visibilityThreshold) {
             SetAlpha(1 - distance / visibilityThreshold);
         } else {

@@ -78,10 +78,12 @@ public class LobbyManager : MonoBehaviour {
         Vector3 boxPosition = new Vector3(-1, 0, 1) * displaySize.x / 2;
         Vector3 boxSize = Vector3.one * displaySize.x / 4;
 
+        clippingBox.name = "ClippingBox";
         clippingBox.transform.SetParent(displayCenter.transform);
         clippingBox.transform.localPosition = boxPosition;
         clippingBox.transform.localRotation = Quaternion.identity;
         clippingBox.GetComponent<ClippingBox>().minBounds = -boxSize / 2;
         clippingBox.GetComponent<ClippingBox>().maxBounds = boxSize / 2;
+        ClippingBox.Instance.Setup();
     }
 }

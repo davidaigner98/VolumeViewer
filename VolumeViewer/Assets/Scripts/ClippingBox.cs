@@ -27,7 +27,7 @@ public class ClippingBox : MonoBehaviour {
         else { Instance = this; }
     }
 
-    private void Start() {
+    public void Setup() {
         foreach (Transform cornerGO in transform.Find("Corners")) {
             corners.Add(cornerGO.GetComponent<ClippingBoxCorner>());
         }
@@ -35,6 +35,7 @@ public class ClippingBox : MonoBehaviour {
         if (drawBox) { DrawBox(); }
         UpdateTrigger();
         UpdateLineVertices();
+        UpdateAllCornerPositions();
     }
 
     private void Update() {
@@ -147,6 +148,7 @@ public class ClippingBox : MonoBehaviour {
     }
 
     private void SetVerticeOfLineRenderer(int childIndex, int pointIndex, Vector3 position) {
+        position = transform.TransformDirection(position);
         transform.Find("Lines").GetChild(childIndex).GetComponent<LineRenderer>().SetPosition(pointIndex, transform.position + position);
     }
 
@@ -188,7 +190,7 @@ public class ClippingBox : MonoBehaviour {
             }
         }
 
-        if (Vector3.Distance(pinchPosition, pinchedCorner.transform.position) < 0.5f) {
+        if (Vector3.Distance(pinchPosition, pinchedCorner.transform.position) < 0.2f) {
             ClippingBoxCorner cornerScript = pinchedCorner.GetComponent<ClippingBoxCorner>();
             cornerScript.StartGrabMovement(grabbingHand);
         }
@@ -203,10 +205,13 @@ public class ClippingBox : MonoBehaviour {
 
     public void UpdateCorner(GameObject cornerGO, Vector3 newPosition) {
         Vector3 cornerIndex = GetIndexOfCorner(cornerGO);
-        
+        newPosition = newPosition - transform.position;
+
+        Debug.Log("Before: "+minBounds+" , "+maxBounds);
         UpdateBoundary(cornerIndex.x == 1, 'x', newPosition.x);
         UpdateBoundary(cornerIndex.y == 1, 'y', newPosition.y);
         UpdateBoundary(cornerIndex.z == 1, 'z', newPosition.z);
+        Debug.Log("After: " + minBounds + " , " + maxBounds);
 
         UpdateAllCornerPositions();
         UpdateTrigger();
@@ -236,13 +241,18 @@ public class ClippingBox : MonoBehaviour {
     }
 
     private void UpdateAllCornerPositions() {
+        List<GameObject> cornerGOs = new List<GameObject>();
+
         foreach (Vector3 index in possibleIndices) {
-            UpdateCornerPosition(index);
+            cornerGOs.Add(GetCorner(index));
+        }
+
+        for (int i = 0; i < possibleIndices.Count; i++) {
+            UpdateCornerPosition(cornerGOs[i], possibleIndices[i]);
         }
     }
 
-    private void UpdateCornerPosition(Vector3 index) {
-        GameObject cornerGO = GetCorner(index);
+    private void UpdateCornerPosition(GameObject cornerGO, Vector3 index) {
         float posX = maxBounds.x;
         if (index.x == -1) { posX = minBounds.x; }
         float posY = maxBounds.y;
@@ -250,7 +260,7 @@ public class ClippingBox : MonoBehaviour {
         float posZ = maxBounds.z;
         if (index.z == -1) { posZ = minBounds.z; }
 
-        cornerGO.transform.position = new Vector3(posX, posY, posZ);
+        cornerGO.transform.localPosition = new Vector3(posX, posY, posZ);
     }
 
     private GameObject GetCorner(Vector3 index) {
