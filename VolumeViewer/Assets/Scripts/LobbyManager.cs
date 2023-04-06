@@ -45,14 +45,13 @@ public class LobbyManager : MonoBehaviour {
         networkManager.OnClientConnectedCallback += ClientConnectionSuccess;
         networkManager.OnClientDisconnectCallback += ClientConnectionFailure;
 
-
         networkManager.StartClient();
         Destroy(displayInputManager);
     }
 
     private void ClientConnectionSuccess(ulong clientId) {
         networkManager.OnClientDisconnectCallback -= ClientConnectionFailure;
-        Instantiate(clippingBoxPrefab);
+        SpawnClippingBox();
         CrossPlatformMediator.Instance.isInLobby = false;
         Destroy(gameObject);
     }
@@ -70,5 +69,19 @@ public class LobbyManager : MonoBehaviour {
         newCamera.transform.LookAt(Vector3.zero);
 
         return newCamera;
+    }
+
+    private void SpawnClippingBox() {
+        GameObject clippingBox = Instantiate(clippingBoxPrefab);
+        GameObject displayCenter = DisplayProfileManager.Instance.GetCurrentDisplayCenter();
+        Vector3 displaySize = DisplayProfileManager.Instance.GetCurrentDisplaySize().transform.localScale;
+        Vector3 boxPosition = new Vector3(-1, 0, 1) * displaySize.x / 2;
+        Vector3 boxSize = Vector3.one * displaySize.x / 4;
+
+        clippingBox.transform.SetParent(displayCenter.transform);
+        clippingBox.transform.localPosition = boxPosition;
+        clippingBox.transform.localRotation = Quaternion.identity;
+        clippingBox.GetComponent<ClippingBox>().minBounds = -boxSize / 2;
+        clippingBox.GetComponent<ClippingBox>().maxBounds = boxSize / 2;
     }
 }
