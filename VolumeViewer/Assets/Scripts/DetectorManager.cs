@@ -62,7 +62,7 @@ public class DetectorManager : MonoBehaviour {
     private ModelInfo GetModelByRaycast(Ray ray) {
         RaycastHit hitInfo;
         if (Physics.Raycast(ray, out hitInfo)) {
-            return hitInfo.collider.gameObject.GetComponent<ModelInfo>();
+            return hitInfo.collider.gameObject.GetComponentInParent<ModelInfo>();
         }
 
         return null;

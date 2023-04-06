@@ -823,8 +823,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d8592c1771173745b252b9d17056306, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minBounds: {x: -0.5, y: 0.5, z: -0.5}
-  maxBounds: {x: 0.5, y: 1.5, z: 0.5}
+  minBounds: {x: -0.5, y: -0.5, z: -0.5}
+  maxBounds: {x: 0.5, y: 0.5, z: 0.5}
   includedModels: []
   drawBox: 1
 --- !u!65 &3051625603395662664

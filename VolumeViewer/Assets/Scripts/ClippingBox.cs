@@ -86,7 +86,7 @@ public class ClippingBox : MonoBehaviour {
         RemoveNullEntries();
 
         foreach (ModelInfo currModel in includedModels) {
-            Material[] currMats = currModel.gameObject.GetComponent<Renderer>().materials;
+            Material[] currMats = currModel.transform.Find("Model").GetComponent<Renderer>().materials;
 
             foreach (Material currMat in currMats) {
                 if (active) {
@@ -146,12 +146,12 @@ public class ClippingBox : MonoBehaviour {
     }
 
     private void OnTriggerEnter(Collider other) {
-        ModelInfo modelInfo = other.gameObject.GetComponent<ModelInfo>();
+        ModelInfo modelInfo = other.gameObject.GetComponentInParent<ModelInfo>();
         if (modelInfo) { includedModels.Add(modelInfo); }
     }
 
     private void OnTriggerExit(Collider other) {
-        ModelInfo modelInfo = other.gameObject.GetComponent<ModelInfo>();
+        ModelInfo modelInfo = other.gameObject.GetComponentInParent<ModelInfo>();
         if (modelInfo) { includedModels.Remove(modelInfo); }
 
         Material[] currMats = other.gameObject.GetComponent<Renderer>().materials;

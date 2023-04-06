@@ -24,12 +24,10 @@ public class ModelTransformator : NetworkBehaviour {
     private void Start() {
         ModelManager.Instance.attached.OnValueChanged += ChangeModelAttachment;
 
-        Material[] mats = GetComponent<Renderer>().materials;
+        Material[] mats = transform.Find("Model").GetComponent<Renderer>().materials;
         foreach (Material mat in mats) {
             mat.shader = Shader.Find("Custom/ModelShader");
         }
-
-        GetComponent<MeshRenderer>().enabled = true;
 
         if (CrossPlatformMediator.Instance.isServer) { SetupServer(); }
         else { SetupClient(); }
@@ -179,7 +177,7 @@ public class ModelTransformator : NetworkBehaviour {
     }
 
     public void SetAlpha(float alpha) {
-        Material[] mats = GetComponent<Renderer>().materials;
+        Material[] mats = transform.Find("Model").GetComponent<Renderer>().materials;
         foreach (Material mat in mats) {
             Color newColor = mat.color;
             newColor.a = alpha;
