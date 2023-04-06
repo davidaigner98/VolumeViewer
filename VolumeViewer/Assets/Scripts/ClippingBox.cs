@@ -86,7 +86,7 @@ public class ClippingBox : MonoBehaviour {
         RemoveNullEntries();
 
         foreach (ModelInfo currModel in includedModels) {
-            Material[] currMats = currModel.gameObject.GetComponent<Renderer>().materials;
+            Material[] currMats = currModel.transform.Find("Model").GetComponent<Renderer>().materials;
 
             foreach (Material currMat in currMats) {
                 if (active) {

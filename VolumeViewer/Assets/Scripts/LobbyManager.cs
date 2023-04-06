@@ -45,8 +45,8 @@ public class LobbyManager : MonoBehaviour {
         networkManager.OnClientConnectedCallback += ClientConnectionSuccess;
         networkManager.OnClientDisconnectCallback += ClientConnectionFailure;
 
-        networkManager.StartClient();
 
+        networkManager.StartClient();
         Destroy(displayInputManager);
     }
 
