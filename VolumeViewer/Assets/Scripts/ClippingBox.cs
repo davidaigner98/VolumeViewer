@@ -146,12 +146,12 @@ public class ClippingBox : MonoBehaviour {
     }
 
     private void OnTriggerEnter(Collider other) {
-        ModelInfo modelInfo = other.gameObject.GetComponent<ModelInfo>();
+        ModelInfo modelInfo = other.gameObject.GetComponentInParent<ModelInfo>();
         if (modelInfo) { includedModels.Add(modelInfo); }
     }
 
     private void OnTriggerExit(Collider other) {
-        ModelInfo modelInfo = other.gameObject.GetComponent<ModelInfo>();
+        ModelInfo modelInfo = other.gameObject.GetComponentInParent<ModelInfo>();
         if (modelInfo) { includedModels.Remove(modelInfo); }
 
         Material[] currMats = other.gameObject.GetComponent<Renderer>().materials;

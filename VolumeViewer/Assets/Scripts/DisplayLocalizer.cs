@@ -19,7 +19,7 @@ public class DisplayLocalizer : MonoBehaviour {
     public ModelInfo FindModelByRaycast(Vector2 screenCoordinates) {
         RaycastHit hitInfo;
         if (Physics.Raycast(displayCamera.ScreenPointToRay(screenCoordinates), out hitInfo)) {
-            return hitInfo.collider.gameObject.GetComponent<ModelInfo>();
+            return hitInfo.collider.gameObject.GetComponentInParent<ModelInfo>();
         }
 
         return null;
