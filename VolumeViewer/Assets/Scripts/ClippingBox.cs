@@ -104,8 +104,6 @@ public class ClippingBox : MonoBehaviour {
 
         RemoveNullEntries();
 
-        Debug.Log(minBounds+" , "+maxBounds+" + "+rotation);
-
         foreach (ModelInfo currModel in includedModels) {
             Material[] currMats = currModel.transform.Find("Model").GetComponent<Renderer>().materials;
 
