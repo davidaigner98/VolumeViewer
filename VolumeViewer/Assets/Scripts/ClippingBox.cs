@@ -193,29 +193,26 @@ public class ClippingBox : MonoBehaviour {
         }
 
         if (Vector3.Distance(pinchPosition, pinchedCorner.transform.position) < 0.2f) {
-            ClippingBoxCorner cornerScript = pinchedCorner.GetComponent<ClippingBoxCorner>();
-            cornerScript.StartGrabMovement(grabbingHand);
+            pinchedCorner.GetComponent<ClippingBoxCorner>().StartGrabMovement(grabbingHand);
         }
     }
 
     public void EndPinchMovement() {
         foreach (Transform corner in transform.Find("Corners")) {
-            ClippingBoxCorner cornerScript = corner.GetComponent<ClippingBoxCorner>();
-            cornerScript.EndGrabMovement();
+            corner.GetComponent<ClippingBoxCorner>().EndGrabMovement();
         }
     }
 
     public void UpdateCorner(GameObject cornerGO, Vector3 newPosition) {
         Vector3 cornerIndex = GetIndexOfCorner(cornerGO);
-        newPosition = newPosition - transform.position;
 
         UpdateBoundary(cornerIndex.x == 1, 'x', newPosition.x);
         UpdateBoundary(cornerIndex.y == 1, 'y', newPosition.y);
         UpdateBoundary(cornerIndex.z == 1, 'z', newPosition.z);
         
         UpdateAllCornerPositions();
-        UpdateTrigger();
         UpdateLineVertices();
+        UpdateTrigger();
     }
 
     private void UpdateBoundary(bool max, char coordinate, float value) {

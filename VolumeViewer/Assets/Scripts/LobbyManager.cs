@@ -64,7 +64,7 @@ public class LobbyManager : MonoBehaviour {
         Destroy(interactionManager);
         Destroy(serviceProvider);
         Destroy(xrRig);
-        GameObject newCamera = GameObject.Instantiate(displayCamera);
+        GameObject newCamera = Instantiate(displayCamera);
         newCamera.transform.position = displayCameraPosition;
         newCamera.transform.LookAt(Vector3.zero);
 
@@ -80,10 +80,10 @@ public class LobbyManager : MonoBehaviour {
 
         clippingBox.name = "ClippingBox";
         clippingBox.transform.SetParent(displayCenter.transform);
-        clippingBox.transform.localPosition = boxPosition;
-        clippingBox.transform.localRotation = Quaternion.identity;
-        clippingBox.GetComponent<ClippingBox>().minBounds = -boxSize / 2;
-        clippingBox.GetComponent<ClippingBox>().maxBounds = boxSize / 2;
+        clippingBox.transform.localPosition = Vector3.zero;
+        //clippingBox.transform.localRotation = Quaternion.identity;
+        clippingBox.GetComponent<ClippingBox>().minBounds = boxPosition - boxSize / 2;
+        clippingBox.GetComponent<ClippingBox>().maxBounds = boxPosition + boxSize / 2;
         ClippingBox.Instance.Setup();
     }
 }
