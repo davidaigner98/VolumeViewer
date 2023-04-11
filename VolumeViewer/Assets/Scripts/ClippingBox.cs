@@ -205,12 +205,12 @@ public class ClippingBox : MonoBehaviour {
         }
     }
 
-    public void UpdateCorner(GameObject cornerGO, Vector3 newPosition) {
+    public void UpdateCorner(GameObject cornerGO, Vector3 delta) {
         Vector3 cornerIndex = GetIndexOfCorner(cornerGO);
 
-        UpdateBoundary(cornerIndex.x == 1, 'x', newPosition.x);
-        UpdateBoundary(cornerIndex.y == 1, 'y', newPosition.y);
-        UpdateBoundary(cornerIndex.z == 1, 'z', newPosition.z);
+        UpdateBoundary(cornerIndex.x == 1, 'x', delta.x);
+        UpdateBoundary(cornerIndex.y == 1, 'y', delta.y);
+        UpdateBoundary(cornerIndex.z == 1, 'z', delta.z);
         
         UpdateAllCornerPositions();
         UpdateLineVertices();
@@ -219,13 +219,13 @@ public class ClippingBox : MonoBehaviour {
 
     private void UpdateBoundary(bool max, char coordinate, float value) {
         if (max) {
-            if (coordinate.Equals('x')) { maxBounds.Set(value, maxBounds.y, maxBounds.z); }
-            else if (coordinate.Equals('y')) { maxBounds.Set(maxBounds.x, value, maxBounds.z); }
-            else if (coordinate.Equals('z')) { maxBounds.Set(maxBounds.x, maxBounds.y, value); }
+            if (coordinate.Equals('x')) { maxBounds.Set(maxBounds.x + value, maxBounds.y, maxBounds.z); }
+            else if (coordinate.Equals('y')) { maxBounds.Set(maxBounds.x, maxBounds.y + value, maxBounds.z); }
+            else if (coordinate.Equals('z')) { maxBounds.Set(maxBounds.x, maxBounds.y, maxBounds.z + value); }
         } else {
-            if (coordinate.Equals('x')) { minBounds.Set(value, minBounds.y, minBounds.z); }
-            else if (coordinate.Equals('y')) { minBounds.Set(minBounds.x, value, minBounds.z); }
-            else if (coordinate.Equals('z')) { minBounds.Set(minBounds.x, minBounds.y, value); }
+            if (coordinate.Equals('x')) { minBounds.Set(minBounds.x + value, minBounds.y, minBounds.z); }
+            else if (coordinate.Equals('y')) { minBounds.Set(minBounds.x, minBounds.y + value, minBounds.z); }
+            else if (coordinate.Equals('z')) { minBounds.Set(minBounds.x, minBounds.y, minBounds.z + value); }
         }
     }
 
@@ -263,7 +263,7 @@ public class ClippingBox : MonoBehaviour {
     }
 
     private GameObject GetCorner(Vector3 index) {
-        GameObject minimumCorner = null;
+        GameObject resultCorner = null;
         Vector3 boxCenter = GetBoxCenter();
         float positionSum = 0;
 
@@ -274,13 +274,13 @@ public class ClippingBox : MonoBehaviour {
             currPositionSum += currPosition.y * index.y;
             currPositionSum += currPosition.z * index.z;
             
-            if (minimumCorner == null || currPositionSum < positionSum) {
-                minimumCorner = corner.gameObject;
+            if (resultCorner == null || currPositionSum > positionSum) {
+                resultCorner = corner.gameObject;
                 positionSum = currPositionSum;
             }
         }
         
-        return minimumCorner;
+        return resultCorner;
     }
 
     private Vector3 GetBoxCenter() {

@@ -6,6 +6,7 @@ public class ClippingBoxCorner : MonoBehaviour {
     private ClippingBox clippingBox;
     private bool isBeingGrabbed = false;
     private Hand grabbingHand;
+    private Vector3 lastPinchPosition;
 
     private void Start() {
         clippingBox = transform.parent.parent.GetComponent<ClippingBox>();
@@ -22,9 +23,15 @@ public class ClippingBoxCorner : MonoBehaviour {
     public void StartGrabMovement(Hand grabbingHand) {
         isBeingGrabbed = true;
         this.grabbingHand = grabbingHand;
+        lastPinchPosition = grabbingHand.GetPinchPosition();
     }
+
     private void PerformGrabMovement() {
-        clippingBox.UpdateCorner(gameObject, grabbingHand.GetPinchPosition());
+        Vector3 currPinchPosition = grabbingHand.GetPinchPosition();
+        Vector3 pinchDelta = currPinchPosition - lastPinchPosition;
+        lastPinchPosition = currPinchPosition;
+
+        clippingBox.UpdateCorner(gameObject, pinchDelta);
     }
 
     public void EndGrabMovement() {
