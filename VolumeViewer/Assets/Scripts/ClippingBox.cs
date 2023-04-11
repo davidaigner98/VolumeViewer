@@ -41,8 +41,6 @@ public class ClippingBox : MonoBehaviour {
     private void Update() {
         if (active) {
             UpdateModelMaterials();
-        } else {
-            SetActive(true);
         }
     }
 
@@ -64,24 +62,28 @@ public class ClippingBox : MonoBehaviour {
     }
 
     private void DrawBox() {
-        DrawLine(transform.position + new Vector3(minBounds.x, minBounds.y, minBounds.z), transform.position + new Vector3(maxBounds.x, minBounds.y, minBounds.z)).transform.SetParent(transform.Find("Lines"));
-        DrawLine(transform.position + new Vector3(minBounds.x, minBounds.y, maxBounds.z), transform.position + new Vector3(maxBounds.x, minBounds.y, maxBounds.z)).transform.SetParent(transform.Find("Lines"));
-        DrawLine(transform.position + new Vector3(minBounds.x, maxBounds.y, minBounds.z), transform.position + new Vector3(maxBounds.x, maxBounds.y, minBounds.z)).transform.SetParent(transform.Find("Lines"));
-        DrawLine(transform.position + new Vector3(minBounds.x, maxBounds.y, maxBounds.z), transform.position + new Vector3(maxBounds.x, maxBounds.y, maxBounds.z)).transform.SetParent(transform.Find("Lines"));
+        DrawLine(transform.position + new Vector3(minBounds.x, minBounds.y, minBounds.z), transform.position + new Vector3(maxBounds.x, minBounds.y, minBounds.z));
+        DrawLine(transform.position + new Vector3(minBounds.x, minBounds.y, maxBounds.z), transform.position + new Vector3(maxBounds.x, minBounds.y, maxBounds.z));
+        DrawLine(transform.position + new Vector3(minBounds.x, maxBounds.y, minBounds.z), transform.position + new Vector3(maxBounds.x, maxBounds.y, minBounds.z));
+        DrawLine(transform.position + new Vector3(minBounds.x, maxBounds.y, maxBounds.z), transform.position + new Vector3(maxBounds.x, maxBounds.y, maxBounds.z));
 
-        DrawLine(transform.position + new Vector3(minBounds.x, minBounds.y, minBounds.z), transform.position + new Vector3(minBounds.x, maxBounds.y, minBounds.z)).transform.SetParent(transform.Find("Lines"));
-        DrawLine(transform.position + new Vector3(minBounds.x, minBounds.y, maxBounds.z), transform.position + new Vector3(minBounds.x, maxBounds.y, maxBounds.z)).transform.SetParent(transform.Find("Lines"));
-        DrawLine(transform.position + new Vector3(maxBounds.x, minBounds.y, minBounds.z), transform.position + new Vector3(maxBounds.x, maxBounds.y, minBounds.z)).transform.SetParent(transform.Find("Lines"));
-        DrawLine(transform.position + new Vector3(maxBounds.x, minBounds.y, maxBounds.z), transform.position + new Vector3(maxBounds.x, maxBounds.y, maxBounds.z)).transform.SetParent(transform.Find("Lines"));
+        DrawLine(transform.position + new Vector3(minBounds.x, minBounds.y, minBounds.z), transform.position + new Vector3(minBounds.x, maxBounds.y, minBounds.z));
+        DrawLine(transform.position + new Vector3(minBounds.x, minBounds.y, maxBounds.z), transform.position + new Vector3(minBounds.x, maxBounds.y, maxBounds.z));
+        DrawLine(transform.position + new Vector3(maxBounds.x, minBounds.y, minBounds.z), transform.position + new Vector3(maxBounds.x, maxBounds.y, minBounds.z));
+        DrawLine(transform.position + new Vector3(maxBounds.x, minBounds.y, maxBounds.z), transform.position + new Vector3(maxBounds.x, maxBounds.y, maxBounds.z));
 
-        DrawLine(transform.position + new Vector3(minBounds.x, minBounds.y, minBounds.z), transform.position + new Vector3(minBounds.x, minBounds.y, maxBounds.z)).transform.SetParent(transform.Find("Lines"));
-        DrawLine(transform.position + new Vector3(minBounds.x, maxBounds.y, minBounds.z), transform.position + new Vector3(minBounds.x, maxBounds.y, maxBounds.z)).transform.SetParent(transform.Find("Lines"));
-        DrawLine(transform.position + new Vector3(maxBounds.x, minBounds.y, minBounds.z), transform.position + new Vector3(maxBounds.x, minBounds.y, maxBounds.z)).transform.SetParent(transform.Find("Lines"));
-        DrawLine(transform.position + new Vector3(maxBounds.x, maxBounds.y, minBounds.z), transform.position + new Vector3(maxBounds.x, maxBounds.y, maxBounds.z)).transform.SetParent(transform.Find("Lines"));
+        DrawLine(transform.position + new Vector3(minBounds.x, minBounds.y, minBounds.z), transform.position + new Vector3(minBounds.x, minBounds.y, maxBounds.z));
+        DrawLine(transform.position + new Vector3(minBounds.x, maxBounds.y, minBounds.z), transform.position + new Vector3(minBounds.x, maxBounds.y, maxBounds.z));
+        DrawLine(transform.position + new Vector3(maxBounds.x, minBounds.y, minBounds.z), transform.position + new Vector3(maxBounds.x, minBounds.y, maxBounds.z));
+        DrawLine(transform.position + new Vector3(maxBounds.x, maxBounds.y, minBounds.z), transform.position + new Vector3(maxBounds.x, maxBounds.y, maxBounds.z));
     }
 
     private GameObject DrawLine(Vector3 from, Vector3 to) {
         GameObject newLineGO = new GameObject("Line");
+        newLineGO.transform.SetParent(transform.Find("Lines"));
+        newLineGO.transform.localPosition = Vector3.zero;
+        newLineGO.transform.localRotation = Quaternion.identity;
+
         LineRenderer renderer = newLineGO.AddComponent<LineRenderer>();
         renderer.SetPosition(0, from);
         renderer.SetPosition(1, to);
@@ -101,6 +103,8 @@ public class ClippingBox : MonoBehaviour {
         Vector4 rotation = new Vector4(-transform.rotation.x, -transform.rotation.y, -transform.rotation.z, transform.rotation.w);
 
         RemoveNullEntries();
+
+        Debug.Log(minBounds+" , "+maxBounds+" + "+rotation);
 
         foreach (ModelInfo currModel in includedModels) {
             Material[] currMats = currModel.transform.Find("Model").GetComponent<Renderer>().materials;

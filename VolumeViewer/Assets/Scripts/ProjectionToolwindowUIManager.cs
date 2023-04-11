@@ -5,6 +5,7 @@ public class ProjectionToolwindowUIManager : MonoBehaviour {
     public static ProjectionToolwindowUIManager Instance { get; private set; }
     private bool clippingBoxEnabled = false;
     public Toggle clippingBoxToggler;
+    public bool manualToggle = false;
 
     private void Awake() {
         if (Instance != null && Instance != this) { Destroy(this); }
@@ -13,6 +14,13 @@ public class ProjectionToolwindowUIManager : MonoBehaviour {
 
     void Start() {
         AssumePosition();
+    }
+
+    void Update() {
+        if (manualToggle) {
+            manualToggle = false;
+            ToggleClippingBox();
+        }
     }
 
     private void AssumePosition() {
