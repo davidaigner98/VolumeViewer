@@ -80,8 +80,9 @@ public class LobbyManager : MonoBehaviour {
 
         clippingBox.name = "ClippingBox";
         clippingBox.transform.SetParent(displayCenter.transform);
-        clippingBox.transform.localPosition = Vector3.zero;
+        clippingBox.transform.position = Vector3.zero;
         clippingBox.transform.localRotation = Quaternion.identity;
+        clippingBox.transform.SetParent(null);
         clippingBox.GetComponent<ClippingBox>().minBounds = boxPosition - boxSize / 2;
         clippingBox.GetComponent<ClippingBox>().maxBounds = boxPosition + boxSize / 2;
         ClippingBox.Instance.Setup();
