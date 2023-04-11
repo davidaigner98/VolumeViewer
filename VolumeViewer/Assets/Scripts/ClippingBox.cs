@@ -87,8 +87,8 @@ public class ClippingBox : MonoBehaviour {
         LineRenderer renderer = newLineGO.AddComponent<LineRenderer>();
         renderer.SetPosition(0, from);
         renderer.SetPosition(1, to);
-        renderer.startWidth = 0.01f;
-        renderer.endWidth = 0.01f;
+        renderer.startWidth = 0.005f;
+        renderer.endWidth = 0.005f;
         renderer.numCapVertices = 8;
         renderer.enabled = false;
 
