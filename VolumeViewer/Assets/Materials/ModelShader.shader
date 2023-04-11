@@ -16,8 +16,11 @@ Shader "Custom/ModelShader"
                 #pragma surface surf Standard fullforwardshadows
                 #pragma target 3.0
 
+                #include "UnityCG.cginc"
+
                 float3 _MinBounds;
                 float3 _MaxBounds;
+                float4 _Rotation;
                 fixed3 _Color;
 
                 struct Input {
@@ -27,8 +30,10 @@ Shader "Custom/ModelShader"
                 };
 
                 void surf(Input i, inout SurfaceOutputStandard o) {
-                    if (i.worldPos.x > _MinBounds.x && i.worldPos.y > _MinBounds.y && i.worldPos.z > _MinBounds.z) {
-                        if (i.worldPos.x < _MaxBounds.x && i.worldPos.y < _MaxBounds.y && i.worldPos.z < _MaxBounds.z) {
+                    float3 newPos = i.worldPos + 2.0 * cross(_Rotation.xyz, cross(_Rotation.xyz, i.worldPos) + _Rotation.w * i.worldPos);
+
+                    if (newPos.x > _MinBounds.x && newPos.y > _MinBounds.y && newPos.z > _MinBounds.z) {
+                        if (newPos.x < _MaxBounds.x && newPos.y < _MaxBounds.y && newPos.z < _MaxBounds.z) {
                             clip(-1);
                         }
                     }

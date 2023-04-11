@@ -41,6 +41,8 @@ public class ClippingBox : MonoBehaviour {
     private void Update() {
         if (active) {
             UpdateModelMaterials();
+        } else {
+            SetActive(true);
         }
     }
 
@@ -96,8 +98,7 @@ public class ClippingBox : MonoBehaviour {
     }
 
     private void UpdateModelMaterials() {
-        Vector3 minBounds = transform.position + this.minBounds;
-        Vector3 maxBounds = transform.position + this.maxBounds;
+        Vector4 rotation = new Vector4(-transform.rotation.x, -transform.rotation.y, -transform.rotation.z, transform.rotation.w);
 
         RemoveNullEntries();
 
@@ -108,6 +109,7 @@ public class ClippingBox : MonoBehaviour {
                 if (active) {
                     currMat.SetVector("_MinBounds", minBounds);
                     currMat.SetVector("_MaxBounds", maxBounds);
+                    currMat.SetVector("_Rotation", rotation);
                 } else {
                     currMat.SetVector("_MinBounds", new Vector3(1, 1, 1));
                     currMat.SetVector("_MaxBounds", new Vector3(0, 0, 0));
@@ -207,12 +209,10 @@ public class ClippingBox : MonoBehaviour {
         Vector3 cornerIndex = GetIndexOfCorner(cornerGO);
         newPosition = newPosition - transform.position;
 
-        Debug.Log("Before: "+minBounds+" , "+maxBounds);
         UpdateBoundary(cornerIndex.x == 1, 'x', newPosition.x);
         UpdateBoundary(cornerIndex.y == 1, 'y', newPosition.y);
         UpdateBoundary(cornerIndex.z == 1, 'z', newPosition.z);
-        Debug.Log("After: " + minBounds + " , " + maxBounds);
-
+        
         UpdateAllCornerPositions();
         UpdateTrigger();
         UpdateLineVertices();
