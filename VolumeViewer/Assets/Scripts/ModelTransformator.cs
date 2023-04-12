@@ -88,6 +88,9 @@ public class ModelTransformator : NetworkBehaviour {
 
         Material[] mats = transform.Find("Model").GetComponent<Renderer>().materials;
         foreach (Material mat in mats) {
+            if (inDisplay) { mat.SetInt("_InDisplay", 1); }
+            else { mat.SetInt("_InDisplay", 0); }
+
             mat.SetVector("_ScreenCorner1", screenCorner1);
             mat.SetVector("_ScreenCorner2", screenCorner2);
             mat.SetVector("_ScreenCorner3", screenCorner3);
@@ -144,6 +147,7 @@ public class ModelTransformator : NetworkBehaviour {
                 inDisplay = false;
                 isBeingGrabbed = true;
                 lastPalmPosition = interactingHand.PalmPosition;
+                UpdateClipScreenParameters();
             }
         }
     }
@@ -188,6 +192,7 @@ public class ModelTransformator : NetworkBehaviour {
         ChangeModelAttachment(true, true);
         CrossPlatformMediator.Instance.ChangeAttachmentButtonInteractabilityServerRpc(false);
         transform.position = destination;
+        UpdateClipScreenParameters();
     }
 
     public void ChangeModelAttachment(bool prev, bool current) {
