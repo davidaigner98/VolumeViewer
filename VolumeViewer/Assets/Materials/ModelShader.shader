@@ -41,28 +41,25 @@ Shader "Custom/ModelShader"
 
                     if (newPos.x > _MinBounds.x && newPos.y > _MinBounds.y && newPos.z > _MinBounds.z) {
                         if (newPos.x < _MaxBounds.x && newPos.y < _MaxBounds.y && newPos.z < _MaxBounds.z) {
-                            clip(-1);
+                            //clip(-1);
                         }
                     }
 
                     float3 screenCenter = (screenCorner1 + screenCorner2 + screenCorner3 + screenCorner4) / 4;
-                    screenNormal -= screenCenter;
-                    screenNormal /= length(screenNormal);
-                    float3 negScreenNormal = -screenNormal;
-                    float3 pointPos = (i.worldPos - screenCenter);
-                    pointPos /= length(pointPos);
+                    screenNormal = screenNormal - screenCenter;
+                    //float3 negScreenNormal = -screenNormal;
+                    float3 pointPos = i.worldPos - screenCenter;
 
-                    float screenEdge12 = screenCorner2 - screenCorner1;
-                    screenEdge12 /= length(screenEdge12);
-                    float screenEdge23 = screenCorner3 - screenCorner2;
-                    screenEdge23 /= length(screenEdge23);
-                    //float screenEdge34 = screenCorner4 - screenCorner3;
-                    //screenEdge34 /= length(screenEdge34);
-                    //float screenEdge41 = screenCorner1 - screenCorner4;
-                    //screenEdge41 /= length(screenEdge41);
+                    float3 screenEdge12 = screenCorner2 - screenCorner1;
+                    float3 screenEdge23 = screenCorner3 - screenCorner2;
+                    //float3 screenEdge34 = screenCorner4 - screenCorner3;
+                    //float3 screenEdge41 = screenCorner1 - screenCorner4;
 
-                    float planeCross = cross(screenEdge12, screenEdge23);
-                    float d0 = cross(planeCross, pointPos) * cross(planeCross, screenNormal);
+                    float3 planeCross = cross(screenEdge12, screenEdge23);
+                    float d0 = dot(planeCross, pointPos) * dot(planeCross, screenNormal);
+
+                    float cr1 = dot(planeCross, pointPos);
+                    float cr2 = dot(planeCross, screenNormal);
 
                     if (d0 < 0) {
                         clip(-1);
