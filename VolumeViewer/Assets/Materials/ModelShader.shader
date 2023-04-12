@@ -24,11 +24,11 @@ Shader "Custom/ModelShader"
                 float3 _MaxBounds;
                 float4 _Rotation;
 
-                float3 screenCorner1;
-                float3 screenCorner2;
-                float3 screenCorner3;
-                float3 screenCorner4;
-                float3 screenNormal;
+                float3 _ScreenCorner1;
+                float3 _ScreenCorner2;
+                float3 _ScreenCorner3;
+                float3 _ScreenCorner4;
+                float3 _ScreenNormal;
 
                 struct Input {
                     float2 uv_MainTex;
@@ -41,27 +41,36 @@ Shader "Custom/ModelShader"
 
                     if (newPos.x > _MinBounds.x && newPos.y > _MinBounds.y && newPos.z > _MinBounds.z) {
                         if (newPos.x < _MaxBounds.x && newPos.y < _MaxBounds.y && newPos.z < _MaxBounds.z) {
-                            //clip(-1);
+                            clip(-1);
                         }
                     }
 
-                    float3 screenCenter = (screenCorner1 + screenCorner2 + screenCorner3 + screenCorner4) / 4;
-                    screenNormal = screenNormal - screenCenter;
-                    //float3 negScreenNormal = -screenNormal;
+                    float3 screenCenter = (_ScreenCorner1 + _ScreenCorner2 + _ScreenCorner3 + _ScreenCorner4) / 4;
+                    _ScreenNormal = _ScreenNormal - screenCenter;
+                    float3 negScreenNormal = -_ScreenNormal;
                     float3 pointPos = i.worldPos - screenCenter;
 
-                    float3 screenEdge12 = screenCorner2 - screenCorner1;
-                    float3 screenEdge23 = screenCorner3 - screenCorner2;
-                    //float3 screenEdge34 = screenCorner4 - screenCorner3;
-                    //float3 screenEdge41 = screenCorner1 - screenCorner4;
+                    float3 screenEdge12 = _ScreenCorner2 - _ScreenCorner1;
+                    float3 screenEdge23 = _ScreenCorner3 - _ScreenCorner2;
+                    float3 screenEdge34 = _ScreenCorner4 - _ScreenCorner3;
+                    float3 screenEdge41 = _ScreenCorner1 - _ScreenCorner4;
 
                     float3 planeCross = cross(screenEdge12, screenEdge23);
-                    float d0 = dot(planeCross, pointPos) * dot(planeCross, screenNormal);
+                    float d0 = dot(planeCross, pointPos) * dot(planeCross, _ScreenNormal);
+                    
+                    float3 planeTopEnd = cross(screenEdge12, negScreenNormal);
+                    float d1 = dot(planeTopEnd, pointPos) * dot(planeTopEnd, screenEdge41);
 
-                    float cr1 = dot(planeCross, pointPos);
-                    float cr2 = dot(planeCross, screenNormal);
+                    float3 planeRightEnd = cross(screenEdge23, negScreenNormal);
+                    float d2 = dot(planeRightEnd, pointPos) * dot(planeTopEnd, screenEdge12);
 
-                    if (d0 < 0) {
+                    float3 planeBottomEnd = cross(screenEdge34, negScreenNormal);
+                    float d3 = dot(planeBottomEnd, pointPos) * dot(planeTopEnd, screenEdge23);
+
+                    float3 planeLeftEnd = cross(screenEdge41, negScreenNormal);
+                    float d4 = dot(planeLeftEnd, pointPos) * dot(planeTopEnd, screenEdge34);
+
+                    if (d0 < 0 && d1 < 0 && d2 < 0 && d3 < 0 && d4 < 0) {
                         clip(-1);
                     }
 

@@ -82,11 +82,11 @@ public class ModelTransformator : NetworkBehaviour {
 
         Material[] mats = transform.Find("Model").GetComponent<Renderer>().materials;
         foreach (Material mat in mats) {
-            mat.SetVector("screenCorner1", screenCorner1);
-            mat.SetVector("screenCorner2", screenCorner2);
-            mat.SetVector("screenCorner3", screenCorner3);
-            mat.SetVector("screenCorner4", screenCorner4);
-            mat.SetVector("screenNormal", screenNormal);
+            mat.SetVector("_ScreenCorner1", screenCorner1);
+            mat.SetVector("_ScreenCorner2", screenCorner2);
+            mat.SetVector("_ScreenCorner3", screenCorner3);
+            mat.SetVector("_ScreenCorner4", screenCorner4);
+            mat.SetVector("_ScreenNormal", screenNormal);
         }
     }
 
