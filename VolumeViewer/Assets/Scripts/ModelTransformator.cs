@@ -20,6 +20,7 @@ public class ModelTransformator : NetworkBehaviour {
     private bool isBeingRotated = false;
     private Vector3 lastPalmPosition;
     private Vector3 lastIndexPosition;
+    private Collider collider;
 
     private void Start() {
         ModelManager.Instance.attached.OnValueChanged += ChangeModelAttachment;
@@ -29,12 +30,13 @@ public class ModelTransformator : NetworkBehaviour {
             mat.shader = Shader.Find("Custom/ModelShader");
         }
 
+        collider = transform.Find("Model").GetComponent<Collider>();
         if (CrossPlatformMediator.Instance.isServer) { SetupServer(); }
         else { SetupClient(); }
     }
 
     public void SetupServer() {
-        SetAlpha(1);
+        //SetAlpha(1);
         AlignCoronal();
     }
 
@@ -51,7 +53,9 @@ public class ModelTransformator : NetworkBehaviour {
         transform.SetParent(displayCenter.transform);
         transform.localPosition = Vector3.zero;
 
-        SetAlpha(0);
+        //SetAlpha(0);
+
+        UpdateClipScreenParameters();
     }
 
     private void Update() {
@@ -60,10 +64,38 @@ public class ModelTransformator : NetworkBehaviour {
             else if (isBeingRotated) { OneFingerRotation(); }
 
             if (inDisplay) {
+                float zOffset = collider.bounds.extents.x;
+                if (collider.bounds.extents.y > zOffset) { zOffset = collider.bounds.extents.y; }
+                else if (collider.bounds.extents.z > zOffset) { zOffset = collider.bounds.extents.z; }
+
                 Vector3 screenOffset = this.screenOffset.Value;
-                screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, 0);
+                screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, -zOffset * 1.01f);
                 transform.position = displayCenter.transform.position + displayCenter.transform.TransformDirection(screenOffset);
             }
+        }
+    }
+
+    private void UpdateClipScreenParameters() {
+        GameObject displaySizeGO = DisplayProfileManager.Instance.GetCurrentDisplaySize();
+        Vector3 displayCenter = displaySizeGO.transform.position;
+        Vector2 displaySize = displaySizeGO.transform.localScale.xy();
+
+        Vector3 screenCorner1 = displayCenter + displaySizeGO.transform.TransformDirection(new Vector3(+displaySize.x, +displaySize.y, 0) / 2);
+        Vector3 screenCorner2 = displayCenter + displaySizeGO.transform.TransformDirection(new Vector3(-displaySize.x, +displaySize.y, 0) / 2);
+        Vector3 screenCorner3 = displayCenter + displaySizeGO.transform.TransformDirection(new Vector3(-displaySize.x, -displaySize.y, 0) / 2);
+        Vector3 screenCorner4 = displayCenter + displaySizeGO.transform.TransformDirection(new Vector3(+displaySize.x, -displaySize.y, 0) / 2);
+        Vector3 screenNormal = displayCenter + displaySizeGO.transform.TransformDirection(Vector3.forward);
+
+        Material[] mats = transform.Find("Model").GetComponent<Renderer>().materials;
+        foreach (Material mat in mats) {
+            if (inDisplay) { mat.SetInt("_InDisplay", 1); }
+            else { mat.SetInt("_InDisplay", 0); }
+
+            mat.SetVector("_ScreenCorner1", screenCorner1);
+            mat.SetVector("_ScreenCorner2", screenCorner2);
+            mat.SetVector("_ScreenCorner3", screenCorner3);
+            mat.SetVector("_ScreenCorner4", screenCorner4);
+            mat.SetVector("_ScreenNormal", screenNormal);
         }
     }
 
@@ -77,9 +109,9 @@ public class ModelTransformator : NetworkBehaviour {
         screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, 0);
         float distance = Vector3.Distance(transform.position, displayCenter.transform.position + displayCenter.transform.TransformDirection(screenOffset));
         if (distance < releaseDistanceThreshold) {
-            SetAlpha(distance / releaseDistanceThreshold);
+            //SetAlpha(distance / releaseDistanceThreshold);
         } else {
-            SetAlpha(1);
+            //SetAlpha(1);
         }
     }
 
@@ -115,6 +147,7 @@ public class ModelTransformator : NetworkBehaviour {
                 inDisplay = false;
                 isBeingGrabbed = true;
                 lastPalmPosition = interactingHand.PalmPosition;
+                UpdateClipScreenParameters();
             }
         }
     }
@@ -135,8 +168,12 @@ public class ModelTransformator : NetworkBehaviour {
     }
 
     private IEnumerator MoveToOrigin() {
+        float zOffset = collider.bounds.extents.x;
+        if (collider.bounds.extents.y > zOffset) { zOffset = collider.bounds.extents.y; }
+        else if (collider.bounds.extents.z > zOffset) { zOffset = collider.bounds.extents.z; }
+
         Vector3 screenOffset = this.screenOffset.Value;
-        screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, 0);
+        screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, -zOffset * 1.01f);
         Vector3 destination = displayCenter.transform.position + displayCenter.transform.TransformDirection(screenOffset);
         float distanceToOrigin;
 
@@ -144,17 +181,18 @@ public class ModelTransformator : NetworkBehaviour {
             Vector3 delta = transform.position - destination;
             transform.position -= delta.normalized * Time.deltaTime * resetSpeed;
             distanceToOrigin = Vector3.Distance(Vector3.zero, delta);
-            SetAlpha(distanceToOrigin / releaseDistanceThreshold);
+            //SetAlpha(distanceToOrigin / releaseDistanceThreshold);
 
             yield return null;
         } while (distanceToOrigin > 0.01);
 
-        SetAlpha(0);
+        //SetAlpha(0);
         inDisplay = true;
         ModelManager.Instance.SetAttachedStateServerRpc(true);
         ChangeModelAttachment(true, true);
         CrossPlatformMediator.Instance.ChangeAttachmentButtonInteractabilityServerRpc(false);
         transform.position = destination;
+        UpdateClipScreenParameters();
     }
 
     public void ChangeModelAttachment(bool prev, bool current) {
@@ -176,14 +214,14 @@ public class ModelTransformator : NetworkBehaviour {
         }
     }
 
-    public void SetAlpha(float alpha) {
+    /*public void SetAlpha(float alpha) {
         Material[] mats = transform.Find("Model").GetComponent<Renderer>().materials;
         foreach (Material mat in mats) {
             Color newColor = mat.color;
             newColor.a = alpha;
             mat.color = newColor;
         }
-    }
+    }*/
 
     private void Rescale(float prev = 1.0f, float curr = 1.0f) {
         transform.localScale = Vector3.one * scaleOnDisplay.Value * displaySize.localScale.y * scaleFactor;
