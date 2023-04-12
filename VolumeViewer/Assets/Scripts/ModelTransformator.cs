@@ -36,7 +36,7 @@ public class ModelTransformator : NetworkBehaviour {
     }
 
     public void SetupServer() {
-        SetAlpha(1);
+        //SetAlpha(1);
         AlignCoronal();
     }
 
@@ -53,7 +53,7 @@ public class ModelTransformator : NetworkBehaviour {
         transform.SetParent(displayCenter.transform);
         transform.localPosition = Vector3.zero;
 
-        SetAlpha(0);
+        //SetAlpha(0);
 
         UpdateClipScreenParameters();
     }
@@ -106,9 +106,9 @@ public class ModelTransformator : NetworkBehaviour {
         screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, 0);
         float distance = Vector3.Distance(transform.position, displayCenter.transform.position + displayCenter.transform.TransformDirection(screenOffset));
         if (distance < releaseDistanceThreshold) {
-            SetAlpha(distance / releaseDistanceThreshold);
+            //SetAlpha(distance / releaseDistanceThreshold);
         } else {
-            SetAlpha(1);
+            //SetAlpha(1);
         }
     }
 
@@ -164,8 +164,12 @@ public class ModelTransformator : NetworkBehaviour {
     }
 
     private IEnumerator MoveToOrigin() {
+        float zOffset = collider.bounds.extents.x;
+        if (collider.bounds.extents.y > zOffset) { zOffset = collider.bounds.extents.y; }
+        else if (collider.bounds.extents.z > zOffset) { zOffset = collider.bounds.extents.z; }
+
         Vector3 screenOffset = this.screenOffset.Value;
-        screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, 0);
+        screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, -zOffset * 1.01f);
         Vector3 destination = displayCenter.transform.position + displayCenter.transform.TransformDirection(screenOffset);
         float distanceToOrigin;
 
@@ -173,12 +177,12 @@ public class ModelTransformator : NetworkBehaviour {
             Vector3 delta = transform.position - destination;
             transform.position -= delta.normalized * Time.deltaTime * resetSpeed;
             distanceToOrigin = Vector3.Distance(Vector3.zero, delta);
-            SetAlpha(distanceToOrigin / releaseDistanceThreshold);
+            //SetAlpha(distanceToOrigin / releaseDistanceThreshold);
 
             yield return null;
         } while (distanceToOrigin > 0.01);
 
-        SetAlpha(0);
+        //SetAlpha(0);
         inDisplay = true;
         ModelManager.Instance.SetAttachedStateServerRpc(true);
         ChangeModelAttachment(true, true);
@@ -205,14 +209,14 @@ public class ModelTransformator : NetworkBehaviour {
         }
     }
 
-    public void SetAlpha(float alpha) {
+    /*public void SetAlpha(float alpha) {
         Material[] mats = transform.Find("Model").GetComponent<Renderer>().materials;
         foreach (Material mat in mats) {
             Color newColor = mat.color;
             newColor.a = alpha;
             mat.color = newColor;
         }
-    }
+    }*/
 
     private void Rescale(float prev = 1.0f, float curr = 1.0f) {
         transform.localScale = Vector3.one * scaleOnDisplay.Value * displaySize.localScale.y * scaleFactor;
