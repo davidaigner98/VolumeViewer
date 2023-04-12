@@ -59,15 +59,6 @@ public class DetectorManager : MonoBehaviour {
         }
     }
 
-    private ModelInfo GetModelByRaycast(Ray ray) {
-        RaycastHit hitInfo;
-        if (Physics.Raycast(ray, out hitInfo)) {
-            return hitInfo.collider.gameObject.GetComponentInParent<ModelInfo>();
-        }
-
-        return null;
-    }
-
     public void PerformPinchOn(string hand) {
         Hand currHand = null;
         if (hand.Equals("left")) { currHand = Hands.Left; }
@@ -80,5 +71,14 @@ public class DetectorManager : MonoBehaviour {
 
     public void PerformPinchOff() {
         ClippingBox.Instance.EndPinchMovement();
+    }
+
+    private ModelInfo GetModelByRaycast(Ray ray) {
+        RaycastHit hitInfo;
+        if (Physics.Raycast(ray, out hitInfo)) {
+            return hitInfo.collider.gameObject.GetComponentInParent<ModelInfo>();
+        }
+
+        return null;
     }
 }
