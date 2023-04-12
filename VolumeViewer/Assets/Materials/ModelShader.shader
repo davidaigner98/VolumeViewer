@@ -18,10 +18,17 @@ Shader "Custom/ModelShader"
 
                 #include "UnityCG.cginc"
 
+                fixed3 _Color;
+
                 float3 _MinBounds;
                 float3 _MaxBounds;
                 float4 _Rotation;
-                fixed3 _Color;
+
+                float3 screenCorner1;
+                float3 screenCorner2;
+                float3 screenCorner3;
+                float3 screenCorner4;
+                float3 screenNormal;
 
                 struct Input {
                     float2 uv_MainTex;
@@ -36,6 +43,29 @@ Shader "Custom/ModelShader"
                         if (newPos.x < _MaxBounds.x && newPos.y < _MaxBounds.y && newPos.z < _MaxBounds.z) {
                             clip(-1);
                         }
+                    }
+
+                    float3 screenCenter = (screenCorner1 + screenCorner2 + screenCorner3 + screenCorner4) / 4;
+                    screenNormal -= screenCenter;
+                    screenNormal /= length(screenNormal);
+                    float3 negScreenNormal = -screenNormal;
+                    float3 pointPos = (i.worldPos - screenCenter);
+                    pointPos /= length(pointPos);
+
+                    float screenEdge12 = screenCorner2 - screenCorner1;
+                    screenEdge12 /= length(screenEdge12);
+                    float screenEdge23 = screenCorner3 - screenCorner2;
+                    screenEdge23 /= length(screenEdge23);
+                    //float screenEdge34 = screenCorner4 - screenCorner3;
+                    //screenEdge34 /= length(screenEdge34);
+                    //float screenEdge41 = screenCorner1 - screenCorner4;
+                    //screenEdge41 /= length(screenEdge41);
+
+                    float planeCross = cross(screenEdge12, screenEdge23);
+                    float d0 = cross(planeCross, pointPos) * cross(planeCross, screenNormal);
+
+                    if (d0 < 0) {
+                        clip(-1);
                     }
 
                     float facing = i.facing * 0.5 + 0.5;

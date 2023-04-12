@@ -52,6 +52,8 @@ public class ModelTransformator : NetworkBehaviour {
         transform.localPosition = Vector3.zero;
 
         SetAlpha(0);
+
+        UpdateClipScreenParameters();
     }
 
     private void Update() {
@@ -64,6 +66,27 @@ public class ModelTransformator : NetworkBehaviour {
                 screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, 0);
                 transform.position = displayCenter.transform.position + displayCenter.transform.TransformDirection(screenOffset);
             }
+        }
+    }
+
+    private void UpdateClipScreenParameters() {
+        GameObject displaySizeGO = DisplayProfileManager.Instance.GetCurrentDisplaySize();
+        Vector3 displayCenter = displaySizeGO.transform.position;
+        Vector2 displaySize = displaySizeGO.transform.localScale.xy();
+
+        Vector3 screenCorner1 = displayCenter + displaySizeGO.transform.TransformDirection(new Vector3(+displaySize.x, +displaySize.y, 0));
+        Vector3 screenCorner2 = displayCenter + displaySizeGO.transform.TransformDirection(new Vector3(-displaySize.x, +displaySize.y, 0));
+        Vector3 screenCorner3 = displayCenter + displaySizeGO.transform.TransformDirection(new Vector3(-displaySize.x, -displaySize.y, 0));
+        Vector3 screenCorner4 = displayCenter + displaySizeGO.transform.TransformDirection(new Vector3(+displaySize.x, -displaySize.y, 0));
+        Vector3 screenNormal = displayCenter + displaySizeGO.transform.TransformDirection(Vector3.forward);
+
+        Material[] mats = transform.Find("Model").GetComponent<Renderer>().materials;
+        foreach (Material mat in mats) {
+            mat.SetVector("screenCorner1", screenCorner1);
+            mat.SetVector("screenCorner2", screenCorner2);
+            mat.SetVector("screenCorner3", screenCorner3);
+            mat.SetVector("screenCorner4", screenCorner4);
+            mat.SetVector("screenNormal", screenNormal);
         }
     }
 
