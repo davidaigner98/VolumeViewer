@@ -3815,9 +3815,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 056dd5e9fb470054d948b572430931d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cageSize: {x: 30, y: 20, z: 50}
-  viewportSize: {x: 3, y: 2}
-  cameraRepositioning: 1
   drawCage: 0
+  cageSize: {x: 30, y: 20, z: 50}
+  cameraRepositioning: 1
+  viewportSize: {x: 3, y: 2}
   startPosition: {x: 0, y: 0, z: 3}
-  focalPoint: {x: 0, y: 0, z: -3}
+  focalPoint: {x: 0, y: 0, z: 0}
