@@ -11,7 +11,6 @@ public class LobbyManager : MonoBehaviour {
     public GameObject displayProjection;
     public GameObject displayCamera;
     public GameObject clippingBoxPrefab;
-    public Vector3 displayCameraPosition;
     public TextMeshProUGUI errorLabel;
     public bool manualServerStart;
     public bool manualClientStart;
@@ -64,11 +63,7 @@ public class LobbyManager : MonoBehaviour {
         Destroy(interactionManager);
         Destroy(serviceProvider);
         Destroy(xrRig);
-        GameObject newCamera = Instantiate(displayCamera);
-        newCamera.transform.position = displayCameraPosition;
-        newCamera.transform.LookAt(Vector3.zero);
-
-        return newCamera;
+        return Instantiate(displayCamera);
     }
 
     private void SpawnClippingBox() {
