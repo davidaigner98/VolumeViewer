@@ -19,7 +19,7 @@ public class DisplayProfileManager : MonoBehaviour {
 
     public DisplayProfile GetCurrentDisplayProfile() {
         foreach (DisplayProfile profile in displayProfiles) {
-            if (profile.name.Equals(currentProfile.ToString())) {
+            if (profile.profileName.Equals(currentProfile.ToString())) {
                 return profile;
             }
         }

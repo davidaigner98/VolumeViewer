@@ -11,7 +11,7 @@ public class DisplayProjectionViewTracking : MonoBehaviour {
                 Vector3 cameraOffset = xrCamera.transform.position - displayCenter.transform.position;
                 cameraOffset = displayCenter.transform.InverseTransformDirection(cameraOffset);
                 cameraOffset /= DisplayProfileManager.Instance.GetCurrentDisplaySize().transform.localScale.x;
-
+                
                 CrossPlatformMediator.Instance.SynchronizeCameraPositionServerRpc(cameraOffset);
                 time = 0;
             }

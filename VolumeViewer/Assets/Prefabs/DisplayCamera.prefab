@@ -3819,5 +3819,5 @@ MonoBehaviour:
   cageSize: {x: 30, y: 20, z: 50}
   cameraRepositioning: 1
   viewportSize: {x: 3, y: 2}
-  startPosition: {x: 0, y: 0, z: 3}
+  startPosition: {x: 0, y: 0, z: -3}
   focalPoint: {x: 0, y: 0, z: 0}

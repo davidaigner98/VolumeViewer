@@ -13,7 +13,7 @@ public class DisplayLocalizer : MonoBehaviour {
 
     public Vector2 GetRelativeScreenOffset(GameObject model) {
         Vector3 modelPosition3D = displayCamera.WorldToViewportPoint(model.transform.position);
-        return new Vector2(-modelPosition3D.x + 0.5f, modelPosition3D.y - 0.5f);
+        return new Vector2(modelPosition3D.x - 0.5f, modelPosition3D.y - 0.5f);
     }
 
     public ModelInfo FindModelByRaycast(Vector2 screenCoordinates) {

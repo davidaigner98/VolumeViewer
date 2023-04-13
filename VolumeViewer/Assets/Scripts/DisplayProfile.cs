@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class DisplayProfile : MonoBehaviour {
-    public string name;
+    public string profileName;
     public string trackerPosition;
     public GameObject displayCenter;
     public GameObject displaySize;

@@ -70,14 +70,15 @@ public class LobbyManager : MonoBehaviour {
         GameObject clippingBox = Instantiate(clippingBoxPrefab);
         GameObject displayCenter = DisplayProfileManager.Instance.GetCurrentDisplayCenter();
         Vector3 displaySize = DisplayProfileManager.Instance.GetCurrentDisplaySize().transform.localScale;
+        Vector3 boxPosition = new Vector3(0, 1, 0);
         Vector3 boxSize = Vector3.one * displaySize.x / 4;
 
         clippingBox.name = "ClippingBox";
         clippingBox.transform.SetParent(displayCenter.transform);
         clippingBox.transform.position = Vector3.zero;
         clippingBox.transform.localRotation = Quaternion.identity;
-        clippingBox.GetComponent<ClippingBox>().minBounds = -boxSize / 2;
-        clippingBox.GetComponent<ClippingBox>().maxBounds = boxSize / 2;
+        clippingBox.GetComponent<ClippingBox>().minBounds = boxPosition - boxSize / 2;
+        clippingBox.GetComponent<ClippingBox>().maxBounds = boxPosition + boxSize / 2;
         ClippingBox.Instance.Setup();
     }
 }
