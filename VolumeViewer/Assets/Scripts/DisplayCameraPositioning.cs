@@ -25,6 +25,7 @@ public class DisplayCameraPositioning : MonoBehaviour {
     public void SynchronizeDisplayCameraPosition(Vector3 cameraOffset) {
         if (!cameraRepositioning) { return; }
 
+        cameraOffset = new Vector3(-cameraOffset.x, cameraOffset.y, -cameraOffset.z);
         cameraOffset *= viewportSize.x;
         cameraOffset += startPosition;
         cameraOffset -= focalPoint;
