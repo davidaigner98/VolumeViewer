@@ -11,7 +11,6 @@ public class LobbyManager : MonoBehaviour {
     public GameObject displayProjection;
     public GameObject displayCamera;
     public GameObject clippingBoxPrefab;
-    public Vector3 displayCameraPosition;
     public TextMeshProUGUI errorLabel;
     public bool manualServerStart;
     public bool manualClientStart;
@@ -64,26 +63,21 @@ public class LobbyManager : MonoBehaviour {
         Destroy(interactionManager);
         Destroy(serviceProvider);
         Destroy(xrRig);
-        GameObject newCamera = Instantiate(displayCamera);
-        newCamera.transform.position = displayCameraPosition;
-        newCamera.transform.LookAt(Vector3.zero);
-
-        return newCamera;
+        return Instantiate(displayCamera);
     }
 
     private void SpawnClippingBox() {
         GameObject clippingBox = Instantiate(clippingBoxPrefab);
         GameObject displayCenter = DisplayProfileManager.Instance.GetCurrentDisplayCenter();
         Vector3 displaySize = DisplayProfileManager.Instance.GetCurrentDisplaySize().transform.localScale;
-        Vector3 boxPosition = displayCenter.transform.position + new Vector3(-1, 0, 1) * displaySize.x / 2;
         Vector3 boxSize = Vector3.one * displaySize.x / 4;
 
         clippingBox.name = "ClippingBox";
         clippingBox.transform.SetParent(displayCenter.transform);
         clippingBox.transform.position = Vector3.zero;
         clippingBox.transform.localRotation = Quaternion.identity;
-        clippingBox.GetComponent<ClippingBox>().minBounds = boxPosition - boxSize / 2;
-        clippingBox.GetComponent<ClippingBox>().maxBounds = boxPosition + boxSize / 2;
+        clippingBox.GetComponent<ClippingBox>().minBounds = -boxSize / 2;
+        clippingBox.GetComponent<ClippingBox>().maxBounds = boxSize / 2;
         ClippingBox.Instance.Setup();
     }
 }

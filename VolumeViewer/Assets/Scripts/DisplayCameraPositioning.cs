@@ -1,15 +1,14 @@
-using System.Net.Security;
-using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class DisplayCameraPositioning : MonoBehaviour {
     public static DisplayCameraPositioning Instance { get; private set; }
-    public Vector3 cageSize;
-    public Vector2 viewportSize;
     public bool drawCage;
-    private Vector3 startPosition;
-    public Vector3 trackingOffset;
-    public float focalPoint;
+    public Vector3 cageSize;
+
+    public bool cameraRepositioning;
+    public Vector2 viewportSize;
+    public Vector3 startPosition;
+    public Vector3 focalPoint;
 
     private void Awake() {
         if (Instance != null && Instance != this) { Destroy(this); }
@@ -17,16 +16,25 @@ public class DisplayCameraPositioning : MonoBehaviour {
     }
 
     private void Start() {
-        startPosition = transform.position;
+        transform.position = startPosition;
+        transform.LookAt(focalPoint);
 
         if (drawCage) { DrawCage(); }
     }
 
-    public void SynchronizeDisplayCameraPosition(Vector3 realPosition) {
-        realPosition *= viewportSize.x;
-        realPosition += trackingOffset;
-        transform.position = realPosition;
-        transform.LookAt(new Vector3(0, 0, focalPoint));
+    public void SynchronizeDisplayCameraPosition(Vector3 cameraOffset) {
+        if (!cameraRepositioning) { return; }
+
+        cameraOffset *= viewportSize.x;
+        cameraOffset += startPosition;
+        cameraOffset -= focalPoint;
+
+        float focalRadius = (startPosition - focalPoint).magnitude;
+        cameraOffset = cameraOffset.normalized * focalRadius;
+        cameraOffset += focalPoint;
+
+        transform.position = cameraOffset;
+        transform.LookAt(focalPoint);
 
         ModelManager.Instance.RefreshModelScreenOffsets();
     }
