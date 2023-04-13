@@ -20,7 +20,7 @@ public class ModelTransformator : NetworkBehaviour {
     private bool isBeingRotated = false;
     private Vector3 lastPalmPosition;
     private Vector3 lastIndexPosition;
-    private Collider collider;
+    private Collider modelCollider;
 
     private void Start() {
         ModelManager.Instance.attached.OnValueChanged += ChangeModelAttachment;
@@ -30,7 +30,7 @@ public class ModelTransformator : NetworkBehaviour {
             mat.shader = Shader.Find("Custom/ModelShader");
         }
 
-        collider = transform.Find("Model").GetComponent<Collider>();
+        modelCollider = transform.Find("Model").GetComponent<Collider>();
         if (CrossPlatformMediator.Instance.isServer) { SetupServer(); }
         else { SetupClient(); }
     }
@@ -64,9 +64,9 @@ public class ModelTransformator : NetworkBehaviour {
             else if (isBeingRotated) { OneFingerRotation(); }
 
             if (inDisplay) {
-                float zOffset = collider.bounds.extents.x;
-                if (collider.bounds.extents.y > zOffset) { zOffset = collider.bounds.extents.y; }
-                else if (collider.bounds.extents.z > zOffset) { zOffset = collider.bounds.extents.z; }
+                float zOffset = modelCollider.bounds.extents.x;
+                if (modelCollider.bounds.extents.y > zOffset) { zOffset = modelCollider.bounds.extents.y; }
+                else if (modelCollider.bounds.extents.z > zOffset) { zOffset = modelCollider.bounds.extents.z; }
 
                 Vector3 screenOffset = this.screenOffset.Value;
                 screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, zOffset * 1.01f);
@@ -168,9 +168,9 @@ public class ModelTransformator : NetworkBehaviour {
     }
 
     private IEnumerator MoveToOrigin() {
-        float zOffset = collider.bounds.extents.x;
-        if (collider.bounds.extents.y > zOffset) { zOffset = collider.bounds.extents.y; }
-        else if (collider.bounds.extents.z > zOffset) { zOffset = collider.bounds.extents.z; }
+        float zOffset = modelCollider.bounds.extents.x;
+        if (modelCollider.bounds.extents.y > zOffset) { zOffset = modelCollider.bounds.extents.y; }
+        else if (modelCollider.bounds.extents.z > zOffset) { zOffset = modelCollider.bounds.extents.z; }
 
         Vector3 screenOffset = this.screenOffset.Value;
         screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, zOffset * 1.01f);
