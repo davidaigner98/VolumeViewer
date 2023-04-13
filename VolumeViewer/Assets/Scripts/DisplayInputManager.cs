@@ -81,7 +81,8 @@ public class DisplayInputManager : MonoBehaviour {
         if (selectedModel == null) { return; }
         
         Vector2 rotation = Mouse.current.delta.ReadValue() * ofRotSpeed;
-        
+
+        Debug.Log("Mouse Move");
         selectedModel.transform.Rotate(Vector3.up, -rotation.x, Space.World);
         selectedModel.transform.Rotate(Vector3.right, rotation.y, Space.World);
     }
@@ -125,8 +126,9 @@ public class DisplayInputManager : MonoBehaviour {
         
         Vector2 rotation = Touchscreen.current.delta.ReadValue() * ofRotSpeed;
 
+        Debug.Log("Touch Move");
         selectedModel.transform.Rotate(Vector3.up, -rotation.x, Space.World);
-        selectedModel.transform.Rotate(Vector3.right, -rotation.y, Space.World);
+        selectedModel.transform.Rotate(Vector3.right, rotation.y, Space.World);
     }
 
     private void MultipleFingerPositioning(int touchCount) {
@@ -137,7 +139,7 @@ public class DisplayInputManager : MonoBehaviour {
         if (palmPosition.Equals(new Vector2(-1, -1))) { return; }
 
         Camera displayCamera = DisplayLocalizer.Instance.displayCamera;
-        Vector3 palmPosition3D = new Vector3(palmPosition.x, palmPosition.y, displayCamera.transform.position.z);
+        Vector3 palmPosition3D = new Vector3(palmPosition.x, palmPosition.y, -displayCamera.transform.position.z);
         selectedModel.transform.position = displayCamera.ScreenToWorldPoint(palmPosition3D);
     }
 
@@ -153,7 +155,7 @@ public class DisplayInputManager : MonoBehaviour {
         Vector2 newVector = newPosition0 - newPosition1;
 
         if (!oldRotatingFingerDifference.Equals(Vector2.zero)) {
-            float angle = Vector2.SignedAngle(newVector, oldRotatingFingerDifference) * mfRotSpeed;
+            float angle = -Vector2.SignedAngle(newVector, oldRotatingFingerDifference) * mfRotSpeed;
             selectedModel.transform.Rotate(Vector3.forward, angle, Space.World);
         }
 
