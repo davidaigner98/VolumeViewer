@@ -69,7 +69,7 @@ public class ModelTransformator : NetworkBehaviour {
                 else if (collider.bounds.extents.z > zOffset) { zOffset = collider.bounds.extents.z; }
 
                 Vector3 screenOffset = this.screenOffset.Value;
-                screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, -zOffset * 1.01f);
+                screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, zOffset * 1.01f);
                 transform.position = displayCenter.transform.position + displayCenter.transform.TransformDirection(screenOffset);
             }
         }
@@ -84,7 +84,7 @@ public class ModelTransformator : NetworkBehaviour {
         Vector3 screenCorner2 = displayCenter + displaySizeGO.transform.TransformDirection(new Vector3(-displaySize.x, +displaySize.y, 0) / 2);
         Vector3 screenCorner3 = displayCenter + displaySizeGO.transform.TransformDirection(new Vector3(-displaySize.x, -displaySize.y, 0) / 2);
         Vector3 screenCorner4 = displayCenter + displaySizeGO.transform.TransformDirection(new Vector3(+displaySize.x, -displaySize.y, 0) / 2);
-        Vector3 screenNormal = displayCenter + displaySizeGO.transform.TransformDirection(Vector3.forward);
+        Vector3 screenNormal = displayCenter + displaySizeGO.transform.TransformDirection(Vector3.back);
 
         Material[] mats = transform.Find("Model").GetComponent<Renderer>().materials;
         foreach (Material mat in mats) {
@@ -105,14 +105,14 @@ public class ModelTransformator : NetworkBehaviour {
 
         transform.position += delta;
 
-        Vector3 screenOffset = this.screenOffset.Value;
+        /*Vector3 screenOffset = this.screenOffset.Value;
         screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, 0);
         float distance = Vector3.Distance(transform.position, displayCenter.transform.position + displayCenter.transform.TransformDirection(screenOffset));
         if (distance < releaseDistanceThreshold) {
             //SetAlpha(distance / releaseDistanceThreshold);
         } else {
             //SetAlpha(1);
-        }
+        }*/
     }
 
     private void OneFingerRotation() {
@@ -173,7 +173,7 @@ public class ModelTransformator : NetworkBehaviour {
         else if (collider.bounds.extents.z > zOffset) { zOffset = collider.bounds.extents.z; }
 
         Vector3 screenOffset = this.screenOffset.Value;
-        screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, -zOffset * 1.01f);
+        screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, zOffset * 1.01f);
         Vector3 destination = displayCenter.transform.position + displayCenter.transform.TransformDirection(screenOffset);
         float distanceToOrigin;
 

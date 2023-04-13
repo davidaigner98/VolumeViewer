@@ -30,10 +30,10 @@ public class ProjectionToolwindowUIManager : MonoBehaviour {
         Vector3 ownScale = GetComponent<RectTransform>().localScale;
 
         transform.SetParent(currCenter.transform);
-        float newPosX = currSize.transform.localScale.x / 2 + ownSize.x * 0.1f * ownScale.x;
+        float newPosX = -currSize.transform.localScale.x / 2 - ownSize.x * 0.1f * ownScale.x;
         float newPosY = -currSize.transform.localScale.y / 2;
         transform.localPosition = new Vector3(newPosX, newPosY, 0);
-        transform.localEulerAngles = new Vector3(0, 165, 0);
+        transform.localEulerAngles = new Vector3(0, 345, 0);
     }
 
     public void ToggleClippingBox() {
