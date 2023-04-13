@@ -244,14 +244,14 @@ public class ModelTransformator : NetworkBehaviour {
     }
 
     public void AlignCoronal() {
-        transform.rotation = Quaternion.Euler(0, 0, 0);
+        transform.rotation = Quaternion.Euler(0, 180, 0);
     }
 
     public void AlignSagittal() {
-        transform.rotation = Quaternion.Euler(0, 270, 0);
+        transform.rotation = Quaternion.Euler(0, 90, 0);
     }
 
     public void AlignAxial() {
-        transform.rotation = Quaternion.Euler(90, 0, 0);
+        transform.rotation = Quaternion.Euler(90, 180, 0);
     }
 }

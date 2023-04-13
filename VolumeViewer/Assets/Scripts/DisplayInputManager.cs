@@ -83,7 +83,7 @@ public class DisplayInputManager : MonoBehaviour {
         Vector2 rotation = Mouse.current.delta.ReadValue() * ofRotSpeed;
         
         selectedModel.transform.Rotate(Vector3.up, -rotation.x, Space.World);
-        selectedModel.transform.Rotate(Vector3.right, -rotation.y, Space.World);
+        selectedModel.transform.Rotate(Vector3.right, rotation.y, Space.World);
     }
 
     private void TouchMovePerformed(InputAction.CallbackContext c) {
