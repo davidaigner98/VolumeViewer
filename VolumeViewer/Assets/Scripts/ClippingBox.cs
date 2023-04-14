@@ -220,13 +220,13 @@ public class ClippingBox : MonoBehaviour {
 
     private void UpdateBoundary(bool max, char coordinate, float value) {
         if (max) {
-            if (coordinate.Equals('x')) { maxBounds.Set(maxBounds.x + value, maxBounds.y, maxBounds.z); }
-            else if (coordinate.Equals('y')) { maxBounds.Set(maxBounds.x, maxBounds.y + value, maxBounds.z); }
-            else if (coordinate.Equals('z')) { maxBounds.Set(maxBounds.x, maxBounds.y, maxBounds.z + value); }
+            if (coordinate.Equals('x') && value > minBounds.x) { maxBounds.Set(maxBounds.x + value, maxBounds.y, maxBounds.z); }
+            else if (coordinate.Equals('y') && value > minBounds.y) { maxBounds.Set(maxBounds.x, maxBounds.y + value, maxBounds.z); }
+            else if (coordinate.Equals('z') && value > minBounds.z) { maxBounds.Set(maxBounds.x, maxBounds.y, maxBounds.z + value); }
         } else {
-            if (coordinate.Equals('x')) { minBounds.Set(minBounds.x + value, minBounds.y, minBounds.z); }
-            else if (coordinate.Equals('y')) { minBounds.Set(minBounds.x, minBounds.y + value, minBounds.z); }
-            else if (coordinate.Equals('z')) { minBounds.Set(minBounds.x, minBounds.y, minBounds.z + value); }
+            if (coordinate.Equals('x') && value < minBounds.x) { minBounds.Set(minBounds.x + value, minBounds.y, minBounds.z); }
+            else if (coordinate.Equals('y') && value < minBounds.y) { minBounds.Set(minBounds.x, minBounds.y + value, minBounds.z); }
+            else if (coordinate.Equals('z') && value < minBounds.z) { minBounds.Set(minBounds.x, minBounds.y, minBounds.z + value); }
         }
     }
 
