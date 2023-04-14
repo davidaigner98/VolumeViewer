@@ -224,9 +224,9 @@ public class ClippingBox : MonoBehaviour {
             else if (coordinate.Equals('y') && value > minBounds.y) { maxBounds.Set(maxBounds.x, maxBounds.y + value, maxBounds.z); }
             else if (coordinate.Equals('z') && value > minBounds.z) { maxBounds.Set(maxBounds.x, maxBounds.y, maxBounds.z + value); }
         } else {
-            if (coordinate.Equals('x') && value < minBounds.x) { minBounds.Set(minBounds.x + value, minBounds.y, minBounds.z); }
-            else if (coordinate.Equals('y') && value < minBounds.y) { minBounds.Set(minBounds.x, minBounds.y + value, minBounds.z); }
-            else if (coordinate.Equals('z') && value < minBounds.z) { minBounds.Set(minBounds.x, minBounds.y, minBounds.z + value); }
+            if (coordinate.Equals('x') && value < maxBounds.x) { minBounds.Set(minBounds.x + value, minBounds.y, minBounds.z); }
+            else if (coordinate.Equals('y') && value < maxBounds.y) { minBounds.Set(minBounds.x, minBounds.y + value, minBounds.z); }
+            else if (coordinate.Equals('z') && value < maxBounds.z) { minBounds.Set(minBounds.x, minBounds.y, minBounds.z + value); }
         }
     }
 
