@@ -31,12 +31,17 @@ public class ClippingBoxCorner : MonoBehaviour {
         Vector3 pinchDelta = currPinchPosition - lastPinchPosition;
         lastPinchPosition = currPinchPosition;
 
+        transform.localPosition += pinchDelta;
         clippingBox.UpdateCorner(gameObject, pinchDelta);
     }
 
     public void EndGrabMovement() {
         isBeingGrabbed = false;
         grabbingHand = null;
+    }
+
+    public bool IsBeingGrabbed() {
+        return isBeingGrabbed;
     }
 
     private void UpdateVisibility() {
