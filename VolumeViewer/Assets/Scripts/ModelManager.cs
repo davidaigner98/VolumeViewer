@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -74,7 +73,24 @@ public class ModelManager : NetworkBehaviour {
     }
 
     public void SetSelectedModel(ModelInfo newSelectedModel) {
+        if (newSelectedModel == null) { return; }
+
+        if (selectedModel != null) {
+            Material[] mats = selectedModel.transform.Find("Model").GetComponent<Renderer>().materials;
+            foreach (Material mat in mats) {
+                mat.SetInt("_IsSelected", 0);
+            }
+        }
+        
         selectedModel = newSelectedModel;
+
+        if (selectedModel != null) {
+            Material[] mats = selectedModel.transform.Find("Model").GetComponent<Renderer>().materials;
+            foreach (Material mat in mats) {
+                mat.SetInt("_IsSelected", 1);
+            }
+        }
+
         if (OnSelectionChanged != null) { OnSelectionChanged(); }
     }
 
