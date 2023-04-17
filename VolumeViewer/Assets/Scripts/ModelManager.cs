@@ -39,7 +39,7 @@ public class ModelManager : NetworkBehaviour {
     }
 
     public void UnregisterModel(ModelInfo info) {
-        if (selectedModelInstanceId.Value == info.modelInstanceId) { SetSelectedModel(null); }
+        if (selectedModelInstanceId.Value == info.modelInstanceId) { SetSelectedModelClientside(null); }
         modelInfos.Remove(info);
     }
 
@@ -74,11 +74,7 @@ public class ModelManager : NetworkBehaviour {
         return null;
     }
 
-    public void SetSelectedModel(ModelInfo newSelectedModel) {
-        if (newSelectedModel == null) {
-            selectedModelInstanceId.Value = -1;
-        }
-
+    public void SetSelectedModelServerside(ModelInfo newSelectedModel) {
         GameObject currSelectedModel = GetSelectedModel();
         if (currSelectedModel != null) {
             Material[] mats = currSelectedModel.transform.Find("Model").GetComponent<Renderer>().materials;
@@ -87,15 +83,43 @@ public class ModelManager : NetworkBehaviour {
             }
         }
 
-        if (newSelectedModel == null) { return; }
+        if (newSelectedModel == null) {
+            selectedModelInstanceId.Value = -1;
+        } else {
+            selectedModelInstanceId.Value = newSelectedModel.modelInstanceId;
 
-        selectedModelInstanceId.Value = newSelectedModel.modelInstanceId;
+            currSelectedModel = newSelectedModel.gameObject;
+            if (currSelectedModel != null) {
+                Material[] mats = currSelectedModel.transform.Find("Model").GetComponent<Renderer>().materials;
+                foreach (Material mat in mats) {
+                    mat.SetInt("_IsSelected", 1);
+                }
+            }
+        }
 
-        currSelectedModel = newSelectedModel.gameObject;
+        if (OnSelectionChanged != null) { OnSelectionChanged(); }
+    }
+
+    public void SetSelectedModelClientside(ModelInfo newSelectedModel) {
+        GameObject currSelectedModel = GetSelectedModel();
         if (currSelectedModel != null) {
             Material[] mats = currSelectedModel.transform.Find("Model").GetComponent<Renderer>().materials;
             foreach (Material mat in mats) {
-                mat.SetInt("_IsSelected", 1);
+                mat.SetInt("_IsSelected", 0);
+            }
+        }
+
+        if (newSelectedModel == null) {
+            SetSelectedModelServerRpc(-1);
+        } else {
+            SetSelectedModelServerRpc(newSelectedModel.modelInstanceId);
+
+            currSelectedModel = newSelectedModel.gameObject;
+            if (currSelectedModel != null) {
+                Material[] mats = currSelectedModel.transform.Find("Model").GetComponent<Renderer>().materials;
+                foreach (Material mat in mats) {
+                    mat.SetInt("_IsSelected", 1);
+                }
             }
         }
 
@@ -103,10 +127,12 @@ public class ModelManager : NetworkBehaviour {
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void SetSelectedModelServerRpc(int newModelInstanceId) {
+    private void SetSelectedModelServerRpc(int newModelInstanceId) {
+        if (newModelInstanceId == -1) { SetSelectedModelServerside(null); }
+        
         foreach(ModelInfo currInfo in modelInfos) {
             if (currInfo.modelInstanceId == newModelInstanceId) {
-                SetSelectedModel(currInfo);
+                SetSelectedModelServerside(currInfo);
                 return;
             }
         }
