@@ -70,23 +70,21 @@ public class ModelManager : NetworkBehaviour {
     }
 
     public void SetSelectedModel(ModelInfo newSelectedModel) {
-        if (selectedModel != null) {
-            Material[] mats = selectedModel.transform.Find("Model").GetComponent<Renderer>().materials;
-            foreach (Material mat in mats) {
-                mat.SetInt("_IsSelected", 0);
-            }
-        }
+        SetModelSelectionInShader(selectedModel, 0);
 
         selectedModel = newSelectedModel;
 
-        if (selectedModel != null) {
-            Material[] mats = selectedModel.transform.Find("Model").GetComponent<Renderer>().materials;
+        SetModelSelectionInShader(selectedModel, 1);
+        if (OnSelectionChanged != null) { OnSelectionChanged(); }
+    }
+
+    private void SetModelSelectionInShader(ModelInfo model, int selectionStatus) {
+        if (CrossPlatformMediator.Instance.isServer &&  model != null) {
+            Material[] mats = model.transform.Find("Model").GetComponent<Renderer>().materials;
             foreach (Material mat in mats) {
-                mat.SetInt("_IsSelected", 1);
+                mat.SetInt("_IsSelected", selectionStatus);
             }
         }
-
-        if (OnSelectionChanged != null) { OnSelectionChanged(); }
     }
 
     [ServerRpc(RequireOwnership = false)]
