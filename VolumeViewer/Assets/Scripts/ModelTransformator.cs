@@ -2,6 +2,7 @@ using Leap;
 using Leap.Unity;
 using System.Collections;
 using Unity.Netcode;
+using UnityEditor;
 using UnityEngine;
 
 public class ModelTransformator : NetworkBehaviour {
@@ -22,13 +23,16 @@ public class ModelTransformator : NetworkBehaviour {
     private Vector3 lastIndexPosition;
     private Collider modelCollider;
 
-    private void Start() {
-        ModelManager.Instance.attached.OnValueChanged += ChangeModelAttachment;
-
+    private void Awake() {
         Material[] mats = transform.Find("Model").GetComponent<Renderer>().materials;
         foreach (Material mat in mats) {
             mat.shader = Shader.Find("Custom/ModelShader");
+            mat.SetVector("_ModelOffset", transform.Find("Model").localPosition);
         }
+    }
+
+    private void Start() {
+        ModelManager.Instance.attached.OnValueChanged += ChangeModelAttachment;
 
         modelCollider = transform.Find("Model").GetComponent<Collider>();
         if (CrossPlatformMediator.Instance.isServer) { SetupServer(); }

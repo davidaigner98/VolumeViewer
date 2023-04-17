@@ -77,7 +77,7 @@ public class DisplayInputManager : MonoBehaviour {
     }
 
     private void MouseMovePerformed(InputAction.CallbackContext c) {
-        GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
+        ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
         if (selectedModel == null) { return; }
         
         Vector2 rotation = Mouse.current.delta.ReadValue() * ofRotSpeed;
@@ -120,7 +120,7 @@ public class DisplayInputManager : MonoBehaviour {
     }
 
     private void OneFingerGesture() {
-        GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
+        ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
         if (selectedModel == null) { return; }
         
         Vector2 rotation = Touchscreen.current.delta.ReadValue() * ofRotSpeed;
@@ -130,7 +130,7 @@ public class DisplayInputManager : MonoBehaviour {
     }
 
     private void MultipleFingerPositioning(int touchCount) {
-        GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
+        ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
         if (selectedModel == null) { return; }
 
         Vector2 palmPosition = GetPalmPosition();
@@ -142,7 +142,7 @@ public class DisplayInputManager : MonoBehaviour {
     }
 
     private void MultipleFingerRotating(int touchCount) {
-        GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
+        ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
         if (selectedModel == null) { return; }
         if (touchCount != 2) { return; }
         
@@ -161,7 +161,7 @@ public class DisplayInputManager : MonoBehaviour {
     }
 
     private void MultipleFingerScaling(int touchCount) {
-        GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
+        ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
         if (selectedModel == null) { return; }
         if (touchCount != 2) { return; }
         
@@ -217,8 +217,6 @@ public class DisplayInputManager : MonoBehaviour {
         ModelInfo hitModel = DisplayLocalizer.Instance.FindModelByRaycast(screenCoordinates);
         if (hitModel != null) {
             ModelManager.Instance.SetSelectedModel(hitModel);
-        } else {
-            ModelManager.Instance.SetSelectedModel(null);
         }
     }
 }

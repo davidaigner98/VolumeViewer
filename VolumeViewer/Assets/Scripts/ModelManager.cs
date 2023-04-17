@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -36,9 +35,10 @@ public class ModelManager : NetworkBehaviour {
         modelInfos.Add(info);
         modelCount++;
 
-        if (CrossPlatformMediator.Instance.isServer) { ModelListUIManager.Instance.AddEntry(info.modelInstanceId, info.gameObject.name); }
-
-        if (selectedModel == null) { SetSelectedModel(info); }
+        if (CrossPlatformMediator.Instance.isServer) {
+            if (selectedModel == null) { SetSelectedModel(info); }
+            ModelListUIManager.Instance.AddEntry(info.modelInstanceId, info.gameObject.name);
+        }
     }
 
     public void UnregisterModel(ModelInfo info) {
@@ -65,17 +65,26 @@ public class ModelManager : NetworkBehaviour {
         }
     }
 
-    public GameObject GetSelectedModel() {
-        if (selectedModel != null) {
-            return selectedModel.gameObject;
-        } else {
-            return null;
-        }
+    public ModelInfo GetSelectedModel() {
+        return selectedModel;
     }
 
     public void SetSelectedModel(ModelInfo newSelectedModel) {
+        SetModelSelectionInShader(selectedModel, 0);
+
         selectedModel = newSelectedModel;
+
+        SetModelSelectionInShader(selectedModel, 1);
         if (OnSelectionChanged != null) { OnSelectionChanged(); }
+    }
+
+    private void SetModelSelectionInShader(ModelInfo model, int selectionStatus) {
+        if (CrossPlatformMediator.Instance.isServer &&  model != null) {
+            Material[] mats = model.transform.Find("Model").GetComponent<Renderer>().materials;
+            foreach (Material mat in mats) {
+                mat.SetInt("_IsSelected", selectionStatus);
+            }
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]

@@ -162,7 +162,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2da807ff49cb34646b9ee9da99a36c7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelId: 6
+  modelId: 7
   modelInstanceId: 0
   modelName: ScimitarHeart
   description: 
