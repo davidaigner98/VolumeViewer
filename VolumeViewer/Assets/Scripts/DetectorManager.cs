@@ -19,7 +19,7 @@ public class DetectorManager : MonoBehaviour {
 
             ModelInfo grabbedModel = coneTrigger.GetSelectedModel();
             if (grabbedModel != null) {
-                ModelManager.Instance.SetSelectedModelClientside(grabbedModel);
+                ModelManager.Instance.SetSelectedModel(grabbedModel);
                 grabbedModel.gameObject.GetComponent<ModelTransformator>().PalmGrabModelOn(hand);
             }
         }
@@ -27,7 +27,7 @@ public class DetectorManager : MonoBehaviour {
 
     public void PerformPalmGrabOff() {
         if (!CrossPlatformMediator.Instance.isServer) {
-            GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
+            ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
             if (selectedModel != null) {
                 selectedModel.GetComponent<ModelTransformator>().PalmGrabModelOff();
             }
@@ -44,7 +44,7 @@ public class DetectorManager : MonoBehaviour {
             ModelInfo grabbedModel = GetModelByRaycast(indexRay);
 
             if (grabbedModel != null) {
-                ModelManager.Instance.SetSelectedModelClientside(grabbedModel);
+                ModelManager.Instance.SetSelectedModel(grabbedModel);
                 grabbedModel.gameObject.GetComponent<ModelTransformator>().OneFingerRotationOn(hand);
             }
         }
@@ -52,7 +52,7 @@ public class DetectorManager : MonoBehaviour {
 
     public void PerformOneFingerRotationOff() {
         if (!CrossPlatformMediator.Instance.isServer) {
-            GameObject selectedModel = ModelManager.Instance.GetSelectedModel();
+            ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
             if (selectedModel != null) {
                 selectedModel.GetComponent<ModelTransformator>().OneFingerRotationOff();
             }
