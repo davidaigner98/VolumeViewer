@@ -4,7 +4,7 @@ Shader "Custom/ModelShader"
     {
         _Color("Main Color", Color) = (1,1,1,1)
         _OutlineColor("Outline Color", Color) = (1,1,0,1)
-        _OutlineSize("OutlineSize", Range(1.0,1.5)) = 1.1
+        _OutlineSize("OutlineSize", Range(1.0,1.5)) = 0.01
     }
     
     SubShader
@@ -116,6 +116,7 @@ Shader "Custom/ModelShader"
             struct appdata
             {
                 float4 vertex:POSITION;
+                float3 normal:NORMAL;
             };
 
             struct v2f
@@ -127,8 +128,8 @@ Shader "Custom/ModelShader"
             v2f vert(appdata v)
             {
                 v2f o;
+                o.clipPos = UnityObjectToClipPos((v.vertex + _ModelOffset) + v.normal * _OutlineSize - _ModelOffset);
                 o.worldPos = mul(unity_ObjectToWorld, v.vertex);
-                o.clipPos = UnityObjectToClipPos((v.vertex + _ModelOffset) * _OutlineSize - _ModelOffset);
                 return o;
             }
 
