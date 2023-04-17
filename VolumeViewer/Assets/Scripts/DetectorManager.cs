@@ -19,7 +19,7 @@ public class DetectorManager : MonoBehaviour {
 
             ModelInfo grabbedModel = coneTrigger.GetSelectedModel();
             if (grabbedModel != null) {
-                ModelManager.Instance.SetSelectedModel(grabbedModel);
+                ModelManager.Instance.SetSelectedModelServerRpc(grabbedModel.modelInstanceId);
                 grabbedModel.gameObject.GetComponent<ModelTransformator>().PalmGrabModelOn(hand);
             }
         }
@@ -44,7 +44,7 @@ public class DetectorManager : MonoBehaviour {
             ModelInfo grabbedModel = GetModelByRaycast(indexRay);
 
             if (grabbedModel != null) {
-                ModelManager.Instance.SetSelectedModel(grabbedModel);
+                ModelManager.Instance.SetSelectedModelServerRpc(grabbedModel.modelInstanceId);
                 grabbedModel.gameObject.GetComponent<ModelTransformator>().OneFingerRotationOn(hand);
             }
         }

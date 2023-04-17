@@ -217,8 +217,6 @@ public class DisplayInputManager : MonoBehaviour {
         ModelInfo hitModel = DisplayLocalizer.Instance.FindModelByRaycast(screenCoordinates);
         if (hitModel != null) {
             ModelManager.Instance.SetSelectedModel(hitModel);
-        } else {
-            ModelManager.Instance.SetSelectedModel(null);
         }
     }
 }
