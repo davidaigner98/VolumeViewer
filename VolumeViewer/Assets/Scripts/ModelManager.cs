@@ -7,7 +7,7 @@ public class ModelManager : NetworkBehaviour {
     public List<GameObject> modelPrefabs = new List<GameObject>();
     public List<ModelInfo> modelInfos = new List<ModelInfo>();
     private static int modelCount = 0;
-    private ModelInfo selectedModel;
+    private NetworkVariable<int> selectedModelInstanceId = new NetworkVariable<int>(-1);
     public NetworkVariable<bool> attached = new NetworkVariable<bool>(true);
 
     public delegate void SelectionChangeAction();
@@ -37,11 +37,11 @@ public class ModelManager : NetworkBehaviour {
 
         if (CrossPlatformMediator.Instance.isServer) { ModelListUIManager.Instance.AddEntry(info.modelInstanceId, info.gameObject.name); }
 
-        if (selectedModel == null) { SetSelectedModel(info); }
+        if (selectedModelInstanceId.Value == -1) { SetSelectedModel(info); }
     }
 
     public void UnregisterModel(ModelInfo info) {
-        if (selectedModel != null && selectedModel.modelInstanceId == info.modelInstanceId) { SetSelectedModel(null); }
+        if (selectedModelInstanceId.Value == info.modelInstanceId) { SetSelectedModel(null); }
         modelInfos.Remove(info);
     }
 
@@ -65,33 +65,53 @@ public class ModelManager : NetworkBehaviour {
     }
 
     public GameObject GetSelectedModel() {
-        if (selectedModel != null) {
-            return selectedModel.gameObject;
-        } else {
-            return null;
+        if (selectedModelInstanceId.Value > -1) {
+            foreach (ModelInfo currInfo in modelInfos) {
+                if (currInfo.modelInstanceId == selectedModelInstanceId.Value) {
+                    return currInfo.gameObject;
+                }
+            }
         }
+
+        return null;
     }
 
     public void SetSelectedModel(ModelInfo newSelectedModel) {
-        if (newSelectedModel == null) { return; }
+        if (newSelectedModel == null) {
+            selectedModelInstanceId.Value = -1;
+        }
 
-        if (selectedModel != null) {
-            Material[] mats = selectedModel.transform.Find("Model").GetComponent<Renderer>().materials;
+        GameObject currSelectedModel = GetSelectedModel();
+        if (currSelectedModel != null) {
+            Material[] mats = currSelectedModel.transform.Find("Model").GetComponent<Renderer>().materials;
             foreach (Material mat in mats) {
                 mat.SetInt("_IsSelected", 0);
             }
         }
-        
-        selectedModel = newSelectedModel;
 
-        if (selectedModel != null) {
-            Material[] mats = selectedModel.transform.Find("Model").GetComponent<Renderer>().materials;
+        if (newSelectedModel == null) { return; }
+
+        selectedModelInstanceId.Value = newSelectedModel.modelInstanceId;
+
+        currSelectedModel = newSelectedModel.gameObject;
+        if (currSelectedModel != null) {
+            Material[] mats = currSelectedModel.transform.Find("Model").GetComponent<Renderer>().materials;
             foreach (Material mat in mats) {
                 mat.SetInt("_IsSelected", 1);
             }
         }
 
         if (OnSelectionChanged != null) { OnSelectionChanged(); }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SetSelectedModelServerRpc(int newModelInstanceId) {
+        foreach(ModelInfo currInfo in modelInfos) {
+            if (currInfo.modelInstanceId == newModelInstanceId) {
+                SetSelectedModel(currInfo);
+                return;
+            }
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
