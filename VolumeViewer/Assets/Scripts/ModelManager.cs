@@ -36,8 +36,6 @@ public class ModelManager : NetworkBehaviour {
         modelCount++;
 
         if (CrossPlatformMediator.Instance.isServer) { ModelListUIManager.Instance.AddEntry(info.modelInstanceId, info.gameObject.name); }
-
-        if (selectedModelInstanceId.Value == -1) { SetSelectedModel(info); }
     }
 
     public void UnregisterModel(ModelInfo info) {
