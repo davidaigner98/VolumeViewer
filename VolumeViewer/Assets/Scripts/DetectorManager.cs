@@ -64,13 +64,15 @@ public class DetectorManager : MonoBehaviour {
         if (hand.Equals("left")) { currHand = Hands.Left; }
         else if (hand.Equals("right")) { currHand = Hands.Right; }
 
-        if (currHand != null) {
+        if (currHand != null && ClippingBox.Instance != null) {
             ClippingBox.Instance.StartPinchMovement(currHand);
         }
     }
 
     public void PerformPinchOff() {
-        ClippingBox.Instance.EndPinchMovement();
+        if (ClippingBox.Instance != null) {
+            ClippingBox.Instance.EndPinchMovement();
+        }
     }
 
     private ModelInfo GetModelByRaycast(Ray ray) {

@@ -149,6 +149,8 @@ public class ClippingBox : MonoBehaviour {
         SetVerticeOfLineRenderer(10, 1, new Vector3(maxBounds.x, minBounds.y, maxBounds.z));
         SetVerticeOfLineRenderer(11, 0, new Vector3(maxBounds.x, maxBounds.y, minBounds.z));
         SetVerticeOfLineRenderer(11, 1, new Vector3(maxBounds.x, maxBounds.y, maxBounds.z));
+
+        Debug.Log("Line Vertices set to "+minBounds+" and "+maxBounds);
     }
 
     private void SetVerticeOfLineRenderer(int childIndex, int pointIndex, Vector3 position) {
@@ -207,14 +209,13 @@ public class ClippingBox : MonoBehaviour {
         UpdateAllCornerPositions();
     }
 
-    public void UpdateCorner(GameObject cornerGO, Vector3 delta) {
+    public void UpdateCorner(GameObject cornerGO, Vector3 position) {
         Vector3 cornerIndex = GetIndexOfCorner(cornerGO);
-        delta = transform.InverseTransformDirection(delta);
-        Debug.Log("Updating Corner "+cornerIndex);
+        position = transform.InverseTransformDirection(position);
 
-        UpdateBoundary(cornerIndex.x == 1, 'x', delta.x);
-        UpdateBoundary(cornerIndex.y == 1, 'y', delta.y);
-        UpdateBoundary(cornerIndex.z == 1, 'z', delta.z);
+        UpdateBoundary(cornerIndex.x == 1, 'x', position.x);
+        UpdateBoundary(cornerIndex.y == 1, 'y', position.y);
+        UpdateBoundary(cornerIndex.z == 1, 'z', position.z);
         
         UpdateAllCornerPositions();
         UpdateLineVertices();
@@ -223,13 +224,13 @@ public class ClippingBox : MonoBehaviour {
 
     private void UpdateBoundary(bool max, char coordinate, float value) {
         if (max) {
-            if (coordinate.Equals('x')) { maxBounds.Set(maxBounds.x + value, maxBounds.y, maxBounds.z); }
-            else if (coordinate.Equals('y')) { maxBounds.Set(maxBounds.x, maxBounds.y + value, maxBounds.z); }
-            else if (coordinate.Equals('z')) { maxBounds.Set(maxBounds.x, maxBounds.y, maxBounds.z + value); }
+            if (coordinate.Equals('x')) { maxBounds.Set(value, maxBounds.y, maxBounds.z); }
+            else if (coordinate.Equals('y')) { maxBounds.Set(maxBounds.x, value, maxBounds.z); }
+            else if (coordinate.Equals('z')) { maxBounds.Set(maxBounds.x, maxBounds.y, value); }
         } else {
-            if (coordinate.Equals('x')) { minBounds.Set(minBounds.x + value, minBounds.y, minBounds.z); }
-            else if (coordinate.Equals('y')) { minBounds.Set(minBounds.x, minBounds.y + value, minBounds.z); }
-            else if (coordinate.Equals('z')) { minBounds.Set(minBounds.x, minBounds.y, minBounds.z + value); }
+            if (coordinate.Equals('x')) { minBounds.Set(value, minBounds.y, minBounds.z); }
+            else if (coordinate.Equals('y')) { minBounds.Set(minBounds.x, value, minBounds.z); }
+            else if (coordinate.Equals('z')) { minBounds.Set(minBounds.x, minBounds.y, value); }
         }
 
         if (minBounds.x > maxBounds.x) {
@@ -275,8 +276,6 @@ public class ClippingBox : MonoBehaviour {
     }
 
     private void UpdateCornerPosition(GameObject cornerGO, Vector3 index) {
-        if (cornerGO.GetComponent<ClippingBoxCorner>().IsBeingGrabbed()) { return; }
-        
         float posX = maxBounds.x;
         if (index.x == -1) { posX = minBounds.x; }
         float posY = maxBounds.y;
@@ -284,6 +283,7 @@ public class ClippingBox : MonoBehaviour {
         float posZ = maxBounds.z;
         if (index.z == -1) { posZ = minBounds.z; }
 
+        if (cornerGO.GetComponent<ClippingBoxCorner>().IsBeingGrabbed()) { return; }
         cornerGO.transform.localPosition = new Vector3(posX, posY, posZ);
     }
 

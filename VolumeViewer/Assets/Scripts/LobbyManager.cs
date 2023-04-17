@@ -67,10 +67,12 @@ public class LobbyManager : MonoBehaviour {
     }
 
     private void SpawnClippingBox() {
+        if (ClippingBox.Instance != null) { return; }
+
         GameObject clippingBox = Instantiate(clippingBoxPrefab);
         GameObject displayCenter = DisplayProfileManager.Instance.GetCurrentDisplayCenter();
         Vector3 displaySize = DisplayProfileManager.Instance.GetCurrentDisplaySize().transform.localScale;
-        Vector3 boxPosition = new Vector3(0, 1, 0);
+        Vector3 boxPosition = displayCenter.transform.position + displayCenter.transform.TransformDirection(new Vector3(1, -0.25f, -1) * displaySize.x / 2);
         Vector3 boxSize = Vector3.one * displaySize.x / 4;
 
         clippingBox.name = "ClippingBox";
