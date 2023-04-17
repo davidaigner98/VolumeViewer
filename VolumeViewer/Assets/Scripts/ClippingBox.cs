@@ -149,8 +149,6 @@ public class ClippingBox : MonoBehaviour {
         SetVerticeOfLineRenderer(10, 1, new Vector3(maxBounds.x, minBounds.y, maxBounds.z));
         SetVerticeOfLineRenderer(11, 0, new Vector3(maxBounds.x, maxBounds.y, minBounds.z));
         SetVerticeOfLineRenderer(11, 1, new Vector3(maxBounds.x, maxBounds.y, maxBounds.z));
-
-        Debug.Log("Line Vertices set to "+minBounds+" and "+maxBounds);
     }
 
     private void SetVerticeOfLineRenderer(int childIndex, int pointIndex, Vector3 position) {
