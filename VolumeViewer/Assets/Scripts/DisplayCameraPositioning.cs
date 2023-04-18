@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class DisplayCameraPositioning : MonoBehaviour {
     public static DisplayCameraPositioning Instance { get; private set; }
-    public bool drawCage;
-    public Vector3 cageSize;
 
     public bool cameraRepositioning;
     public Vector2 viewportSize;
-    public Vector3 startPosition;
-    public Vector3 focalPoint;
+    public float focalRadius = 3;
+
+    public bool drawCage;
+    public Vector3 cageSize;
 
     private void Awake() {
         if (Instance != null && Instance != this) { Destroy(this); }
@@ -16,8 +16,8 @@ public class DisplayCameraPositioning : MonoBehaviour {
     }
 
     private void Start() {
-        transform.position = startPosition;
-        transform.LookAt(focalPoint);
+        transform.position = new Vector3(0, 0, -focalRadius);
+        transform.LookAt(Vector3.zero);
 
         if (drawCage) { DrawCage(); }
     }
@@ -25,22 +25,16 @@ public class DisplayCameraPositioning : MonoBehaviour {
     public void SynchronizeDisplayCameraPosition(Vector3 cameraOffset) {
         if (!cameraRepositioning) { return; }
 
-        cameraOffset *= viewportSize.x;
-        cameraOffset += startPosition;
-        cameraOffset -= focalPoint;
-
-        float focalRadius = (startPosition - focalPoint).magnitude;
         cameraOffset = cameraOffset.normalized * focalRadius;
-        cameraOffset += focalPoint;
-
         transform.position = cameraOffset;
-        transform.LookAt(focalPoint);
+        transform.LookAt(Vector3.zero);
 
         ModelManager.Instance.RefreshModelScreenOffsets();
     }
 
     private void DrawCage() {
         GameObject cageGO = new GameObject("Grid");
+        Vector3 startPosition = new Vector3(0, 0, -focalRadius);
 
         DrawLine(startPosition + new Vector3(-cageSize.x / 2, -cageSize.y / 2, -cageSize.z), startPosition + new Vector3(cageSize.x / 2, -cageSize.y / 2, -cageSize.z)).transform.SetParent(cageGO.transform);
         DrawLine(startPosition + new Vector3(-cageSize.x / 2, cageSize.y / 2, -cageSize.z), startPosition + new Vector3(cageSize.x / 2, cageSize.y / 2, -cageSize.z)).transform.SetParent(cageGO.transform);
