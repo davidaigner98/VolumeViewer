@@ -211,10 +211,10 @@ public class ClippingBox : MonoBehaviour {
         Vector3 cornerIndex = GetIndexOfCorner(cornerGO);
         position = transform.InverseTransformDirection(position);
 
-        UpdateBoundary(cornerIndex.x == 1, 'x', position.x);
-        UpdateBoundary(cornerIndex.y == 1, 'y', position.y);
-        UpdateBoundary(cornerIndex.z == 1, 'z', position.z);
-        
+        UpdateBoundary(cornerIndex.x > 0, 'x', position.x);
+        UpdateBoundary(cornerIndex.y > 0, 'y', position.y);
+        UpdateBoundary(cornerIndex.z > 0, 'z', position.z);
+
         UpdateAllCornerPositions();
         UpdateLineVertices();
         UpdateTrigger();
@@ -291,7 +291,7 @@ public class ClippingBox : MonoBehaviour {
         float positionSum = 0;
 
         foreach(ClippingBoxCorner corner in corners) {
-            Vector3 currPosition = corner.transform.position - boxCenter;
+            Vector3 currPosition = transform.TransformDirection(corner.transform.position - boxCenter);
             float currPositionSum = 0;
             currPositionSum += currPosition.x * index.x;
             currPositionSum += currPosition.y * index.y;
