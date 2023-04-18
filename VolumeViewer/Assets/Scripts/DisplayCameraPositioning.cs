@@ -6,6 +6,7 @@ public class DisplayCameraPositioning : MonoBehaviour {
     public bool cameraRepositioning;
     public Vector2 viewportSize;
     public float focalRadius = 3;
+    public Vector3 distortion;
 
     public bool drawCage;
     public Vector3 cageSize;
@@ -25,6 +26,7 @@ public class DisplayCameraPositioning : MonoBehaviour {
     public void SynchronizeDisplayCameraPosition(Vector3 cameraOffset) {
         if (!cameraRepositioning) { return; }
 
+        cameraOffset = new Vector3(cameraOffset.x * distortion.x, cameraOffset.y * distortion.y, cameraOffset.z * distortion.z);
         cameraOffset = cameraOffset.normalized * focalRadius;
         transform.position = cameraOffset;
         transform.LookAt(Vector3.zero);
