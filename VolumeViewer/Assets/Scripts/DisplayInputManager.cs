@@ -109,7 +109,7 @@ public class DisplayInputManager : MonoBehaviour {
             MultipleFingerScaling(touchCount);
         }
 
-        if (touchCount >= 3 && touchCount <= 5) {
+        if (touchCount >= 2 && touchCount <= 5) {
             if (first3To5FingerCall) {
                 TrySelectModel(GetPalmPosition());
                 first3To5FingerCall = false;
