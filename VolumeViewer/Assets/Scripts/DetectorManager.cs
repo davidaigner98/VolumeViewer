@@ -132,6 +132,8 @@ public class DetectorManager : MonoBehaviour {
 
     public void PerformOneFingerRotationOn(string hand) {
         if (!CrossPlatformMediator.Instance.isServer) {
+            if (debugInput) { return; }
+
             Hand interactingHand = Hands.Right;
             if (hand.Equals("left")) { interactingHand = Hands.Left; }
             else if (hand.Equals("right")) { interactingHand = Hands.Right; }
@@ -148,6 +150,8 @@ public class DetectorManager : MonoBehaviour {
 
     public void PerformOneFingerRotationOff() {
         if (!CrossPlatformMediator.Instance.isServer) {
+            if (debugInput) { return; }
+
             ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
             if (selectedModel != null) {
                 selectedModel.GetComponent<ModelTransformator>().OneFingerRotationOff();
@@ -173,6 +177,7 @@ public class DetectorManager : MonoBehaviour {
     }
 
     public void PerformPinchOn(string hand) {
+        if (debugInput) { return; }
         if (isGrabbing) { return; }
         
         Hand currHand = null;
@@ -186,6 +191,8 @@ public class DetectorManager : MonoBehaviour {
     }
 
     public void PerformPinchOff() {
+        if (debugInput) { return; }
+
         if (ClippingBox.Instance != null) {
             ClippingBox.Instance.EndPinchMovement();
             isPinching = false;
