@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class DetectorManager : MonoBehaviour {
     public static DetectorManager Instance { get; private set; }
+    private bool isGrabbing;
+    private bool isPinching;
 
     private void Awake() {
         if (Instance != null && Instance != this) { Destroy(this); }
@@ -13,6 +15,8 @@ public class DetectorManager : MonoBehaviour {
 
     public void PerformPalmGrabOn(string hand) {
         if (!CrossPlatformMediator.Instance.isServer) {
+            if (isPinching) { return; }
+            
             Hand grabbingHand = Hands.Right;
             if (hand.Equals("left")) { grabbingHand = Hands.Left; }
             else if (hand.Equals("right")) { grabbingHand = Hands.Right; }
@@ -33,6 +37,7 @@ public class DetectorManager : MonoBehaviour {
                 ModelInfo grabbedModel = nearestModel;
                 ModelManager.Instance.SetSelectedModel(grabbedModel);
                 grabbedModel.gameObject.GetComponent<ModelTransformator>().PalmGrabModelOn(hand);
+                isGrabbing = true;
             }
         }
     }
@@ -43,6 +48,8 @@ public class DetectorManager : MonoBehaviour {
             if (selectedModel != null) {
                 selectedModel.GetComponent<ModelTransformator>().PalmGrabModelOff();
             }
+
+            isGrabbing = false;
         }
     }
 
@@ -72,18 +79,22 @@ public class DetectorManager : MonoBehaviour {
     }
 
     public void PerformPinchOn(string hand) {
+        if (isGrabbing) { return; }
+        
         Hand currHand = null;
         if (hand.Equals("left")) { currHand = Hands.Left; }
         else if (hand.Equals("right")) { currHand = Hands.Right; }
 
         if (currHand != null && ClippingBox.Instance != null) {
             ClippingBox.Instance.StartPinchMovement(currHand);
+            isPinching = true;
         }
     }
 
     public void PerformPinchOff() {
         if (ClippingBox.Instance != null) {
             ClippingBox.Instance.EndPinchMovement();
+            isPinching = false;
         }
     }
 
