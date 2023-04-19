@@ -27,16 +27,18 @@ public class DetectorManager : MonoBehaviour {
 
         cPressed.started += DebugPerformPalmGrabOnWithLeftHand;
         cPressed.canceled += DebugPerformPalmGrabOff;
-        vPressed.started += DebugPerformPalmGrabOnWithLeftHand;
+        vPressed.started += DebugPerformPalmGrabOnWithRightHand;
         vPressed.canceled += DebugPerformPalmGrabOff;
     }
 
     private void DebugPerformPalmGrabOnWithLeftHand(InputAction.CallbackContext c) {
+        if (Hands.Left == null) { return; }
         PerformPalmGrabOn("left");
         debugInput = true;
     }
 
     private void DebugPerformPalmGrabOnWithRightHand(InputAction.CallbackContext c) {
+        if (Hands.Right == null) { return; }
         PerformPalmGrabOn("right");
         debugInput = true;
     }
