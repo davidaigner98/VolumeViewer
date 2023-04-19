@@ -1,0 +1,54 @@
+{
+    "name": "DebugKeyboardInputActions",
+    "maps": [
+        {
+            "name": "Keyboard",
+            "id": "5223cc1a-49e6-4864-a585-5e7d35da5a93",
+            "actions": [
+                {
+                    "name": "cPressed",
+                    "type": "Button",
+                    "id": "0fc11b88-1669-44fc-8870-caf798366678",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "vPressed",
+                    "type": "Button",
+                    "id": "9dc03eca-b5a2-4274-a94b-00c13878b02f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "e548a196-cd36-4457-a234-076a7c077089",
+                    "path": "<Keyboard>/v",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "vPressed",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "71993c06-1491-4382-8bea-7ecb7492951c",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "cPressed",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

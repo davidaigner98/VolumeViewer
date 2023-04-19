@@ -2,19 +2,53 @@ using Leap;
 using Leap.Unity;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class DetectorManager : MonoBehaviour {
     public static DetectorManager Instance { get; private set; }
     private bool isGrabbing;
     private bool isPinching;
+    private InputAction cPressed;
+    private InputAction vPressed;
+    private bool debugInput = false;
 
     private void Awake() {
         if (Instance != null && Instance != this) { Destroy(this); }
         else { Instance = this; }
     }
 
+    private void Start() {
+        PlayerInput playerInput = GetComponent<PlayerInput>();
+        InputActionMap map = playerInput.currentActionMap;
+        cPressed = map.FindAction("cPressed");
+        cPressed.Enable();
+        vPressed = map.FindAction("vPressed");
+        vPressed.Enable();
+
+        cPressed.started += DebugPerformPalmGrabOnWithLeftHand;
+        cPressed.canceled += DebugPerformPalmGrabOff;
+        vPressed.started += DebugPerformPalmGrabOnWithLeftHand;
+        vPressed.canceled += DebugPerformPalmGrabOff;
+    }
+
+    private void DebugPerformPalmGrabOnWithLeftHand(InputAction.CallbackContext c) {
+        PerformPalmGrabOn("left");
+        debugInput = true;
+    }
+
+    private void DebugPerformPalmGrabOnWithRightHand(InputAction.CallbackContext c) {
+        PerformPalmGrabOn("right");
+        debugInput = true;
+    }
+
+    private void DebugPerformPalmGrabOff(InputAction.CallbackContext c) {
+        debugInput = false;
+        PerformPalmGrabOff();
+    }
+
     public void PerformPalmGrabOn(string hand) {
         if (!CrossPlatformMediator.Instance.isServer) {
+            if (debugInput) { return; }
             if (isPinching) { return; }
             
             Hand grabbingHand = Hands.Right;
@@ -44,6 +78,8 @@ public class DetectorManager : MonoBehaviour {
 
     public void PerformPalmGrabOff() {
         if (!CrossPlatformMediator.Instance.isServer) {
+            if (debugInput) { return; }
+            
             ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
             if (selectedModel != null) {
                 selectedModel.GetComponent<ModelTransformator>().PalmGrabModelOff();
