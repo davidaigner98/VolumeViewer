@@ -1,10 +1,10 @@
 using Leap;
 using Leap.Unity;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class DetectorManager : MonoBehaviour {
     public static DetectorManager Instance { get; private set; }
-    public ConeTrigger leftConeTrigger, rightConeTrigger;
 
     private void Awake() {
         if (Instance != null && Instance != this) { Destroy(this); }
@@ -13,12 +13,24 @@ public class DetectorManager : MonoBehaviour {
 
     public void PerformPalmGrabOn(string hand) {
         if (!CrossPlatformMediator.Instance.isServer) {
-            ConeTrigger coneTrigger = rightConeTrigger;
-            if (hand.Equals("left")) { coneTrigger = leftConeTrigger; }
-            else if (hand.Equals("right")) { coneTrigger = rightConeTrigger; }
+            Hand grabbingHand = Hands.Right;
+            if (hand.Equals("left")) { grabbingHand = Hands.Left; }
+            else if (hand.Equals("right")) { grabbingHand = Hands.Right; }
 
-            ModelInfo grabbedModel = coneTrigger.GetSelectedModel();
-            if (grabbedModel != null) {
+            ModelInfo nearestModel = null;
+            float shortestDistance = -1;
+            List<ModelInfo> allModels = ModelManager.Instance.modelInfos;
+            foreach(ModelInfo currModel in allModels) {
+                float currDistance = Vector3.Distance(grabbingHand.PalmPosition, currModel.transform.position);
+                
+                if (nearestModel == null || currDistance < shortestDistance) {
+                    nearestModel = currModel;
+                    shortestDistance = currDistance;
+                }
+            }
+
+            if (nearestModel != null && shortestDistance <= 1.5f) {
+                ModelInfo grabbedModel = nearestModel;
                 ModelManager.Instance.SetSelectedModel(grabbedModel);
                 grabbedModel.gameObject.GetComponent<ModelTransformator>().PalmGrabModelOn(hand);
             }
