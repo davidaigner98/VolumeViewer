@@ -8,6 +8,10 @@ public class DetectorManager : MonoBehaviour {
     public static DetectorManager Instance { get; private set; }
     private bool isGrabbing;
     private bool isPinching;
+    private InputAction ePressed;
+    private InputAction rPressed;
+    private InputAction dPressed;
+    private InputAction fPressed;
     private InputAction cPressed;
     private InputAction vPressed;
     private bool debugInput = false;
@@ -20,15 +24,33 @@ public class DetectorManager : MonoBehaviour {
     private void Start() {
         PlayerInput playerInput = GetComponent<PlayerInput>();
         InputActionMap map = playerInput.currentActionMap;
+        ePressed = map.FindAction("ePressed");
+        ePressed.Enable();
+        rPressed = map.FindAction("rPressed");
+        rPressed.Enable();
+        dPressed = map.FindAction("dPressed");
+        dPressed.Enable();
+        fPressed = map.FindAction("fPressed");
+        fPressed.Enable();
         cPressed = map.FindAction("cPressed");
         cPressed.Enable();
         vPressed = map.FindAction("vPressed");
         vPressed.Enable();
 
-        cPressed.started += DebugPerformPalmGrabOnWithLeftHand;
-        cPressed.canceled += DebugPerformPalmGrabOff;
-        vPressed.started += DebugPerformPalmGrabOnWithRightHand;
-        vPressed.canceled += DebugPerformPalmGrabOff;
+        ePressed.started += DebugPerformPalmGrabOnWithLeftHand;
+        ePressed.canceled += DebugPerformPalmGrabOff;
+        rPressed.started += DebugPerformPalmGrabOnWithRightHand;
+        rPressed.canceled += DebugPerformPalmGrabOff;
+
+        dPressed.started += DebugPerformOneFingerRotationOnWithLeftHand;
+        dPressed.canceled += DebugPerformOneFingerRotationOff;
+        fPressed.started += DebugPerformOneFingerRotationOnWithRightHand;
+        fPressed.canceled += DebugPerformOneFingerRotationOff;
+
+        cPressed.started += DebugPerformPinchOnWithLeftHand;
+        cPressed.canceled += DebugPerformPinchOff;
+        vPressed.started += DebugPerformPinchOnWithRightHand;
+        vPressed.canceled += DebugPerformPinchOff;
     }
 
     private void DebugPerformPalmGrabOnWithLeftHand(InputAction.CallbackContext c) {
@@ -91,6 +113,23 @@ public class DetectorManager : MonoBehaviour {
         }
     }
 
+    private void DebugPerformOneFingerRotationOnWithLeftHand(InputAction.CallbackContext c) {
+        if (Hands.Left == null) { return; }
+        PerformOneFingerRotationOn("left");
+        debugInput = true;
+    }
+
+    private void DebugPerformOneFingerRotationOnWithRightHand(InputAction.CallbackContext c) {
+        if (Hands.Right == null) { return; }
+        PerformOneFingerRotationOn("right");
+        debugInput = true;
+    }
+
+    private void DebugPerformOneFingerRotationOff(InputAction.CallbackContext c) {
+        debugInput = false;
+        PerformOneFingerRotationOff();
+    }
+
     public void PerformOneFingerRotationOn(string hand) {
         if (!CrossPlatformMediator.Instance.isServer) {
             Hand interactingHand = Hands.Right;
@@ -114,6 +153,23 @@ public class DetectorManager : MonoBehaviour {
                 selectedModel.GetComponent<ModelTransformator>().OneFingerRotationOff();
             }
         }
+    }
+
+    private void DebugPerformPinchOnWithLeftHand(InputAction.CallbackContext c) {
+        if (Hands.Left == null) { return; }
+        PerformPinchOn("left");
+        debugInput = true;
+    }
+
+    private void DebugPerformPinchOnWithRightHand(InputAction.CallbackContext c) {
+        if (Hands.Right == null) { return; }
+        PerformPinchOn("right");
+        debugInput = true;
+    }
+
+    private void DebugPerformPinchOff(InputAction.CallbackContext c) {
+        debugInput = false;
+        PerformPinchOff();
     }
 
     public void PerformPinchOn(string hand) {
