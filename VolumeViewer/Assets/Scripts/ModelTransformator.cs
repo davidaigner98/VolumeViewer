@@ -2,7 +2,6 @@ using Leap;
 using Leap.Unity;
 using System.Collections;
 using Unity.Netcode;
-using UnityEditor;
 using UnityEngine;
 
 public class ModelTransformator : NetworkBehaviour {
