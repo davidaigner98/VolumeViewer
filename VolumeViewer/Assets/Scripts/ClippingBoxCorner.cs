@@ -12,6 +12,16 @@ public class ClippingBoxCorner : MonoBehaviour {
     }
 
     private void Update() {
+        Vector3 index = ClippingBox.Instance.GetIndexOfCorner(gameObject);
+        name = "Corner " + index;
+        if (index == Vector3.one || index == -Vector3.one) {
+            GetComponent<Renderer>().material.color = Color.red;
+        } else {
+            GetComponent<Renderer>().material.color = Color.white;
+        }
+    }
+
+    private void Update() {
         UpdateVisibility();
 
         if (clippingBox.IsActive() && isBeingGrabbed) {

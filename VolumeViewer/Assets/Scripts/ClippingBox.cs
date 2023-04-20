@@ -291,7 +291,7 @@ public class ClippingBox : MonoBehaviour {
         float positionSum = 0;
 
         foreach(ClippingBoxCorner corner in corners) {
-            Vector3 currPosition = transform.TransformDirection(corner.transform.position - boxCenter);
+            Vector3 currPosition = corner.transform.localPosition - boxCenter;
             float currPositionSum = 0;
             currPositionSum += currPosition.x * index.x;
             currPositionSum += currPosition.y * index.y;
@@ -310,22 +310,22 @@ public class ClippingBox : MonoBehaviour {
         Vector3 center = Vector3.zero;
 
         foreach (ClippingBoxCorner corner in corners) {
-            center += corner.transform.position;
+            center += corner.transform.localPosition;
         }
 
         center = center / corners.Count;
         return center;
     }
 
-    private Vector3 GetIndexOfCorner(GameObject cornerGO) {
-        foreach (Vector3 currIndex in possibleIndices) {
-            GameObject currCornerGO = GetCorner(currIndex);
+    public Vector3 GetIndexOfCorner(GameObject cornerGO) {
+        int indexX, indexY, indexZ;
+        Vector3 boxCenter = GetBoxCenter();
+        Vector3 relativePos = cornerGO.transform.localPosition - boxCenter;
 
-            if (ReferenceEquals(cornerGO, currCornerGO)) {
-                return currIndex;
-            }
-        }
+        if (relativePos.x > 0) { indexX = 1; } else { indexX = -1; }
+        if (relativePos.y > 0) { indexY = 1; } else { indexY = -1; }
+        if (relativePos.z > 0) { indexZ = 1; } else { indexZ = -1; }
 
-        return Vector3.zero;
+        return new Vector3(indexX, indexY, indexZ);
     }
 }
