@@ -77,7 +77,7 @@ public class LobbyManager : MonoBehaviour {
         clippingBox.transform.localRotation = Quaternion.identity;
 
         Vector3 displaySize = DisplayProfileManager.Instance.GetCurrentDisplaySize().transform.localScale;
-        Vector3 boxPosition = -clippingBox.transform.localPosition + displayCenter.transform.TransformDirection(new Vector3(1, 0, 0.5f) * displaySize.x / 2);
+        Vector3 boxPosition = -clippingBox.transform.localPosition + displayCenter.transform.TransformDirection(new Vector3(-1, 0, 0.5f) * displaySize.x / 2);
         Vector3 boxSize = Vector3.one * displaySize.x / 4;
         clippingBox.GetComponent<ClippingBox>().minBounds = boxPosition - boxSize / 2;
         clippingBox.GetComponent<ClippingBox>().maxBounds = boxPosition + boxSize / 2;
