@@ -209,6 +209,7 @@ public class ClippingBox : MonoBehaviour {
 
     public void UpdateCorner(GameObject cornerGO, Vector3 position) {
         Vector3 cornerIndex = GetIndexOfCorner(cornerGO);
+        position = transform.InverseTransformDirection(position);
 
         UpdateBoundary(cornerIndex.x > 0, 'x', position.x);
         UpdateBoundary(cornerIndex.y > 0, 'y', position.y);

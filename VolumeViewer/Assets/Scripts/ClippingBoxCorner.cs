@@ -12,14 +12,6 @@ public class ClippingBoxCorner : MonoBehaviour {
     }
 
     private void Update() {
-        Vector3 index = ClippingBox.Instance.GetIndexOfCorner(gameObject);
-        name = "Corner " + index;
-        if (index == Vector3.one || index == -Vector3.one) {
-            GetComponent<Renderer>().material.color = Color.red;
-        } else {
-            GetComponent<Renderer>().material.color = Color.white;
-        }
-
         UpdateVisibility();
 
         if (clippingBox.IsActive() && isBeingGrabbed) {
@@ -34,8 +26,6 @@ public class ClippingBoxCorner : MonoBehaviour {
 
     private void PerformGrabMovement() {
         Vector3 currPinchPosition = grabbingHand.GetPinchPosition();
-        currPinchPosition = transform.InverseTransformPoint(currPinchPosition);
-        
         clippingBox.UpdateCorner(gameObject, currPinchPosition);
     }
 
