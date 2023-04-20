@@ -209,7 +209,6 @@ public class ClippingBox : MonoBehaviour {
 
     public void UpdateCorner(GameObject cornerGO, Vector3 position) {
         Vector3 cornerIndex = GetIndexOfCorner(cornerGO);
-        position = transform.InverseTransformDirection(position);
 
         UpdateBoundary(cornerIndex.x > 0, 'x', position.x);
         UpdateBoundary(cornerIndex.y > 0, 'y', position.y);
@@ -275,13 +274,12 @@ public class ClippingBox : MonoBehaviour {
 
     private void UpdateCornerPosition(GameObject cornerGO, Vector3 index) {
         float posX = maxBounds.x;
-        if (index.x == -1) { posX = minBounds.x; }
+        if (index.x < 0) { posX = minBounds.x; }
         float posY = maxBounds.y;
-        if (index.y == -1) { posY = minBounds.y; }
+        if (index.y < 0) { posY = minBounds.y; }
         float posZ = maxBounds.z;
-        if (index.z == -1) { posZ = minBounds.z; }
+        if (index.z < 0) { posZ = minBounds.z; }
 
-        if (cornerGO.GetComponent<ClippingBoxCorner>().IsBeingGrabbed()) { return; }
         cornerGO.transform.localPosition = new Vector3(posX, posY, posZ);
     }
 

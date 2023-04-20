@@ -34,18 +34,14 @@ public class ClippingBoxCorner : MonoBehaviour {
 
     private void PerformGrabMovement() {
         Vector3 currPinchPosition = grabbingHand.GetPinchPosition();
-
-        transform.position = currPinchPosition;
+        currPinchPosition = transform.InverseTransformPoint(currPinchPosition);
+        
         clippingBox.UpdateCorner(gameObject, currPinchPosition);
     }
 
     public void EndGrabMovement() {
         isBeingGrabbed = false;
         grabbingHand = null;
-    }
-
-    public bool IsBeingGrabbed() {
-        return isBeingGrabbed;
     }
 
     private void UpdateVisibility() {
