@@ -19,9 +19,7 @@ public class ClippingBoxCorner : MonoBehaviour {
         } else {
             GetComponent<Renderer>().material.color = Color.white;
         }
-    }
 
-    private void Update() {
         UpdateVisibility();
 
         if (clippingBox.IsActive() && isBeingGrabbed) {
