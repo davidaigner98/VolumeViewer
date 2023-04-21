@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 public class DetectorManager : MonoBehaviour {
     public static DetectorManager Instance { get; private set; }
     private bool isGrabbing;
+    private bool isPointing;
     private bool isPinching;
     private InputAction ePressed;
     private InputAction rPressed;
@@ -55,12 +56,18 @@ public class DetectorManager : MonoBehaviour {
 
     private void DebugPerformPalmGrabOnWithLeftHand(InputAction.CallbackContext c) {
         if (Hands.Left == null) { return; }
+
+        if (isGrabbing) { PerformPalmGrabOff(); }
+
         PerformPalmGrabOn("left");
         debugInput = true;
     }
 
     private void DebugPerformPalmGrabOnWithRightHand(InputAction.CallbackContext c) {
         if (Hands.Right == null) { return; }
+
+        if (isGrabbing) { PerformPalmGrabOff(); }
+
         PerformPalmGrabOn("right");
         debugInput = true;
     }
@@ -115,12 +122,18 @@ public class DetectorManager : MonoBehaviour {
 
     private void DebugPerformOneFingerRotationOnWithLeftHand(InputAction.CallbackContext c) {
         if (Hands.Left == null) { return; }
+
+        if (isPointing) { PerformOneFingerRotationOff(); }
+
         PerformOneFingerRotationOn("left");
         debugInput = true;
     }
 
     private void DebugPerformOneFingerRotationOnWithRightHand(InputAction.CallbackContext c) {
         if (Hands.Right == null) { return; }
+
+        if (isPointing) { PerformOneFingerRotationOff(); }
+
         PerformOneFingerRotationOn("right");
         debugInput = true;
     }
@@ -144,6 +157,7 @@ public class DetectorManager : MonoBehaviour {
             if (grabbedModel != null) {
                 ModelManager.Instance.SetSelectedModel(grabbedModel);
                 grabbedModel.gameObject.GetComponent<ModelTransformator>().OneFingerRotationOn(hand);
+                isPointing = true;
             }
         }
     }
@@ -155,18 +169,25 @@ public class DetectorManager : MonoBehaviour {
             ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
             if (selectedModel != null) {
                 selectedModel.GetComponent<ModelTransformator>().OneFingerRotationOff();
+                isPointing = false;
             }
         }
     }
 
     private void DebugPerformPinchOnWithLeftHand(InputAction.CallbackContext c) {
         if (Hands.Left == null) { return; }
+
+        if (isPinching) { PerformPinchOff(); }
+
         PerformPinchOn("left");
         debugInput = true;
     }
 
     private void DebugPerformPinchOnWithRightHand(InputAction.CallbackContext c) {
         if (Hands.Right == null) { return; }
+
+        if (isPinching) { PerformPinchOff(); }
+
         PerformPinchOn("right");
         debugInput = true;
     }
