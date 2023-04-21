@@ -125,6 +125,7 @@ public class ModelTransformator : NetworkBehaviour {
             Vector3 indexPosition = interactingHand.GetIndex().TipPosition - transform.position;
 
             Vector3 axis = Vector3.Cross(indexPosition, lastIndexPosition);
+            axis = new Vector3(-axis.x, axis.y, -axis.z);
             float angle = -Vector3.Angle(indexPosition, lastIndexPosition);
 
             RotateModelServerRpc(axis, angle);
