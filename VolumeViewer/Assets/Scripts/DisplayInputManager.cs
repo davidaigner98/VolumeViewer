@@ -136,9 +136,11 @@ public class DisplayInputManager : MonoBehaviour {
         Vector2 palmPosition = GetPalmPosition();
         if (palmPosition.Equals(new Vector2(-1, -1))) { return; }
 
-        Camera displayCamera = DisplayLocalizer.Instance.displayCamera;
-        Vector3 palmPosition3D = new Vector3(palmPosition.x, palmPosition.y, -displayCamera.transform.position.z);
-        selectedModel.transform.position = displayCamera.ScreenToWorldPoint(palmPosition3D);
+        selectedModel.GetComponent<ModelTransformator>().screenOffset.Value = palmPosition - Vector2.one / 2;
+
+        //Camera displayCamera = DisplayLocalizer.Instance.displayCamera;
+        //Vector3 palmPosition3D = new Vector3(palmPosition.x, palmPosition.y, -displayCamera.transform.position.z);
+        //selectedModel.transform.position = displayCamera.ScreenToWorldPoint(palmPosition3D);
     }
 
     private void MultipleFingerRotating(int touchCount) {

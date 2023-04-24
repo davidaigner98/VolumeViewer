@@ -11,7 +11,7 @@ public class ModelTransformator : NetworkBehaviour {
     public float resetSpeed = 1.0f;
     private GameObject displayCenter;
     private Transform displaySize;
-    public NetworkVariable<Vector2> screenOffset = new NetworkVariable<Vector2>(Vector2.zero);
+    public NetworkVariable<Vector3> screenOffset = new NetworkVariable<Vector3>(Vector3.zero);
     public NetworkVariable<float> scaleOnDisplay = new NetworkVariable<float>(1);
     public float scaleFactor = 0.085f;
     private bool inDisplay = true;
@@ -39,6 +39,7 @@ public class ModelTransformator : NetworkBehaviour {
     }
 
     public void SetupServer() {
+        screenOffset.OnValueChanged += AdjustPositionServerside;
         //SetAlpha(1);
         AlignCoronal();
     }
@@ -46,7 +47,8 @@ public class ModelTransformator : NetworkBehaviour {
     public void SetupClient() {
         displayCenter = DisplayProfileManager.Instance.GetCurrentDisplayCenter();
         displaySize = DisplayProfileManager.Instance.GetCurrentDisplaySize().transform;
-        
+        screenOffset.OnValueChanged += AdjustPositionClientside;
+
         Rescale();
         palmGrabDistance = transform.localScale.x * 2;
         oneFingerRotationDistance = transform.localScale.x * 3 / 2;
@@ -66,7 +68,7 @@ public class ModelTransformator : NetworkBehaviour {
             if (isBeingGrabbed) { PalmGrabMovement(); }
             else if (isBeingRotated) { OneFingerRotation(); }
 
-            if (inDisplay) {
+            /*if (inDisplay) {
                 float zOffset = modelCollider.bounds.extents.x;
                 if (modelCollider.bounds.extents.y > zOffset) { zOffset = modelCollider.bounds.extents.y; }
                 else if (modelCollider.bounds.extents.z > zOffset) { zOffset = modelCollider.bounds.extents.z; }
@@ -74,7 +76,7 @@ public class ModelTransformator : NetworkBehaviour {
                 Vector3 screenOffset = this.screenOffset.Value;
                 screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, zOffset * 1.01f);
                 transform.position = displayCenter.transform.position + displayCenter.transform.TransformDirection(screenOffset);
-            }
+            }*/
         }
     }
 
@@ -107,6 +109,10 @@ public class ModelTransformator : NetworkBehaviour {
         lastPalmPosition = interactingHand.PalmPosition;
 
         transform.position += delta;
+        Transform screenCenter = DisplayProfileManager.Instance.GetCurrentDisplayCenter().transform;
+        Vector3 screenSize = DisplayProfileManager.Instance.GetCurrentDisplaySize().transform.localScale;
+        Vector3 newOffset = screenCenter.InverseTransformDirection(transform.position + delta - screenCenter.position) / screenSize.x;
+        SetModelScreenOffsetServerRpc(newOffset);
 
         /*Vector3 screenOffset = this.screenOffset.Value;
         screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, 0);
@@ -116,6 +122,36 @@ public class ModelTransformator : NetworkBehaviour {
         } else {
             //SetAlpha(1);
         }*/
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetModelScreenOffsetServerRpc(Vector3 newOffset) {
+        if (CrossPlatformMediator.Instance.isServer) {
+            screenOffset.Value = newOffset;
+        }
+    }
+
+    private void AdjustPositionServerside(Vector3 oldOffset, Vector3 newOffset) {
+        Camera displayCamera = DisplayLocalizer.Instance.displayCamera;
+        Vector3 palmPosition3D = new Vector3(newOffset.x, newOffset.y, -displayCamera.transform.position.z);
+        transform.position = displayCamera.ScreenToWorldPoint(palmPosition3D);
+    }
+
+    private void AdjustPositionClientside(Vector3 oldOffset, Vector3 newOffset) {
+        if (isBeingGrabbed) { return; }
+
+        Transform screenCenter = DisplayProfileManager.Instance.GetCurrentDisplayCenter().transform;
+        Vector3 screenSize = DisplayProfileManager.Instance.GetCurrentDisplaySize().transform.localScale;
+
+        if (newOffset.z > 0) {
+            float zOffset = modelCollider.bounds.extents.x;
+            if (modelCollider.bounds.extents.y > zOffset) { zOffset = modelCollider.bounds.extents.y; }
+            else if (modelCollider.bounds.extents.z > zOffset) { zOffset = modelCollider.bounds.extents.z; }
+
+            newOffset = new Vector3(newOffset.x, newOffset.y, zOffset * 1.01f);
+        }
+
+        transform.position = screenCenter.position + screenCenter.TransformDirection(newOffset * screenSize.x);
     }
 
     private void OneFingerRotation() {
@@ -166,7 +202,7 @@ public class ModelTransformator : NetworkBehaviour {
             if (distance >= releaseDistanceThreshold) {
                 CrossPlatformMediator.Instance.ChangeAttachmentButtonInteractabilityServerRpc(true);
             } else {
-                StartCoroutine(MoveToOrigin());
+                //StartCoroutine(MoveToOrigin());
             }
         }
     }
