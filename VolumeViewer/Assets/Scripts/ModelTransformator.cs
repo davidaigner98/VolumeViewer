@@ -48,7 +48,7 @@ public class ModelTransformator : NetworkBehaviour {
         displaySize = DisplayProfileManager.Instance.GetCurrentDisplaySize().transform;
         
         Rescale();
-        palmGrabDistance = transform.localScale.x * 2;
+        palmGrabDistance = transform.localScale.x * 1.5f;
         oneFingerRotationDistance = transform.localScale.x * 3 / 2;
         releaseDistanceThreshold = transform.localScale.x * 4 / 5;
         scaleOnDisplay.OnValueChanged += Rescale;
