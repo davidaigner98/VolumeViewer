@@ -112,7 +112,8 @@ public class ModelTransformator : NetworkBehaviour {
         transform.position += delta;
         Transform screenCenter = DisplayProfileManager.Instance.GetCurrentDisplayCenter().transform;
         Vector3 screenSize = DisplayProfileManager.Instance.GetCurrentDisplaySize().transform.localScale;
-        Vector3 newOffset = screenCenter.InverseTransformDirection(transform.position + delta - screenCenter.position) / screenSize.x;
+        Vector3 newOffset = screenCenter.InverseTransformDirection(transform.position - screenCenter.position) / screenSize.x;
+        newOffset = new Vector3(newOffset.x, newOffset.y, newOffset.z / zPositionFactor);
         SetModelScreenOffsetServerRpc(newOffset);
 
         /*Vector3 screenOffset = this.screenOffset.Value;
