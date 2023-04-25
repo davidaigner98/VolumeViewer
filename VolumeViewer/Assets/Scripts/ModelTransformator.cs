@@ -11,7 +11,7 @@ public class ModelTransformator : NetworkBehaviour {
     public float resetSpeed = 1.0f;
     private GameObject displayCenter;
     private Transform displaySize;
-    public NetworkVariable<Vector3> screenOffset = new NetworkVariable<Vector3>(Vector3.zero);
+    public NetworkVariable<Vector3> screenOffset = new NetworkVariable<Vector3>(new Vector3(0, 0, 1));
     public NetworkVariable<float> scaleOnDisplay = new NetworkVariable<float>(1);
     public float scaleFactor = 0.085f;
     private bool inDisplay = true;
@@ -133,7 +133,8 @@ public class ModelTransformator : NetworkBehaviour {
 
     private void AdjustPositionServerside(Vector3 oldOffset, Vector3 newOffset) {
         Camera displayCamera = DisplayLocalizer.Instance.displayCamera;
-        Vector3 palmPosition3D = new Vector3(newOffset.x, newOffset.y, -displayCamera.transform.position.z);
+        newOffset = new Vector3(newOffset.x * Screen.width + Screen.width / 2, newOffset.y * Screen.width + Screen.height / 2, newOffset.z);
+        Vector3 palmPosition3D = new Vector3(newOffset.x + 0.5f, newOffset.y + 0.5f, -displayCamera.transform.position.z + newOffset.z);
         transform.position = displayCamera.ScreenToWorldPoint(palmPosition3D);
     }
 

@@ -17,8 +17,8 @@ public class DisplayCameraPositioning : MonoBehaviour {
     }
 
     private void Start() {
-        transform.position = new Vector3(0, 0, -focalRadius);
-        transform.LookAt(Vector3.zero);
+        transform.position = new Vector3(0, 0, -focalRadius + 1);
+        transform.LookAt(Vector3.forward);
 
         if (drawCage) { DrawCage(); }
     }
@@ -27,9 +27,9 @@ public class DisplayCameraPositioning : MonoBehaviour {
         if (!cameraRepositioning) { return; }
 
         cameraOffset = new Vector3(cameraOffset.x * distortion.x, cameraOffset.y * distortion.y, cameraOffset.z * distortion.z);
-        cameraOffset = cameraOffset.normalized * focalRadius;
+        cameraOffset = cameraOffset.normalized * focalRadius + Vector3.forward;
         transform.position = cameraOffset;
-        transform.LookAt(Vector3.zero);
+        transform.LookAt(Vector3.forward);
 
         ModelManager.Instance.RefreshModelScreenOffsets();
     }

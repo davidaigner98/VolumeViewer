@@ -26,6 +26,7 @@ public class ModelManager : NetworkBehaviour {
 
     public void SpawnModel(GameObject modelPrefab) {
         GameObject model = Instantiate(modelPrefab);
+        model.transform.position = Vector3.forward;
         model.GetComponent<NetworkObject>().Spawn();
     }
 

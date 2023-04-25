@@ -136,7 +136,9 @@ public class DisplayInputManager : MonoBehaviour {
         Vector2 palmPosition = GetPalmPosition();
         if (palmPosition.Equals(new Vector2(-1, -1))) { return; }
 
-        selectedModel.GetComponent<ModelTransformator>().screenOffset.Value = palmPosition - Vector2.one / 2;
+        palmPosition = new Vector2(palmPosition.x - Screen.width / 2, palmPosition.y - Screen.height / 2) / Screen.width;
+        float zPos = selectedModel.transform.position.z;
+        selectedModel.GetComponent<ModelTransformator>().screenOffset.Value = new Vector3(palmPosition.x, palmPosition.y, zPos);
 
         //Camera displayCamera = DisplayLocalizer.Instance.displayCamera;
         //Vector3 palmPosition3D = new Vector3(palmPosition.x, palmPosition.y, -displayCamera.transform.position.z);
