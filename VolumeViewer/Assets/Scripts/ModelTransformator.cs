@@ -13,7 +13,7 @@ public class ModelTransformator : NetworkBehaviour {
     private Transform displaySize;
     public NetworkVariable<Vector3> screenOffset = new NetworkVariable<Vector3>(new Vector3(0, 0, 1));
     public NetworkVariable<float> scaleOnDisplay = new NetworkVariable<float>(1);
-    public float scaleFactor = 0.085f;
+    public float scaleFactor = 0.375f;
     private bool inDisplay = true;
     private Hand interactingHand;
     private bool isBeingGrabbed = false;
