@@ -86,10 +86,10 @@ public class ModelTransformator : NetworkBehaviour {
         DisplayCameraPositioning displayCameraPositioner = DisplayCameraPositioning.Instance;
         Vector2 viewportSize = displayCameraPositioner.viewportSize;
 
-        Vector3 screenCorner1 = new Vector3(-viewportSize.x / 2, +viewportSize.y / 2, 0);
-        Vector3 screenCorner2 = new Vector3(+viewportSize.x / 2, +viewportSize.y / 2, 0);
-        Vector3 screenCorner3 = new Vector3(+viewportSize.x / 2, -viewportSize.y / 2, 0);
-        Vector3 screenCorner4 = new Vector3(-viewportSize.x / 2, -viewportSize.y / 2, 0);
+        Vector3 screenCorner1 = new Vector3(-viewportSize.x * 10, +viewportSize.y * 10, 0);
+        Vector3 screenCorner2 = new Vector3(+viewportSize.x * 10, +viewportSize.y * 10, 0);
+        Vector3 screenCorner3 = new Vector3(+viewportSize.x * 10, -viewportSize.y * 10, 0);
+        Vector3 screenCorner4 = new Vector3(-viewportSize.x * 10, -viewportSize.y * 10, 0);
         Vector3 screenNormal = Vector3.forward;
 
         Material[] mats = transform.Find("Model").GetComponent<Renderer>().materials;
