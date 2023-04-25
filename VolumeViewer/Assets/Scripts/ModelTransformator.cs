@@ -21,6 +21,7 @@ public class ModelTransformator : NetworkBehaviour {
     private Vector3 lastPalmPosition;
     private Vector3 lastIndexPosition;
     private Collider modelCollider;
+    private float zPositionFactor = 0.2f;
 
     private void Awake() {
         Material[] mats = transform.Find("Model").GetComponent<Renderer>().materials;
@@ -56,7 +57,7 @@ public class ModelTransformator : NetworkBehaviour {
         scaleOnDisplay.OnValueChanged += Rescale;
 
         transform.SetParent(displayCenter.transform);
-        transform.localPosition = Vector3.zero;
+        AdjustPositionClientside(Vector3.zero, screenOffset.Value);
 
         //SetAlpha(0);
 
@@ -144,14 +145,7 @@ public class ModelTransformator : NetworkBehaviour {
         Transform screenCenter = DisplayProfileManager.Instance.GetCurrentDisplayCenter().transform;
         Vector3 screenSize = DisplayProfileManager.Instance.GetCurrentDisplaySize().transform.localScale;
 
-        if (newOffset.z > 0) {
-            float zOffset = modelCollider.bounds.extents.x;
-            if (modelCollider.bounds.extents.y > zOffset) { zOffset = modelCollider.bounds.extents.y; }
-            else if (modelCollider.bounds.extents.z > zOffset) { zOffset = modelCollider.bounds.extents.z; }
-
-            newOffset = new Vector3(newOffset.x, newOffset.y, zOffset * 1.01f);
-        }
-
+        newOffset = new Vector3(newOffset.x, newOffset.y, newOffset.z * zPositionFactor);
         transform.position = screenCenter.position + screenCenter.TransformDirection(newOffset * screenSize.x);
     }
 
