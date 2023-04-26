@@ -16,6 +16,12 @@ public class DisplayCameraCanvasManager : MonoBehaviour {
         ModelManager.Instance.attached.OnValueChanged += RefreshAttachmentButtonText;
     }
 
+    public void ResetToCenter() {
+        ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
+
+        if (selectedModel != null) { selectedModel.GetComponent<ModelTransformator>().ResetToCenter(); }
+    }
+
     public void AlignCoronal() {
         ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
 

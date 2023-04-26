@@ -299,15 +299,27 @@ public class ModelTransformator : NetworkBehaviour {
         }
     }
 
+    public void ResetToCenter() {
+        if (CrossPlatformMediator.Instance.isServer) {
+            screenOffset.Value = new Vector3(0, 0, 1);
+        }
+    }
+
     public void AlignCoronal() {
-        transform.rotation = Quaternion.Euler(0, 180, 0);
+        if (CrossPlatformMediator.Instance.isServer) {
+            transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
     }
 
     public void AlignSagittal() {
-        transform.rotation = Quaternion.Euler(0, 90, 0);
+        if (CrossPlatformMediator.Instance.isServer) {
+            transform.rotation = Quaternion.Euler(0, 90, 0);
+        }
     }
 
     public void AlignAxial() {
-        transform.rotation = Quaternion.Euler(90, 180, 0);
+        if (CrossPlatformMediator.Instance.isServer) {
+            transform.rotation = Quaternion.Euler(90, 180, 0);
+        }
     }
 }
