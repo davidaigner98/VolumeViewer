@@ -157,10 +157,8 @@ public class ModelTransformator : NetworkBehaviour {
     }
 
     private void AdjustPositionServerside(Vector3 oldOffset, Vector3 newOffset) {
-        Camera displayCamera = DisplayLocalizer.Instance.displayCamera;
-        newOffset = new Vector3(newOffset.x * Screen.width + Screen.width / 2, newOffset.y * Screen.width + Screen.height / 2, newOffset.z);
-        Vector3 palmPosition3D = new Vector3(newOffset.x + 0.5f, newOffset.y + 0.5f, -displayCamera.transform.position.z + newOffset.z);
-        transform.position = displayCamera.ScreenToWorldPoint(palmPosition3D);
+        Vector3 viewportSize = DisplayCameraPositioning.Instance.viewportSize;
+        transform.position = new Vector3(newOffset.x * viewportSize.x, newOffset.y * viewportSize.x, newOffset.z);
     }
 
     private void AdjustPositionClientside(Vector3 oldOffset, Vector3 newOffset) {
@@ -220,39 +218,38 @@ public class ModelTransformator : NetworkBehaviour {
 
             if (distance >= releaseDistanceThreshold) {
                 CrossPlatformMediator.Instance.ChangeAttachmentButtonInteractabilityServerRpc(true);
-            } else {
-                //StartCoroutine(MoveToOrigin());
+            }
+
+            if (this.screenOffset.Value.z > 1) {
+                StartCoroutine(MoveToZ1());
             }
         }
     }
 
-    /*private IEnumerator MoveToOrigin() {
-        float zOffset = modelCollider.bounds.extents.x;
-        if (modelCollider.bounds.extents.y > zOffset) { zOffset = modelCollider.bounds.extents.y; }
-        else if (modelCollider.bounds.extents.z > zOffset) { zOffset = modelCollider.bounds.extents.z; }
-
+    private IEnumerator MoveToZ1() {
         Vector3 screenOffset = this.screenOffset.Value;
-        screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, zOffset * 1.01f);
-        Vector3 destination = displayCenter.transform.position + displayCenter.transform.TransformDirection(screenOffset);
-        float distanceToOrigin;
+        Vector3 destination = new Vector3(screenOffset.x, screenOffset.y, 1);
+        float distanceToDestination;
 
         do {
-            Vector3 delta = transform.position - destination;
-            transform.position -= delta.normalized * Time.deltaTime * resetSpeed;
-            distanceToOrigin = Vector3.Distance(Vector3.zero, delta);
+            Vector3 delta = destination - screenOffset;
+            screenOffset += delta.normalized * Time.deltaTime * resetSpeed;
+            SetModelScreenOffsetServerRpc(screenOffset);
+            
+            distanceToDestination = Vector3.Distance(destination, screenOffset);
             //SetAlpha(distanceToOrigin / releaseDistanceThreshold);
 
             yield return null;
-        } while (distanceToOrigin > 0.01);
+        } while (distanceToDestination > 0.01);
 
         //SetAlpha(0);
         inDisplay = true;
         ModelManager.Instance.SetAttachedStateServerRpc(true);
         ChangeModelAttachment(true, true);
         CrossPlatformMediator.Instance.ChangeAttachmentButtonInteractabilityServerRpc(false);
-        transform.position = destination;
+        SetModelScreenOffsetServerRpc(screenOffset);
         UpdateClipScreenParametersClientside();
-    }*/
+    }
 
     public void ChangeModelAttachment(bool prev, bool current) {
         if (!CrossPlatformMediator.Instance.isServer) {
