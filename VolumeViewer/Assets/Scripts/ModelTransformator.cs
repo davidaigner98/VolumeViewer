@@ -117,8 +117,7 @@ public class ModelTransformator : NetworkBehaviour {
 
         Material[] mats = transform.Find("Model").GetComponent<Renderer>().materials;
         foreach (Material mat in mats) {
-            if (inDisplay) { mat.SetInt("_InDisplay", 1); }
-            else { mat.SetInt("_InDisplay", 0); }
+            mat.SetInt("_InDisplay", 0);
 
             mat.SetVector("_ScreenCorner1", screenCorner1);
             mat.SetVector("_ScreenCorner2", screenCorner2);
