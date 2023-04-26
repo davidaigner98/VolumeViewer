@@ -240,7 +240,7 @@ public class ModelTransformator : NetworkBehaviour {
             //SetAlpha(distanceToOrigin / releaseDistanceThreshold);
 
             yield return null;
-        } while (distanceToDestination > 0.01);
+        } while (distanceToDestination > 0.1);
 
         //SetAlpha(0);
         inDisplay = true;
