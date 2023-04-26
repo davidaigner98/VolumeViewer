@@ -31,7 +31,7 @@ public class DisplayCameraPositioning : MonoBehaviour {
         if (!cameraRepositioning) { return; }
 
         cameraOffset = new Vector3(cameraOffset.x * distortion.x, cameraOffset.y * distortion.y, cameraOffset.z * distortion.z);
-        cameraOffset = cameraOffset.normalized * focalRadius + Vector3.forward;
+        cameraOffset = cameraOffset.normalized * focalRadius;
         transform.position = cameraOffset;
         transform.LookAt(Vector3.zero);
 
