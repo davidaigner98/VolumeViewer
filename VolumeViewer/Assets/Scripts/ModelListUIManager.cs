@@ -10,6 +10,7 @@ public class ModelListUIManager : MonoBehaviour {
     public GameObject dummyEntry;
     private bool expanded = false;
     private Coroutine currCoroutine;
+    private TextMeshProUGUI selectedEntryText;
 
     private void Awake() {
         if (Instance != null && Instance != this) { Destroy(this); }
@@ -58,15 +59,20 @@ public class ModelListUIManager : MonoBehaviour {
         currCoroutine = null;
     }
 
-    public void AddEntry (int modelInstanceId, string modelName) {
+    public void AddEntry (ModelInfo info) {
         GameObject newEntry = Instantiate(dummyEntry);
         newEntry.name = "Entry";
         newEntry.transform.SetParent(dummyEntry.transform.parent, false);
-        newEntry.transform.Find("EntryText").GetComponent<TextMeshProUGUI>().text = modelName;
-        newEntry.transform.Find("DeleteButton").GetComponent<Button>().onClick.AddListener(delegate() { DeleteEntry(newEntry, modelInstanceId); });
+        newEntry.transform.Find("EntryText").GetComponent<TextMeshProUGUI>().text = info.name;
+        newEntry.transform.Find("EntryButton").GetComponent<Button>().onClick.AddListener(delegate() { Debug.Log("CLICK"); ModelManager.Instance.SetSelectedModel(info); });
+        newEntry.transform.Find("DeleteButton").GetComponent<Button>().onClick.AddListener(delegate() { DeleteEntry(newEntry, info.modelInstanceId); });
         newEntry.SetActive(true);
 
         contentGO.GetComponent<RectTransform>().sizeDelta += new Vector2(0, 30);
+
+        if (dummyEntry.transform.parent.childCount == 2) {
+            ChangeSelectedText(info.name);
+        }
     }
 
     public void DeleteEntry(GameObject entry, int modelInstanceId) {
@@ -74,5 +80,23 @@ public class ModelListUIManager : MonoBehaviour {
         contentGO.GetComponent<RectTransform>().sizeDelta -= new Vector2(0, 30);
 
         Destroy(entry);
+    }
+
+    public void ChangeSelectedText(string selectedModelText) {
+        if (selectedEntryText != null) {
+            selectedEntryText.color = Color.white;
+        }
+
+        foreach (Transform entry in dummyEntry.transform.parent) {
+            TextMeshProUGUI currentEntryText = entry.Find("EntryText").GetComponent<TextMeshProUGUI>();
+
+            if (currentEntryText.text.Equals(selectedModelText)) {
+                selectedEntryText = currentEntryText;
+            }
+        }
+
+        if (selectedEntryText != null) {
+            selectedEntryText.color = Color.yellow;
+        }
     }
 }

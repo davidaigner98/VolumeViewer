@@ -38,7 +38,7 @@ public class ModelManager : NetworkBehaviour {
 
         if (CrossPlatformMediator.Instance.isServer) {
             if (selectedModel == null) { SetSelectedModel(info); }
-            ModelListUIManager.Instance.AddEntry(info.modelInstanceId, info.gameObject.name);
+            ModelListUIManager.Instance.AddEntry(info);
         }
     }
 
@@ -75,8 +75,15 @@ public class ModelManager : NetworkBehaviour {
 
         selectedModel = newSelectedModel;
 
+        if (selectedModel != null) {
+            ModelListUIManager.Instance.ChangeSelectedText(selectedModel.name);
+        }
+
         SetModelSelectionInShader(selectedModel, 1);
-        if (OnSelectionChanged != null) { OnSelectionChanged(); }
+
+        if (OnSelectionChanged != null) {
+            OnSelectionChanged();
+        }
     }
 
     private void SetModelSelectionInShader(ModelInfo model, int selectionStatus) {
