@@ -43,6 +43,7 @@ public class LobbyManager : MonoBehaviour {
         CrossPlatformMediator.Instance.isServer = false;
         networkManager.OnClientConnectedCallback += ClientConnectionSuccess;
         networkManager.OnClientDisconnectCallback += ClientConnectionFailure;
+        GameObject.Find("DirectionalLight").transform.eulerAngles = new Vector3(90, 0, 0);
 
         networkManager.StartClient();
         Destroy(displayInputManager);
