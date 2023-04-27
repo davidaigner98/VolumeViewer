@@ -23,6 +23,10 @@ public class DisplayCameraPositioning : MonoBehaviour {
         if (drawCage) { DrawCage(); }
     }
 
+    private void Update() {
+        DetermineViewportSize();
+    }
+
     public void SynchronizeDisplayCameraPosition(Vector3 cameraOffset) {
         if (!cameraRepositioning) { return; }
 
@@ -31,7 +35,21 @@ public class DisplayCameraPositioning : MonoBehaviour {
         transform.position = cameraOffset;
         transform.LookAt(Vector3.zero);
 
-        ModelManager.Instance.RefreshModelScreenOffsets();
+        //ModelManager.Instance.RefreshModelScreenOffsets();
+    }
+
+    private void DetermineViewportSize() {
+        Camera cam = GetComponent<Camera>();
+        
+        Vector3 bottomLeftCorner = cam.ViewportToWorldPoint(new Vector3(0, 0, 1)) - cam.transform.position;
+        bottomLeftCorner = bottomLeftCorner / bottomLeftCorner.z * focalRadius + cam.transform.position;
+
+        Vector3 topRightCorner = cam.ViewportToWorldPoint(new Vector3(1, 1, 1)) - cam.transform.position;
+        topRightCorner = topRightCorner / topRightCorner.z * focalRadius + cam.transform.position;
+
+        float width = topRightCorner.x - bottomLeftCorner.x;
+        float height = topRightCorner.y - bottomLeftCorner.y;
+        viewportSize = new Vector2(width, height);
     }
 
     private void DrawCage() {

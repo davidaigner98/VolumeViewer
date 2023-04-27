@@ -184,10 +184,10 @@ MonoBehaviour:
   releaseDistanceThreshold: 0.2
   resetSpeed: 3
   screenOffset:
-    m_InternalValue: {x: 0, y: 0}
+    m_InternalValue: {x: 0, y: 0, z: 1}
   scaleOnDisplay:
     m_InternalValue: 1
-  scaleFactor: 0.3
+  scaleFactor: 0.39
 --- !u!114 &4456738881432770617
 MonoBehaviour:
   m_ObjectHideFlags: 0

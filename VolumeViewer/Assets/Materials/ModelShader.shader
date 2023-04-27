@@ -59,27 +59,11 @@ Shader "Custom/ModelShader"
 
             float3 screenEdge12 = _ScreenCorner2 - _ScreenCorner1;
             float3 screenEdge23 = _ScreenCorner3 - _ScreenCorner2;
-            float3 screenEdge34 = _ScreenCorner4 - _ScreenCorner3;
-            float3 screenEdge41 = _ScreenCorner1 - _ScreenCorner4;
 
             float3 planeCross = cross(screenEdge12, screenEdge23);
             float d0 = dot(planeCross, i.worldPos - screenCenter) * dot(planeCross, _ScreenNormal);
 
-            float3 planeTopEnd = cross(screenEdge12, negScreenNormal);
-            float d1 = dot(planeTopEnd, i.worldPos - _ScreenCorner1) * dot(planeTopEnd, screenEdge41);
-
-            float3 planeRightEnd = cross(screenEdge23, negScreenNormal);
-            float d2 = dot(planeRightEnd, i.worldPos - _ScreenCorner2) * dot(planeRightEnd, screenEdge12);
-
-            float3 planeBottomEnd = cross(screenEdge34, negScreenNormal);
-            float d3 = dot(planeBottomEnd, i.worldPos - _ScreenCorner3) * dot(planeBottomEnd, screenEdge23);
-
-            float3 planeLeftEnd = cross(screenEdge41, negScreenNormal);
-            float d4 = dot(planeLeftEnd, i.worldPos - _ScreenCorner4) * dot(planeLeftEnd, screenEdge34);
-
-            if (d0 < 0 && d1 < 0 && d2 < 0 && d3 < 0 && d4 < 0) {
-                clip(-1);
-            }
+            if (d0 < 0) { clip(-1); }
 
             float facing = i.facing * 0.5 + 0.5;
             o.Albedo = _Color.rgb * facing;
@@ -155,25 +139,11 @@ Shader "Custom/ModelShader"
 
                 float3 screenEdge12 = _ScreenCorner2 - _ScreenCorner1;
                 float3 screenEdge23 = _ScreenCorner3 - _ScreenCorner2;
-                float3 screenEdge34 = _ScreenCorner4 - _ScreenCorner3;
-                float3 screenEdge41 = _ScreenCorner1 - _ScreenCorner4;
 
                 float3 planeCross = cross(screenEdge12, screenEdge23);
                 float d0 = dot(planeCross, i.worldPos - screenCenter) * dot(planeCross, _ScreenNormal);
 
-                float3 planeTopEnd = cross(screenEdge12, negScreenNormal);
-                float d1 = dot(planeTopEnd, i.worldPos - _ScreenCorner1) * dot(planeTopEnd, screenEdge41);
-
-                float3 planeRightEnd = cross(screenEdge23, negScreenNormal);
-                float d2 = dot(planeRightEnd, i.worldPos - _ScreenCorner2) * dot(planeRightEnd, screenEdge12);
-
-                float3 planeBottomEnd = cross(screenEdge34, negScreenNormal);
-                float d3 = dot(planeBottomEnd, i.worldPos - _ScreenCorner3) * dot(planeBottomEnd, screenEdge23);
-
-                float3 planeLeftEnd = cross(screenEdge41, negScreenNormal);
-                float d4 = dot(planeLeftEnd, i.worldPos - _ScreenCorner4) * dot(planeLeftEnd, screenEdge34);
-
-                if (d0 < 0 && d1 < 0 && d2 < 0 && d3 < 0 && d4 < 0) {
+                if (d0 < 0) {
                     clip(-1);
                 }
 
