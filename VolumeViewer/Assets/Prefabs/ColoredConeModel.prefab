@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 844784276372826022}
   - component: {fileID: 844784276372826019}
   - component: {fileID: -3279837825101385547}
+  - component: {fileID: 6830707629361399658}
   m_Layer: 0
   m_Name: ColoredConeModel
   m_TagString: Untagged
@@ -133,6 +134,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!114 &6830707629361399658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2445960196229900246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e715b352e0b0bf43886642b6e0111bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8042179680529986304
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -5993723681606187905}
   - component: {fileID: 5858151768860054549}
   - component: {fileID: -5189130442401047280}
+  - component: {fileID: 446802080449171928}
   m_Layer: 0
   m_Name: ColoredCubeModel
   m_TagString: Untagged
@@ -133,6 +134,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!114 &446802080449171928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 918468449551100734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e715b352e0b0bf43886642b6e0111bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8635863662592233572
 GameObject:
   m_ObjectHideFlags: 0

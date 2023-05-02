@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6978343506969316779}
   - component: {fileID: 2109478607657229761}
   - component: {fileID: 8932479984074626244}
+  - component: {fileID: 4955873408749798079}
   m_Layer: 0
   m_Name: HollowCubeModel
   m_TagString: Untagged
@@ -133,6 +134,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!114 &4955873408749798079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4662637744838583018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e715b352e0b0bf43886642b6e0111bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4668935057530448496
 GameObject:
   m_ObjectHideFlags: 0
