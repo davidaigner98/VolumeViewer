@@ -136,11 +136,17 @@ public class DisplayInputManager : MonoBehaviour {
         Vector2 palmPosition = GetPalmPosition();
         if (palmPosition.Equals(new Vector2(-1, -1))) { return; }
 
-        palmPosition = new Vector2(palmPosition.x - Screen.width / 2, palmPosition.y - Screen.height / 2) / Screen.width;
-        float zPos = selectedModel.transform.position.z;
-        selectedModel.GetComponent<ModelTransformator>().screenOffset.Value = new Vector3(palmPosition.x, palmPosition.y, zPos);
+        Camera displayCamera = DisplayLocalizer.Instance.displayCamera;
+        float distance = selectedModel.transform.position.z - displayCamera.transform.position.z;
+        Vector3 newOffset = displayCamera.ScreenToWorldPoint(new Vector3(palmPosition.x, palmPosition.y, distance));
+        Vector3 viewportSize = DisplayCameraPositioning.Instance.viewportSize;
+        newOffset = new Vector3(newOffset.x / viewportSize.x, newOffset.y / viewportSize.x, newOffset.z);
+        selectedModel.GetComponent<ModelTransformator>().screenOffset.Value = newOffset;
 
-        //Camera displayCamera = DisplayLocalizer.Instance.displayCamera;
+        //palmPosition = new Vector2(palmPosition.x - Screen.width / 2, palmPosition.y - Screen.height / 2) / Screen.width;
+        //float zPos = selectedModel.transform.position.z;
+        //selectedModel.GetComponent<ModelTransformator>().screenOffset.Value = new Vector3(palmPosition.x, palmPosition.y, zPos);
+
         //Vector3 palmPosition3D = new Vector3(palmPosition.x, palmPosition.y, -displayCamera.transform.position.z);
         //selectedModel.transform.position = displayCamera.ScreenToWorldPoint(palmPosition3D);
     }
