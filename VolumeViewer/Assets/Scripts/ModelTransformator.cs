@@ -14,13 +14,11 @@ public class ModelTransformator : NetworkBehaviour {
     public NetworkVariable<Vector3> screenOffset = new NetworkVariable<Vector3>(new Vector3(0, 0, 1));
     public NetworkVariable<float> scaleOnDisplay = new NetworkVariable<float>(1);
     public float scaleFactor = 0.375f;
-    private bool inDisplay = true;
     private Hand interactingHand;
     private bool isBeingGrabbed = false;
     private bool isBeingRotated = false;
     private Vector3 lastPalmPosition;
     private Vector3 lastIndexPosition;
-    private Collider modelCollider;
     private float zPositionFactor = 0.2f;
 
     private void Awake() {
@@ -34,7 +32,6 @@ public class ModelTransformator : NetworkBehaviour {
     private void Start() {
         ModelManager.Instance.attached.OnValueChanged += ChangeModelAttachment;
 
-        modelCollider = transform.Find("Model").GetComponent<Collider>();
         if (CrossPlatformMediator.Instance.isServer) { SetupServer(); }
         else { SetupClient(); }
     }
@@ -200,7 +197,6 @@ public class ModelTransformator : NetworkBehaviour {
             if (distance <= palmGrabDistance) {
                 Rescale();
 
-                inDisplay = false;
                 isBeingGrabbed = true;
                 lastPalmPosition = interactingHand.PalmPosition;
                 UpdateClipScreenParametersClientside();
@@ -242,7 +238,6 @@ public class ModelTransformator : NetworkBehaviour {
         } while (distanceToDestination > 0.1);
 
         //SetAlpha(0);
-        inDisplay = true;
         ModelManager.Instance.SetAttachedStateServerRpc(true);
         ChangeModelAttachment(true, true);
         CrossPlatformMediator.Instance.ChangeAttachmentButtonInteractabilityServerRpc(false);

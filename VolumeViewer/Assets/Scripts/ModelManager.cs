@@ -75,7 +75,7 @@ public class ModelManager : NetworkBehaviour {
 
         selectedModel = newSelectedModel;
 
-        if (selectedModel != null) {
+        if (CrossPlatformMediator.Instance.isServer && selectedModel != null) {
             ModelListUIManager.Instance.ChangeSelectedText(selectedModel.name);
         }
 
