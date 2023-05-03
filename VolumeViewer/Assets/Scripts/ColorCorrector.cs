@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Linq;
 using Unity.Netcode;
 using Unity.VisualScripting;
@@ -9,6 +10,9 @@ public class ColorCorrector : NetworkBehaviour {
     private Mesh mesh;
     private float timer;
     private Color[] originalColors;
+    private Color trackedColor;
+
+    private float[,] correctionMatrix = new float[3,3];
 
     void Start() {
         if (CrossPlatformMediator.Instance.isServer) {
@@ -28,122 +32,95 @@ public class ColorCorrector : NetworkBehaviour {
     }
 
     void Update() {
-        if (CrossPlatformMediator.Instance.isServer) {
+        if (!CrossPlatformMediator.Instance.isServer) {
             timer += Time.deltaTime;
 
             if (timer >= 0.05f) {
                 Vector3 screenPos = cam.WorldToScreenPoint(transform.position);
 
-                if (screenPos.x >= 0 && screenPos.x < Screen.width && screenPos.y >= 0 && screenPos.y < Screen.height && screenPos.z > 0) {
-                    if (GetComponent<ModelTransformator>().screenOffset.Value.z < 0.5f) {
-                        Debug.Log("EXECUTING NEW COLOR CORRECTION CALL");
-                        Color serverColor = ColorPickByRaycast((int)screenPos.x, (int)screenPos.y);
-                        Debug.Log("Server Color: "+serverColor);
-
-                        ColorCorrectionCallClientRpc(serverColor);
-                    }
+                if (GetComponent<ModelTransformator>().screenOffset.Value.z > 0.5f) {
+                    StartCoroutine(ColorPickByRaycast(screenPos, ' '));
                 }
 
-                /*Debug.Log("SubMeshCount: "+mesh.subMeshCount);
-                Debug.Log("VertexCount: "+mesh.vertices.Length);
-                Debug.Log("TriangleCount: "+mesh.triangles.Count());
-                for (int i = 0; i < mats.Count(); i++) {
-                    Material mat = mats[i];
-
-                    Vector3 firstVisibleTriangle = GetFirstVisibleTriangle(i);
-                    if (!firstVisibleTriangle.Equals(-Vector3.one)) {
-                        Debug.Log(i + " " + mat.name + " is there: " + GetFirstVisibleTriangle(i));
-                    }
-
-                    //ColorCorrectionCallClientRpc(mat.name);
-                }*/
+                //ScanCorrectionMatrix();
 
                 timer -= 0.05f;
             }
         }
     }
 
-    private Vector3 GetFirstVisibleTriangle(int submesh) {
-        int randomTriangle = -1;
-        int[] tris = mesh.GetTriangles(submesh);
-        int numTris = tris.Length / 3;
-        Vector3[] verts = mesh.vertices;
+    private IEnumerator ColorPickByRaycast(Vector3 screenPosition, char quad) {
+        if (screenPosition.x < 0 || screenPosition.x >= Screen.width) {
+            if (screenPosition.y < 0 || screenPosition.y >= Screen.height) {
+                if (screenPosition.z <= 0) {
+                    yield return new WaitForEndOfFrame();
 
-        for (int i = 0; i < numTris; i++) {
-            Vector3 v0 = transform.TransformPoint(verts[tris[i * 3 + 0]]);
-            Vector3 v1 = transform.TransformPoint(verts[tris[i * 3 + 1]]);
-            Vector3 v2 = transform.TransformPoint(verts[tris[i * 3 + 2]]);
-            Vector3 triCenter = (v0 + v1 + v2) / 3;
+                    Rect viewRect = cam.pixelRect;
+                    Texture2D tex = new Texture2D((int)viewRect.width, (int)viewRect.height, TextureFormat.ARGB32, false);
+                    tex.ReadPixels(viewRect, 0, 0, false);
+                    tex.Apply(false);
 
-            Vector3 screenPos = cam.WorldToScreenPoint(triCenter);
+                    trackedColor = tex.GetPixel((int)screenPosition.x, (int)screenPosition.y);
 
-            if (screenPos.x >= 0 && screenPos.x < Screen.width) {
-                if (screenPos.y >= 0 && screenPos.y < Screen.height) {
-                    if (screenPos.z >= 0) {
-                        return screenPos;
+                    if (quad == 'r') {
+                        Debug.Log("Scanned Red: " + trackedColor);
+                        correctionMatrix[0, 0] = trackedColor.r;
+                        correctionMatrix[0, 1] = trackedColor.g;
+                        correctionMatrix[0, 2] = trackedColor.b;
+                    } else if (quad == 'g') {
+                        Debug.Log("Scanned Green: " + trackedColor);
+                        correctionMatrix[1, 0] = trackedColor.r;
+                        correctionMatrix[1, 1] = trackedColor.g;
+                        correctionMatrix[1, 2] = trackedColor.b;
+                    } else if (quad == 'b') {
+                        Debug.Log("Scanned Blue: " + trackedColor);
+                        correctionMatrix[2, 0] = trackedColor.r;
+                        correctionMatrix[2, 1] = trackedColor.g;
+                        correctionMatrix[2, 2] = trackedColor.b;
+                    } else {
+                        ReplaceColors(trackedColor);
                     }
                 }
             }
         }
-
-        return -Vector3.one;
     }
 
-    [ClientRpc]
-    private void ColorCorrectionCallClientRpc(Color serverColor) {
+    private void ScanCorrectionMatrix() {
         if (!CrossPlatformMediator.Instance.isServer) {
-            Debug.Log("COLOR CORRECTION CALLED");
-            Vector3 screenPos = cam.WorldToScreenPoint(transform.position);
+            GameObject screenCenter = DisplayProfileManager.Instance.GetCurrentDisplayCenter();
+            Vector3 screenSize = DisplayProfileManager.Instance.GetCurrentDisplaySize().transform.localScale;
 
-            if (screenPos.x >= 0 && screenPos.x < Screen.width && screenPos.y >= 0 && screenPos.y < Screen.height && screenPos.z > 0) {
-                Color clientColor = ColorPickByRaycast((int)screenPos.x, (int)screenPos.y);
-                Debug.Log("Client Color: "+clientColor);
-                Debug.Log("Server Color: "+serverColor);
+            Vector3 relativeRedPosition = new Vector3(0.475f * screenSize.x, -0.45f * screenSize.y, 0);
+            Vector3 relativeGreenPosition = new Vector3(0.425f * screenSize.x, -0.45f * screenSize.y, 0);
+            Vector3 relativeBluePosition = new Vector3(0.375f * screenSize.x, -0.45f * screenSize.y, 0);
 
-                float hS, sS, vS, lS;
-                Color.RGBToHSV(serverColor, out hS, out sS, out vS);
-                lS = vS * (1 - sS / 2);
+            Vector3 redPosition = screenCenter.transform.position + screenCenter.transform.TransformDirection(relativeRedPosition);
+            Vector3 greenPosition = screenCenter.transform.position + screenCenter.transform.TransformDirection(relativeGreenPosition);
+            Vector3 bluePosition = screenCenter.transform.position + screenCenter.transform.TransformDirection(relativeBluePosition);
 
-                float hC, sC, vC, lC;
-                Color.RGBToHSV(clientColor, out hC, out sC, out vC);
-                lC = vC * (1 - sC / 2);
+            redPosition = cam.WorldToScreenPoint(redPosition);
+            greenPosition = cam.WorldToScreenPoint(greenPosition);
+            bluePosition = cam.WorldToScreenPoint(bluePosition);
 
-                float lDiff= lC - lS;
-                Debug.Log("LDiff = "+lDiff);
-
-                for (int i = 0; i < mats.Length; i++) {
-                    mats[i].color = ApplyLuminanceDifference(originalColors[i], lDiff);
-                }
-            }
+            StartCoroutine(ColorPickByRaycast(redPosition, 'r'));
+            StartCoroutine(ColorPickByRaycast(greenPosition, 'g'));
+            StartCoroutine(ColorPickByRaycast(bluePosition, 'b'));
         }
     }
 
-    private Color ApplyLuminanceDifference(Color color, float luminanceDifference) {
-        Color newColor = new Color(color.r, color.g, color.b);
+    private Color CorrectColor(Color oldColor) {
+        Color newColor = new Color();
 
-        float h, s, v, l;
-        Color.RGBToHSV(newColor, out h, out s, out v);
-        l = v * (1 - s / 2);
-        
-        l += luminanceDifference;
+        newColor.r = oldColor.r * correctionMatrix[0,0] + oldColor.g * correctionMatrix[0, 1] + oldColor.b * correctionMatrix[0, 2];
+        newColor.g = oldColor.r * correctionMatrix[1,0] + oldColor.g * correctionMatrix[1, 1] + oldColor.b * correctionMatrix[1, 2];
+        newColor.b = oldColor.r * correctionMatrix[2,0] + oldColor.g * correctionMatrix[2, 1] + oldColor.b * correctionMatrix[2, 2];
 
-        float ltmp = l;
-        if (1.0f - l < l) { ltmp = 1.0f - l; }
-        v = l + s * ltmp;
-        if (v == 0) { s = 0; }
-        else { s = 2 * (1 - l / v); }
-
-        newColor = Color.HSVToRGB(h, s, v);
-        Debug.Log("Transformed "+color+" to "+newColor);
         return newColor;
     }
 
-    private Color ColorPickByRaycast(int posX, int posY) {
-        Rect viewRect = cam.pixelRect;
-        Texture2D tex = new Texture2D((int)viewRect.width, (int)viewRect.height, TextureFormat.ARGB32, false);
-        tex.ReadPixels(viewRect, 0, 0, false);
-        tex.Apply(false);
-
-        return tex.GetPixel(posX, posY);
+    private void ReplaceColors(Color newColor) {
+        foreach (Material mat in mats) {
+            mat.color = newColor;
+        }
     }
 }
