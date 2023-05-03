@@ -24,29 +24,34 @@ public class ModelManager : NetworkBehaviour {
         }
     }
 
+    // spawns a given model
     public void SpawnModel(GameObject modelPrefab) {
         GameObject model = Instantiate(modelPrefab);
         model.transform.position = Vector3.forward;
         model.GetComponent<NetworkObject>().Spawn();
     }
 
+    // registers a model after spawning (triggered by model itself, see ModelInfo class)
     public void RegisterModel(ModelInfo info) {
         info.modelInstanceId = modelCount;
         info.gameObject.name = info.modelInstanceId + "_" + info.modelName;
         modelInfos.Add(info);
         modelCount++;
 
+        // add new entry to model list
         if (CrossPlatformMediator.Instance.isServer) {
             if (selectedModel == null) { SetSelectedModel(info); }
             ModelListUIManager.Instance.AddEntry(info);
         }
     }
 
+    // unregister model on deletion/destroying (triggered by model itself, see ModelInfo class)
     public void UnregisterModel(ModelInfo info) {
         if (selectedModel != null && selectedModel.modelInstanceId == info.modelInstanceId) { SetSelectedModel(null); }
         modelInfos.Remove(info);
     }
 
+    // deletes a model, triggered by the button in the model list
     public void DeleteModel(int instanceId) {
         foreach (ModelInfo info in modelInfos) {
             if (info.modelInstanceId == instanceId) {
@@ -58,34 +63,33 @@ public class ModelManager : NetworkBehaviour {
         }
     }
 
-    public void RefreshModelScreenOffsets() {
-        foreach (ModelInfo info in modelInfos) {
-            ModelTransformator transformator = info.gameObject.GetComponent<ModelTransformator>();
-            Vector2 screenOffset = DisplayLocalizer.Instance.GetRelativeScreenOffset(info.gameObject);
-            transformator.screenOffset.Value = screenOffset;
-        }
-    }
-
+    // returns currently selected model
     public ModelInfo GetSelectedModel() {
         return selectedModel;
     }
 
+    // sets the selected model
     public void SetSelectedModel(ModelInfo newSelectedModel) {
+        // deactivates the selection outline shader on newly selected model
         SetModelSelectionInShader(selectedModel, 0);
 
         selectedModel = newSelectedModel;
 
+        // changes text color in model list
         if (CrossPlatformMediator.Instance.isServer && selectedModel != null) {
             ModelListUIManager.Instance.ChangeSelectedText(selectedModel.name);
         }
 
+        // activates the selection outline shader on newly selected model
         SetModelSelectionInShader(selectedModel, 1);
 
+        // fire OnSelectionChanged event
         if (OnSelectionChanged != null) {
             OnSelectionChanged();
         }
     }
 
+    // changes shader properties for selection outline shader pass
     private void SetModelSelectionInShader(ModelInfo model, int selectionStatus) {
         if (CrossPlatformMediator.Instance.isServer &&  model != null) {
             Material[] mats = model.transform.Find("Model").GetComponent<Renderer>().materials;
@@ -95,6 +99,7 @@ public class ModelManager : NetworkBehaviour {
         }
     }
 
+    // sets the state of the attached button
     [ServerRpc(RequireOwnership = false)]
     public void SetAttachedStateServerRpc(bool attached) {
         this.attached.Value = attached;

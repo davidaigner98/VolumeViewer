@@ -24,6 +24,7 @@ public class DisplayInputManager : MonoBehaviour {
     }
 
     private void Start() {
+        // initialize and enable input actions
         PlayerInput playerInput = GameObject.Find("DisplayCamera(Clone)").GetComponent<PlayerInput>();
         InputActionMap map = playerInput.currentActionMap;
         mouseMoveAction = map.FindAction("MouseMove");
@@ -35,6 +36,7 @@ public class DisplayInputManager : MonoBehaviour {
         touchDragAction = map.FindAction("TouchDrag");
         touchDragAction.Enable();
 
+        // bind methods to input actions
         mouseDragAction.started += MouseDragStarted;
         mouseDragAction.canceled += MouseDragCanceled;
         touchDragAction.started += TouchDragStarted;
@@ -42,6 +44,7 @@ public class DisplayInputManager : MonoBehaviour {
     }
 
     private void OnDestroy() {
+        // remove bindings on destroy
         mouseDragAction.started -= MouseDragStarted;
         mouseDragAction.canceled -= MouseDragCanceled;
         mouseMoveAction.performed -= MouseMovePerformed;
@@ -51,6 +54,7 @@ public class DisplayInputManager : MonoBehaviour {
     }
 
     private void MouseDragStarted(InputAction.CallbackContext c) {
+        // try to select model to be transformed
         TrySelectModel(Mouse.current.position.ReadValue());
 
         mouseMoveAction.performed += MouseMovePerformed;
@@ -89,6 +93,8 @@ public class DisplayInputManager : MonoBehaviour {
     private void TouchMovePerformed(InputAction.CallbackContext c) {
         int touchCount = GetNumbersOfTouches();
 
+        // different kinds of touch interactions
+
         if (touchCount == 1) {
             if (first1FingerCall) {
                 TrySelectModel(GetPalmPosition());
@@ -119,16 +125,20 @@ public class DisplayInputManager : MonoBehaviour {
         }
     }
 
+    // one finger rotation on touch
     private void OneFingerGesture() {
         ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
         if (selectedModel == null) { return; }
         
+        // get angle of rotation
         Vector2 rotation = Touchscreen.current.delta.ReadValue() * ofRotSpeed;
 
+        // rotate model by two axes
         selectedModel.transform.Rotate(Vector3.up, -rotation.x, Space.World);
         selectedModel.transform.Rotate(Vector3.right, rotation.y, Space.World);
     }
 
+    // multiple finger positioning on touch
     private void MultipleFingerPositioning(int touchCount) {
         ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
         if (selectedModel == null) { return; }
@@ -136,21 +146,18 @@ public class DisplayInputManager : MonoBehaviour {
         Vector2 palmPosition = GetPalmPosition();
         if (palmPosition.Equals(new Vector2(-1, -1))) { return; }
 
+        // calculate new screen offset based on camera position and current z position
         Camera displayCamera = DisplayLocalizer.Instance.displayCamera;
         float distance = selectedModel.transform.position.z - displayCamera.transform.position.z;
         Vector3 newOffset = displayCamera.ScreenToWorldPoint(new Vector3(palmPosition.x, palmPosition.y, distance));
         Vector3 viewportSize = DisplayCameraPositioning.Instance.viewportSize;
         newOffset = new Vector3(newOffset.x / viewportSize.x, newOffset.y / viewportSize.x, newOffset.z);
+        
+        // set screen offset, therefore reposition model
         selectedModel.GetComponent<ModelTransformator>().screenOffset.Value = newOffset;
-
-        //palmPosition = new Vector2(palmPosition.x - Screen.width / 2, palmPosition.y - Screen.height / 2) / Screen.width;
-        //float zPos = selectedModel.transform.position.z;
-        //selectedModel.GetComponent<ModelTransformator>().screenOffset.Value = new Vector3(palmPosition.x, palmPosition.y, zPos);
-
-        //Vector3 palmPosition3D = new Vector3(palmPosition.x, palmPosition.y, -displayCamera.transform.position.z);
-        //selectedModel.transform.position = displayCamera.ScreenToWorldPoint(palmPosition3D);
     }
 
+    // mutliple finger rotating on touch
     private void MultipleFingerRotating(int touchCount) {
         ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
         if (selectedModel == null) { return; }
@@ -162,7 +169,9 @@ public class DisplayInputManager : MonoBehaviour {
         Vector2 newPosition1 = touch1.position;
         Vector2 newVector = newPosition0 - newPosition1;
 
+        // if this is not the first rotation
         if (!oldRotatingFingerDifference.Equals(Vector2.zero)) {
+            // calculate rotation angle
             float angle = -Vector2.SignedAngle(newVector, oldRotatingFingerDifference) * mfRotSpeed;
             selectedModel.transform.Rotate(Vector3.forward, angle, Space.World);
         }
@@ -170,6 +179,7 @@ public class DisplayInputManager : MonoBehaviour {
         oldRotatingFingerDifference = newVector;
     }
 
+    // multiple finger scaling on touch
     private void MultipleFingerScaling(int touchCount) {
         ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
         if (selectedModel == null) { return; }
@@ -178,10 +188,12 @@ public class DisplayInputManager : MonoBehaviour {
         TouchControl touch0 = Touchscreen.current.touches[0];
         TouchControl touch1 = Touchscreen.current.touches[1];
 
+        // calculate new distance between touching fingers
         Vector2 newPosition0 = touch0.position.ReadValue();
         Vector2 newPosition1 = touch1.position.ReadValue();
         float newDistance = Vector2.Distance(newPosition0, newPosition1);
 
+        // calculate old distance between touching fingers, if this is not the first touch
         if (initialScaleDistance < 0) {
             Vector2 oldPosition0 = newPosition0 - touch0.delta.ReadValue();
             Vector2 oldPosition1 = newPosition1 - touch1.delta.ReadValue();
@@ -189,16 +201,19 @@ public class DisplayInputManager : MonoBehaviour {
             initialScaleDistance = Vector2.Distance(oldPosition0, oldPosition1);
         }
 
+        // scale model
         selectedModel.transform.localScale = initialScale * newDistance / initialScaleDistance;
         selectedModel.GetComponent<ModelTransformator>().scaleOnDisplay.Value = selectedModel.transform.localScale.x;
     }
 
+    // get number of fingers currently touching the screen
     private int GetNumbersOfTouches() {
         int touchCount = 0;
         
         for (int i = 0; i < Touchscreen.current.touches.Count; i++) {
             TouchPhase currPhase = Touchscreen.current.touches[i].phase.ReadValue();
 
+            // check if touch is in a valid touch phase
             if (currPhase != 0 && currPhase != TouchPhase.Canceled && currPhase != TouchPhase.Ended) {
                 touchCount++;
             }
@@ -207,25 +222,31 @@ public class DisplayInputManager : MonoBehaviour {
         return touchCount;
     }
 
+    // get medium screen position of all touching fingers
     private Vector2 GetPalmPosition() {
         Vector2 palmPosition = Vector3.zero;
         int touchCount = GetNumbersOfTouches();
         if (touchCount <= 0) { return new Vector2(-1, -1); }
 
+        // iterate through all touches and sum up all screen positions
         for (int i = 0; i < touchCount; i++) {
             TouchControl currTouch = Touchscreen.current.touches[i];
             palmPosition += currTouch.position.ReadValue();
         }
 
+        // divide by touch count to get average position ("palm position")
         palmPosition /= touchCount;
         return palmPosition;
     }
 
+    // try to select a model, based on touch interaction on screen
     private void TrySelectModel(Vector2 screenCoordinates) {
         if (screenCoordinates.Equals(new Vector2(-1, -1))) { return; }
         
+        // try to hit model
         ModelInfo hitModel = DisplayLocalizer.Instance.FindModelByRaycast(screenCoordinates);
         if (hitModel != null) {
+            // if hit, then select
             ModelManager.Instance.SetSelectedModel(hitModel);
         }
     }

@@ -11,6 +11,7 @@ public class CrossPlatformMediator : NetworkBehaviour{
         else { Instance = this; }
     }
 
+    // client to server call for changing the attachment button interactability
     [ServerRpc(RequireOwnership = false)]
     public void ChangeAttachmentButtonInteractabilityServerRpc(bool interactable) {
         if (isServer && !isInLobby) {
@@ -18,6 +19,7 @@ public class CrossPlatformMediator : NetworkBehaviour{
         }
     }
 
+    // client to server call for updating the position of the display camera
     [ServerRpc(RequireOwnership = false)]
     public void SynchronizeCameraPositionServerRpc(Vector3 cameraOffset) {
         if (isServer && !isInLobby) {
