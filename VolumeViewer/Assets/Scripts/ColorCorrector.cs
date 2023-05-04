@@ -1,6 +1,7 @@
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.XR.Management;
 using CubemapFrame = Varjo.XR.VarjoEnvironmentCubemapStream.VarjoEnvironmentCubemapFrame;
 
 public class ColorCorrector : NetworkBehaviour {
@@ -23,6 +24,9 @@ public class ColorCorrector : NetworkBehaviour {
             cam = DisplayCameraPositioning.Instance.GetComponent<Camera>();
         } else {
             cam = GameObject.Find("XRRig/Camera Offset/Main Camera").GetComponent<Camera>();
+            
+            Varjo.XR.VarjoLoader loader = (Varjo.XR.VarjoLoader)XRGeneralSettings.Instance.Manager.activeLoaders[1];
+            loader.cameraSubsystem.Start();
         }
 
         // assign the model, its materials and copy their colors
