@@ -42,7 +42,8 @@ public class ColorCorrector : NetworkBehaviour {
                 Vector3 screenPos = cam.WorldToScreenPoint(transform.position);
 
                 if (GetComponent<ModelTransformator>().screenOffset.Value.z > 0.5f) {
-                    StartCoroutine(ColorPickByRaycast(screenPos, ' '));
+                    Color color = GetColorFromCubemap(screenPos);
+                    ReplaceColors(color);
                 }
 
                 //ScanCorrectionMatrix();
@@ -127,15 +128,14 @@ public class ColorCorrector : NetworkBehaviour {
             Vector3 greenPosition = screenCenter.transform.position + screenCenter.transform.TransformDirection(relativeGreenPosition);
             Vector3 bluePosition = screenCenter.transform.position + screenCenter.transform.TransformDirection(relativeBluePosition);
 
-            // transform quad positions from world coordinate to screen point
-            redPosition = cam.WorldToScreenPoint(redPosition);
-            greenPosition = cam.WorldToScreenPoint(greenPosition);
-            bluePosition = cam.WorldToScreenPoint(bluePosition);
+            // read pixel values of the quads
+            Color scannedRed = GetColorFromCubemap(redPosition);
+            Color scannedGreen = GetColorFromCubemap(greenPosition);
+            Color scannedBlue = GetColorFromCubemap(bluePosition);
 
-            // start coroutines for reading pixel values
-            StartCoroutine(ColorPickByRaycast(redPosition, 'r'));
-            StartCoroutine(ColorPickByRaycast(greenPosition, 'g'));
-            StartCoroutine(ColorPickByRaycast(bluePosition, 'b'));
+            Debug.Log("Scanned Red: "+scannedRed);
+            Debug.Log("Scanned Green: "+scannedGreen);
+            Debug.Log("Scanned Blue: "+scannedBlue);
         }
     }
 
