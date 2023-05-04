@@ -3,11 +3,13 @@ using UnityEngine;
 public class DisplayCameraPositioning : MonoBehaviour {
     public static DisplayCameraPositioning Instance { get; private set; }
 
+    // camera repositioning flag and properties
     public bool cameraRepositioning;
     public Vector2 viewportSize;
     public float focalRadius = 3;
     public Vector3 distortion;
 
+    // cage flag and properties
     public bool drawCage;
     public Vector3 cageSize;
 
@@ -17,6 +19,7 @@ public class DisplayCameraPositioning : MonoBehaviour {
     }
 
     private void Start() {
+        // display camera setup
         transform.position = new Vector3(0, 0, -focalRadius);
         transform.LookAt(Vector3.zero);
 
@@ -27,17 +30,20 @@ public class DisplayCameraPositioning : MonoBehaviour {
         DetermineViewportSize();
     }
 
+    // reposition the serverside display camera with a given camera offset
     public void SynchronizeDisplayCameraPosition(Vector3 cameraOffset) {
         if (!cameraRepositioning) { return; }
 
+        // transform camera offsetn
         cameraOffset = new Vector3(cameraOffset.x * distortion.x, cameraOffset.y * distortion.y, cameraOffset.z * distortion.z);
         cameraOffset = cameraOffset.normalized * focalRadius;
+        
+        // reposition and adjust orientation
         transform.position = cameraOffset;
         transform.LookAt(Vector3.zero);
-
-        //ModelManager.Instance.RefreshModelScreenOffsets();
     }
 
+    // calculates the size of the viewport
     private void DetermineViewportSize() {
         Camera cam = GetComponent<Camera>();
         
@@ -49,9 +55,11 @@ public class DisplayCameraPositioning : MonoBehaviour {
 
         float width = topRightCorner.x - bottomLeftCorner.x;
         float height = topRightCorner.y - bottomLeftCorner.y;
+
         viewportSize = new Vector2(width, height);
     }
 
+    // draws the cage
     private void DrawCage() {
         GameObject cageGO = new GameObject("Grid");
         Vector3 startPosition = new Vector3(0, 0, -focalRadius);
@@ -85,7 +93,9 @@ public class DisplayCameraPositioning : MonoBehaviour {
         DrawLine(startPosition + new Vector3(cageSize.x / 6, cageSize.y / 2, -cageSize.z), startPosition + new Vector3(cageSize.x / 6, cageSize.y / 2, 0)).transform.SetParent(cageGO.transform);
     }
 
+    // draws a singular line between two points
     private GameObject DrawLine(Vector3 from, Vector3 to) {
+        // setup line game object and line renderer
         GameObject newLineGO = new GameObject("Line");
         LineRenderer renderer = newLineGO.AddComponent<LineRenderer>();
         renderer.SetPosition(0, from);
@@ -93,6 +103,7 @@ public class DisplayCameraPositioning : MonoBehaviour {
         renderer.startWidth = 0.1f;
         renderer.endWidth = 0.1f;
 
+        // setup line material
         Material mat = new Material(Shader.Find("Transparent/Diffuse"));
         mat.color = new Color(0.2f, 0.2f, 0.2f, 0.5f);
         renderer.material = mat;

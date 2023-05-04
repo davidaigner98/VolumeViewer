@@ -17,6 +17,7 @@ public class ModelListUIManager : MonoBehaviour {
         else { Instance = this; }
     }
 
+    // toggles the visibility of the model list
     public void ToggleModelList() {
         if (currCoroutine == null) {
             expanded = !expanded;
@@ -31,10 +32,12 @@ public class ModelListUIManager : MonoBehaviour {
         }
     }
 
+    // sets the visibility of the model list to true
     private IEnumerator ShowModelListPanel() {
         RectTransform rect = GetComponent<RectTransform>();
         float maxX = rect.localPosition.x + 250;
 
+        // gradually moves the model list panel into the viewport
         while (rect.localPosition.x < maxX) {
             rect.localPosition += new Vector3(Time.deltaTime * 600, 0, 0);
 
@@ -45,10 +48,12 @@ public class ModelListUIManager : MonoBehaviour {
         currCoroutine = null;
     }
 
+    // sets the visibility of the model list to false
     private IEnumerator HideModelListPanel() {
         RectTransform rect = GetComponent<RectTransform>();
         float minX = rect.localPosition.x - 250;
 
+        // gradually moves the model list panel out of the viewport
         while (rect.localPosition.x > minX) {
             rect.localPosition -= new Vector3(Time.deltaTime * 600, 0, 0);
 
@@ -59,7 +64,9 @@ public class ModelListUIManager : MonoBehaviour {
         currCoroutine = null;
     }
 
+    // adds a new entry to the model list
     public void AddEntry (ModelInfo info) {
+        // clone dummy entry in order to create new entry
         GameObject newEntry = Instantiate(dummyEntry);
         newEntry.name = "Entry";
         newEntry.transform.SetParent(dummyEntry.transform.parent, false);
@@ -75,6 +82,7 @@ public class ModelListUIManager : MonoBehaviour {
         }
     }
 
+    // deletes an existing model list entry
     public void DeleteEntry(GameObject entry, int modelInstanceId) {
         ModelManager.Instance.DeleteModel(modelInstanceId);
         contentGO.GetComponent<RectTransform>().sizeDelta -= new Vector2(0, 30);
@@ -82,11 +90,14 @@ public class ModelListUIManager : MonoBehaviour {
         Destroy(entry);
     }
 
+    // change the entry text color of the currently selected model
     public void ChangeSelectedText(string selectedModelText) {
+        // set old entry color to white
         if (selectedEntryText != null) {
             selectedEntryText.color = Color.white;
         }
 
+        // find the entry of the selected model
         foreach (Transform entry in dummyEntry.transform.parent) {
             TextMeshProUGUI currentEntryText = entry.Find("EntryText").GetComponent<TextMeshProUGUI>();
 
@@ -95,6 +106,7 @@ public class ModelListUIManager : MonoBehaviour {
             }
         }
 
+        // set new entry color to yellow
         if (selectedEntryText != null) {
             selectedEntryText.color = Color.yellow;
         }

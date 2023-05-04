@@ -16,6 +16,7 @@ public class LobbyManager : MonoBehaviour {
     public bool manualClientStart;
 
     private void Update() {
+        // options for debug starting of server or client
         if (manualServerStart) {
             manualServerStart = false;
             StartServer();
@@ -25,6 +26,7 @@ public class LobbyManager : MonoBehaviour {
         }
     }
 
+    // starts this instance as a server
     public void StartServer() {
         networkManager.StartServer();
         GameObject newCamera = ReplaceXRRigWithDisplayCamera();
@@ -38,6 +40,7 @@ public class LobbyManager : MonoBehaviour {
         Destroy(gameObject);
     }
 
+    // starts this instance as a client
     public void StartClient() {
         errorLabel.enabled = false;
         CrossPlatformMediator.Instance.isServer = false;
@@ -49,6 +52,7 @@ public class LobbyManager : MonoBehaviour {
         Destroy(displayInputManager);
     }
 
+    // on successful client connection
     private void ClientConnectionSuccess(ulong clientId) {
         networkManager.OnClientDisconnectCallback -= ClientConnectionFailure;
         SpawnClippingBox();
@@ -56,10 +60,12 @@ public class LobbyManager : MonoBehaviour {
         Destroy(gameObject);
     }
 
+    // on failed client connection
     private void ClientConnectionFailure(ulong clientId) {
         errorLabel.enabled = true;
     }
 
+    // replaces the initial xr rig with a serverside display camera
     private GameObject ReplaceXRRigWithDisplayCamera() {
         Destroy(interactionManager);
         Destroy(serviceProvider);
@@ -67,9 +73,11 @@ public class LobbyManager : MonoBehaviour {
         return Instantiate(displayCamera);
     }
 
+    // spawns the clipping box
     private void SpawnClippingBox() {
         if (ClippingBox.Instance != null) { return; }
 
+        // setup clipping box
         GameObject clippingBox = Instantiate(clippingBoxPrefab);
         GameObject displayCenter = DisplayProfileManager.Instance.GetCurrentDisplayCenter();
         clippingBox.name = "ClippingBox";
@@ -77,6 +85,7 @@ public class LobbyManager : MonoBehaviour {
         clippingBox.transform.position = Vector3.zero;
         clippingBox.transform.localRotation = Quaternion.identity;
 
+        // reposition and resize clipping box
         Vector3 displaySize = DisplayProfileManager.Instance.GetCurrentDisplaySize().transform.localScale;
         Vector3 boxPosition = -clippingBox.transform.localPosition + displayCenter.transform.TransformDirection(new Vector3(-1, 0, 0.5f) * displaySize.x / 2);
         Vector3 boxSize = Vector3.one * displaySize.x / 4;

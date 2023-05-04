@@ -21,14 +21,17 @@ public class ModelCatalogueUIManager : MonoBehaviour {
         SetupCatalogue();
     }
 
+    // initializes the model catalogue
     private void SetupCatalogue() {
         GameObject currRow = rowGO;
         int itemCount = 0;
 
+        // creates a spawn button for every model prefab
         foreach (GameObject item in ModelManager.Instance.modelPrefabs) {
             ModelInfo info = item.GetComponent<ModelInfo>();
             if (info == null) { continue; }
 
+            // setup new button row
             if (itemCount % 4 == 0) {
                 currRow = Instantiate(rowGO);
                 currRow.name = "Row";
@@ -38,6 +41,7 @@ public class ModelCatalogueUIManager : MonoBehaviour {
                 currRow.SetActive(true);
             }
 
+            // clone dummy entry in order to create a new button
             GameObject newEntry = Instantiate(dummyEntry);
             newEntry.name = "Entry";
             newEntry.transform.SetParent(currRow.transform, false);
@@ -53,6 +57,7 @@ public class ModelCatalogueUIManager : MonoBehaviour {
         }
     }
 
+    // toggles the visibility of the model catalogue
     public void ToggleModelCatalogue(bool expanded) {
         if (this.expanded != expanded && currCoroutine == null) {
             this.expanded = expanded;
@@ -62,10 +67,12 @@ public class ModelCatalogueUIManager : MonoBehaviour {
         }
     }
 
+    // sets the visibility of the model catalogue to true
     private IEnumerator ShowModelCataloguePanel() {
         RectTransform rect = GetComponent<RectTransform>();
         float maxY = rect.localPosition.y + 250;
-
+        
+        // gradually move the panel into the viewport
         while (rect.localPosition.y < maxY) {
             rect.localPosition += new Vector3(0, Time.deltaTime * 600, 0);
 
@@ -76,10 +83,12 @@ public class ModelCatalogueUIManager : MonoBehaviour {
         currCoroutine = null;
     }
 
+    // sets the visibility of the model catalogue to false
     private IEnumerator HideModelCataloguePanel() {
         RectTransform rect = GetComponent<RectTransform>();
         float minY = rect.localPosition.y - 250;
 
+        // gradually move the panel out of the viewport
         while (rect.localPosition.y > minY) {
             rect.localPosition -= new Vector3(0, Time.deltaTime * 600, 0);
 
