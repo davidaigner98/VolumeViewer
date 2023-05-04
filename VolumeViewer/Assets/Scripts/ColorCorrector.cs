@@ -1,8 +1,7 @@
 using System.Collections;
-using System.Linq;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
+using CubemapFrame = Varjo.XR.VarjoEnvironmentCubemapStream.VarjoEnvironmentCubemapFrame;
 
 public class ColorCorrector : NetworkBehaviour {
     private Camera cam;
@@ -156,6 +155,53 @@ public class ColorCorrector : NetworkBehaviour {
     private void ReplaceColors(Color newColor) {
         foreach (Material mat in mats) {
             mat.color = newColor;
+        }
+    }
+
+    // returns the color of a specific pixel, located at a given world point
+    // the given world point must be within the camera frustum
+    private Color GetColorFromCubemap(Vector3 pixelPosition) {
+        // calculate face and relative position of the pixel
+        CubemapFace face = GetCubemapFaceFromDirection(pixelPosition);
+        Vector2 relativePos = CalculateProzentualOffsetFromDirection(pixelPosition);
+
+        // get frame
+        CubemapFrame frame = Varjo.XR.VarjoMixedReality.environmentCubemapStream.GetFrame();
+        
+        // calculate exact pixel positions
+        int pixelX = (int)(relativePos.x * frame.cubemap.width);
+        int pixelY = (int)(relativePos.y * frame.cubemap.height);
+
+        // read and return color value of pixel
+        return frame.cubemap.GetPixel(face, pixelX, pixelY);
+    }
+
+    // determines which face of the environmental cubemap a given direction is pointing to
+    private CubemapFace GetCubemapFaceFromDirection(Vector3 direction) {
+        if (direction.Equals(Vector3.zero)) { return CubemapFace.Unknown; }
+        
+        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y) && Mathf.Abs(direction.x) > Mathf.Abs(direction.z)) {
+            if (direction.x > 0) { return CubemapFace.PositiveX; }
+            else { return CubemapFace.NegativeX; }
+        } else if (Mathf.Abs(direction.y) > Mathf.Abs(direction.z)) {
+            if (direction.y > 0) { return CubemapFace.PositiveY; }
+            else { return CubemapFace.NegativeY; }
+        } else {
+            if (direction.z > 0) { return CubemapFace.PositiveZ; }
+            else { return CubemapFace.NegativeZ; }
+        }
+    }
+
+    // converts a given world position into a procentual pixel offset
+    private Vector2 CalculateProzentualOffsetFromDirection(Vector3 direction) {
+        if (direction.Equals(Vector3.zero)) { return Vector2.zero; }
+        
+        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y) && Mathf.Abs(direction.x) > Mathf.Abs(direction.z)) {
+            return new Vector2(direction.z, direction.y) / Mathf.Abs(direction.x) + Vector2.one / 2;
+        } else if (Mathf.Abs(direction.y) > Mathf.Abs(direction.z)) {
+            return new Vector2(direction.x, direction.z) / Mathf.Abs(direction.y) + Vector2.one / 2;
+        } else {
+            return new Vector2(direction.x, direction.y) / Mathf.Abs(direction.z) + Vector2.one / 2;
         }
     }
 }
