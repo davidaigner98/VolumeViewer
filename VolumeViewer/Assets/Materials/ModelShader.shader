@@ -9,7 +9,7 @@ Shader "Custom/ModelShader"
     
     SubShader
     {
-        Tags {"Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Fade"}
+        Tags {"RenderPipeline" = "HDRenderPipeline" "Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Opaque"}
         Blend SrcAlpha OneMinusSrcAlpha
         Cull Off
         LOD 100

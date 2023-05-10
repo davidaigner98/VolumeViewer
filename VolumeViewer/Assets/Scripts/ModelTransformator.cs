@@ -2,6 +2,7 @@ using Leap;
 using Leap.Unity;
 using System.Collections;
 using Unity.Netcode;
+using Unity.XR.CoreUtils;
 using UnityEngine;
 
 public class ModelTransformator : NetworkBehaviour {
@@ -22,11 +23,15 @@ public class ModelTransformator : NetworkBehaviour {
     private float zPositionFactor = 0.2f;
 
     private void Awake() {
-        Material[] mats = transform.Find("Model").GetComponent<Renderer>().materials;
+        Renderer renderer = transform.Find("Model").GetComponent<Renderer>();
+        Material[] mats = renderer.materials;
         foreach (Material mat in mats) {
-            mat.shader = Shader.Find("Custom/ModelShader");
-            mat.SetVector("_ModelOffset", transform.Find("Model").localPosition);
+            mat.shader = Shader.Find("Shader Graphs/HDRP_ModelGraph");
+            //mat.SetVector("_ModelOffset", transform.Find("Model").localPosition);
         }
+
+        //Material outlineMat = new Material(Shader.Find("Shader Graphs/HDRP_OutlineGraph"));
+        //renderer.AddMaterial(outlineMat);
     }
 
     private void Start() {
