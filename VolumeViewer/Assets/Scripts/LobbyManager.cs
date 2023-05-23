@@ -84,9 +84,11 @@ public class LobbyManager : MonoBehaviour {
         CrossPlatformMediator.Instance.isInLobby = false;
         CrossPlatformMediator.Instance.clientMode = "VR";
 
+        Camera xrRigCamera = xrRig.transform.Find("Camera Offset/Main Camera").GetComponent<Camera>();
+        xrRigCamera.clearFlags = CameraClearFlags.Skybox;
+        xrRigCamera.backgroundColor = new Color(0, 0, 0, 255);
+
         SpawnVREnvironment();
-        Destroy(DisplayProfileManager.Instance.gameObject);
-        Destroy(DetectorManager.Instance.gameObject);
         Destroy(gameObject);
     }
 
@@ -111,7 +113,7 @@ public class LobbyManager : MonoBehaviour {
         GameObject clippingBox = Instantiate(clippingBoxPrefab);
         GameObject displayCenter = DisplayProfileManager.Instance.GetCurrentDisplayCenter();
         clippingBox.name = "ClippingBox";
-        clippingBox.transform.SetParent(displayCenter.transform);
+        //clippingBox.transform.SetParent(displayCenter.transform);
         clippingBox.transform.position = Vector3.zero;
         clippingBox.transform.localRotation = Quaternion.identity;
 
@@ -127,6 +129,8 @@ public class LobbyManager : MonoBehaviour {
     // sets up the VR environment for a VR client
     private void SpawnVREnvironment() {
         GameObject floorPlane = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        floorPlane.name = "FloorPlane";
         floorPlane.transform.position = Vector3.zero;
+        floorPlane.transform.localScale = Vector3.one * 5;
     }
 }

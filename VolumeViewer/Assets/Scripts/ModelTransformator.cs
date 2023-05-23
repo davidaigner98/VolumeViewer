@@ -57,10 +57,11 @@ public class ModelTransformator : NetworkBehaviour {
         releaseDistanceThreshold = transform.localScale.x * 4 / 5;
         scaleOnDisplay.OnValueChanged += Rescale;
 
-        transform.SetParent(displayCenter.transform);
+        if (CrossPlatformMediator.Instance.clientMode.Equals("AR")) {
+            transform.SetParent(displayCenter.transform);
+        }
         AdjustPositionClientside(Vector3.zero, screenOffset.Value);
 
-        
         UpdateClipScreenParametersClientside();
     }
 
@@ -99,6 +100,8 @@ public class ModelTransformator : NetworkBehaviour {
 
     // update shader properties regarding the clipping screen mechanic clientside
     private void UpdateClipScreenParametersClientside() {
+        if (CrossPlatformMediator.Instance.clientMode.Equals("VR")) { return; }
+
         GameObject displaySizeGO = DisplayProfileManager.Instance.GetCurrentDisplaySize();
         Vector3 displayCenter = displaySizeGO.transform.position;
         Vector2 displaySize = displaySizeGO.transform.localScale.xy();
