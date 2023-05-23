@@ -13,16 +13,20 @@ public class LobbyManager : MonoBehaviour {
     public GameObject clippingBoxPrefab;
     public TextMeshProUGUI errorLabel;
     public bool manualServerStart;
-    public bool manualClientStart;
+    public bool manualARClientStart;
+    public bool manualVRClientStart;
 
     private void Update() {
         // options for debug starting of server or client
         if (manualServerStart) {
             manualServerStart = false;
             StartServer();
-        } else if (manualClientStart) {
-            manualClientStart = false;
-            StartClient();
+        } else if (manualARClientStart) {
+            manualARClientStart = false;
+            StartARClient();
+        } else if (manualVRClientStart) {
+            manualVRClientStart = false;
+            StartVRClient();
         }
     }
 
@@ -40,11 +44,11 @@ public class LobbyManager : MonoBehaviour {
         Destroy(gameObject);
     }
 
-    // starts this instance as a client
-    public void StartClient() {
+    // starts this instance as an AR client
+    public void StartARClient() {
         errorLabel.enabled = false;
         CrossPlatformMediator.Instance.isServer = false;
-        networkManager.OnClientConnectedCallback += ClientConnectionSuccess;
+        networkManager.OnClientConnectedCallback += ARClientConnectionSuccess;
         networkManager.OnClientDisconnectCallback += ClientConnectionFailure;
         GameObject.Find("DirectionalLight").transform.eulerAngles = new Vector3(90, 0, 0);
 
@@ -52,11 +56,37 @@ public class LobbyManager : MonoBehaviour {
         Destroy(displayInputManager);
     }
 
-    // on successful client connection
-    private void ClientConnectionSuccess(ulong clientId) {
+    // starts this instance as a VR client
+    public void StartVRClient() {
+        errorLabel.enabled = false;
+        CrossPlatformMediator.Instance.isServer = false;
+        networkManager.OnClientConnectedCallback += VRClientConnectionSuccess;
+        networkManager.OnClientDisconnectCallback += ClientConnectionFailure;
+        GameObject.Find("DirectionalLight").transform.eulerAngles = new Vector3(90, 0, 0);
+
+        networkManager.StartClient();
+        Destroy(displayInputManager);
+    }
+
+    // on successful AR client connection
+    private void ARClientConnectionSuccess(ulong clientId) {
         networkManager.OnClientDisconnectCallback -= ClientConnectionFailure;
         SpawnClippingBox();
         CrossPlatformMediator.Instance.isInLobby = false;
+        CrossPlatformMediator.Instance.clientMode = "AR";
+        Destroy(gameObject);
+    }
+
+    // on successful VR client connection
+    private void VRClientConnectionSuccess(ulong clientId) {
+        networkManager.OnClientDisconnectCallback -= ClientConnectionFailure;
+        SpawnClippingBox();
+        CrossPlatformMediator.Instance.isInLobby = false;
+        CrossPlatformMediator.Instance.clientMode = "VR";
+
+        SpawnVREnvironment();
+        Destroy(DisplayProfileManager.Instance.gameObject);
+        Destroy(DetectorManager.Instance.gameObject);
         Destroy(gameObject);
     }
 
@@ -92,5 +122,11 @@ public class LobbyManager : MonoBehaviour {
         clippingBox.GetComponent<ClippingBox>().minBounds = boxPosition - boxSize / 2;
         clippingBox.GetComponent<ClippingBox>().maxBounds = boxPosition + boxSize / 2;
         ClippingBox.Instance.Setup();
+    }
+
+    // sets up the VR environment for a VR client
+    private void SpawnVREnvironment() {
+        GameObject floorPlane = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        floorPlane.transform.position = Vector3.zero;
     }
 }

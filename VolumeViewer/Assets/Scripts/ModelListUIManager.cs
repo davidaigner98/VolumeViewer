@@ -71,7 +71,7 @@ public class ModelListUIManager : MonoBehaviour {
         newEntry.name = "Entry";
         newEntry.transform.SetParent(dummyEntry.transform.parent, false);
         newEntry.transform.Find("EntryText").GetComponent<TextMeshProUGUI>().text = info.name;
-        newEntry.transform.Find("EntryButton").GetComponent<Button>().onClick.AddListener(delegate() { Debug.Log("CLICK"); ModelManager.Instance.SetSelectedModel(info); });
+        newEntry.transform.Find("EntryButton").GetComponent<Button>().onClick.AddListener(delegate() { ModelManager.Instance.SetSelectedModel(info); });
         newEntry.transform.Find("DeleteButton").GetComponent<Button>().onClick.AddListener(delegate() { DeleteEntry(newEntry, info.modelInstanceId); });
         newEntry.SetActive(true);
 

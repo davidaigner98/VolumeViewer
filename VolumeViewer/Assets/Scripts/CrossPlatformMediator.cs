@@ -5,6 +5,7 @@ public class CrossPlatformMediator : NetworkBehaviour{
     public static CrossPlatformMediator Instance { get; private set; }
     public bool isServer;
     public bool isInLobby = true;
+    public string clientMode;
 
     void Awake() {
         if (Instance != null && Instance != this) { Destroy(this); }
