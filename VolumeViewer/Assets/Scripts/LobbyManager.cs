@@ -10,6 +10,7 @@ public class LobbyManager : MonoBehaviour {
     public GameObject xrRig;
     public GameObject displayProjection;
     public GameObject displayCamera;
+    public GameObject vrEnvironmentPrefab;
     public GameObject clippingBoxPrefab;
     public TextMeshProUGUI errorLabel;
     public bool manualServerStart;
@@ -74,6 +75,13 @@ public class LobbyManager : MonoBehaviour {
         SpawnClippingBox();
         CrossPlatformMediator.Instance.isInLobby = false;
         CrossPlatformMediator.Instance.clientMode = "AR";
+
+        GameObject vrEnv = SpawnVREnvironment();
+        foreach (Transform child in vrEnv.transform) {
+            Color currColor = child.GetComponent<Renderer>().material.color;
+            child.GetComponent<Renderer>().material.color = new Color(currColor.r, currColor.g, currColor.b, 0);
+        }
+
         Destroy(gameObject);
     }
 
@@ -85,7 +93,6 @@ public class LobbyManager : MonoBehaviour {
         CrossPlatformMediator.Instance.clientMode = "VR";
 
         Camera xrRigCamera = xrRig.transform.Find("Camera Offset/Main Camera").GetComponent<Camera>();
-        xrRigCamera.clearFlags = CameraClearFlags.Skybox;
         xrRigCamera.backgroundColor = new Color(0, 0, 0, 255);
 
         SpawnVREnvironment();
@@ -127,10 +134,12 @@ public class LobbyManager : MonoBehaviour {
     }
 
     // sets up the VR environment for a VR client
-    private void SpawnVREnvironment() {
-        GameObject floorPlane = GameObject.CreatePrimitive(PrimitiveType.Plane);
-        floorPlane.name = "FloorPlane";
-        floorPlane.transform.position = Vector3.zero;
-        floorPlane.transform.localScale = Vector3.one * 5;
+    private GameObject SpawnVREnvironment() {
+        GameObject vrEnvironment = GameObject.Instantiate(vrEnvironmentPrefab);
+        vrEnvironment.name = "VREnvironment";
+        vrEnvironment.transform.position = Vector3.zero;
+
+        TransitionManager.Instance.vrEnvironment = vrEnvironment;
+        return vrEnvironment;
     }
 }
