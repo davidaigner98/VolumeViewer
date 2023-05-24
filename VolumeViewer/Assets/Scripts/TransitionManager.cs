@@ -21,7 +21,7 @@ public class TransitionManager : MonoBehaviour {
         }
     }
 
-    private void StartTransition() {
+    public void StartTransition() {
         if (transitionCoroutine == null) {
             if (CrossPlatformMediator.Instance.clientMode.Equals("VR")) {
                 transitionCoroutine = StartCoroutine(TransitionToAR());
@@ -31,7 +31,7 @@ public class TransitionManager : MonoBehaviour {
         }
     }
 
-    public IEnumerator TransitionToAR() {
+    private IEnumerator TransitionToAR() {
         if (CrossPlatformMediator.Instance.isServer) { yield break; }
 
         Camera cam = GetComponent<Camera>();
@@ -62,7 +62,7 @@ public class TransitionManager : MonoBehaviour {
         transitionCoroutine = null;
     }
 
-    public IEnumerator TransitionToVR() {
+    private IEnumerator TransitionToVR() {
         if (CrossPlatformMediator.Instance.isServer) { yield break; }
 
         Camera cam = GetComponent<Camera>();
