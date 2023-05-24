@@ -93,7 +93,8 @@ public class LobbyManager : MonoBehaviour {
         CrossPlatformMediator.Instance.clientMode = "VR";
 
         Camera xrRigCamera = xrRig.transform.Find("Camera Offset/Main Camera").GetComponent<Camera>();
-        xrRigCamera.backgroundColor = new Color(0, 0, 0, 255);
+        Color currCamColor = xrRigCamera.backgroundColor;
+        xrRigCamera.backgroundColor = new Color(currCamColor.r, currCamColor.g, currCamColor.b, 1);
 
         SpawnVREnvironment();
         Destroy(gameObject);
@@ -126,7 +127,7 @@ public class LobbyManager : MonoBehaviour {
 
         // reposition and resize clipping box
         Vector3 displaySize = DisplayProfileManager.Instance.GetCurrentDisplaySize().transform.localScale;
-        Vector3 boxPosition = -clippingBox.transform.localPosition + displayCenter.transform.TransformDirection(new Vector3(-1, 0, 0.5f) * displaySize.x / 2);
+        Vector3 boxPosition = displayCenter.transform.position + displayCenter.transform.TransformDirection(new Vector3(1, 0, -0.5f) * displaySize.x / 2);
         Vector3 boxSize = Vector3.one * displaySize.x / 4;
         clippingBox.GetComponent<ClippingBox>().minBounds = boxPosition - boxSize / 2;
         clippingBox.GetComponent<ClippingBox>().maxBounds = boxPosition + boxSize / 2;
