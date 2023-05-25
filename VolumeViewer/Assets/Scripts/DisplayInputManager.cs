@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem.LowLevel;
@@ -10,9 +11,12 @@ public class DisplayInputManager : MonoBehaviour {
     public float mfRotSpeed = 0.7f;
     public float moveSpeed = 0.006f;
     private InputAction mouseMoveAction;
-    private InputAction mouseDragAction;
+    private InputAction mouseLeftDragAction;
+    private InputAction mouseRightDragAction;
+    private InputAction mouseScrollAction;
     private InputAction touchMoveAction;
     private InputAction touchDragAction;
+    private bool leftMouseButton;
     private Vector2 oldRotatingFingerDifference = Vector2.zero;
     private float initialScaleDistance = -1;
     private Vector3 initialScale = Vector3.one;
@@ -29,39 +33,81 @@ public class DisplayInputManager : MonoBehaviour {
         InputActionMap map = playerInput.currentActionMap;
         mouseMoveAction = map.FindAction("MouseMove");
         mouseMoveAction.Enable();
-        mouseDragAction = map.FindAction("MouseDrag");
-        mouseDragAction.Enable();
+        mouseLeftDragAction = map.FindAction("MouseLeftDrag");
+        mouseLeftDragAction.Enable();
+        mouseRightDragAction = map.FindAction("MouseRightDrag");
+        mouseRightDragAction.Enable();
+        mouseScrollAction = map.FindAction("MouseScroll");
+        mouseScrollAction.Enable();
         touchMoveAction = map.FindAction("TouchMove");
         touchMoveAction.Enable();
         touchDragAction = map.FindAction("TouchDrag");
         touchDragAction.Enable();
 
         // bind methods to input actions
-        mouseDragAction.started += MouseDragStarted;
-        mouseDragAction.canceled += MouseDragCanceled;
+        mouseLeftDragAction.started += MouseLeftDragStarted;
+        mouseLeftDragAction.canceled += MouseLeftDragCanceled;
+        mouseRightDragAction.started += MouseRightDragStarted;
+        mouseRightDragAction.canceled += MouseRightDragCanceled;
+        mouseScrollAction.performed += MouseScrollPerformed;
         touchDragAction.started += TouchDragStarted;
         touchDragAction.canceled += TouchDragCanceled;
     }
 
     private void OnDestroy() {
         // remove bindings on destroy
-        mouseDragAction.started -= MouseDragStarted;
-        mouseDragAction.canceled -= MouseDragCanceled;
+        mouseLeftDragAction.started -= MouseLeftDragStarted;
+        mouseLeftDragAction.canceled -= MouseLeftDragCanceled;
+        mouseRightDragAction.started -= MouseRightDragStarted;
+        mouseRightDragAction.canceled -= MouseRightDragCanceled;
+        mouseScrollAction.performed -= MouseScrollPerformed;
         mouseMoveAction.performed -= MouseMovePerformed;
         touchDragAction.started -= TouchDragStarted;
         touchDragAction.canceled -= TouchDragCanceled;
         touchMoveAction.performed -= TouchMovePerformed;
     }
 
-    private void MouseDragStarted(InputAction.CallbackContext c) {
+    private void MouseLeftDragStarted(InputAction.CallbackContext c) {
+        if (EventSystem.current.IsPointerOverGameObject()) { return; }
+
         // try to select model to be transformed
         TrySelectModel(Mouse.current.position.ReadValue());
 
+        leftMouseButton = true;
         mouseMoveAction.performed += MouseMovePerformed;
     }
 
-    private void MouseDragCanceled(InputAction.CallbackContext c) {
+    private void MouseLeftDragCanceled(InputAction.CallbackContext c) {
         mouseMoveAction.performed -= MouseMovePerformed;
+    }
+
+    private void MouseRightDragStarted(InputAction.CallbackContext c) {
+        if (EventSystem.current.IsPointerOverGameObject()) { return; }
+
+        // try to select model to be transformed
+        TrySelectModel(Mouse.current.position.ReadValue());
+
+        leftMouseButton = false;
+        mouseMoveAction.performed += MouseMovePerformed;
+    }
+
+    private void MouseRightDragCanceled(InputAction.CallbackContext c) {
+        mouseMoveAction.performed -= MouseMovePerformed;
+    }
+
+    private void MouseScrollPerformed(InputAction.CallbackContext c) {
+        // try to select model to be transformed
+        TrySelectModel(Mouse.current.position.ReadValue());
+
+        ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
+        if (selectedModel == null) { return; }
+
+        float sizeChange = mouseScrollAction.ReadValue<Vector2>().y / 1200;
+
+        // scale model
+        float currScale = selectedModel.transform.localScale.x;
+        selectedModel.transform.localScale = Vector3.one * currScale * (1.0f + sizeChange);
+        selectedModel.GetComponent<ModelTransformator>().scaleOnDisplay.Value = selectedModel.transform.localScale.x;
     }
 
     private void TouchDragStarted(InputAction.CallbackContext c) {
@@ -72,22 +118,26 @@ public class DisplayInputManager : MonoBehaviour {
         first3To5FingerCall = true;
 
         touchMoveAction.performed += TouchMovePerformed;
-        mouseDragAction.started -= MouseDragStarted;
+        mouseLeftDragAction.started -= MouseLeftDragStarted;
     }
 
     private void TouchDragCanceled(InputAction.CallbackContext c) {
         touchMoveAction.performed -= TouchMovePerformed;
-        mouseDragAction.started += MouseDragStarted;
+        mouseLeftDragAction.started += MouseLeftDragStarted;
     }
 
     private void MouseMovePerformed(InputAction.CallbackContext c) {
         ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
         if (selectedModel == null) { return; }
-        
-        Vector2 rotation = Mouse.current.delta.ReadValue() * ofRotSpeed;
 
-        selectedModel.transform.Rotate(Vector3.up, -rotation.x, Space.World);
-        selectedModel.transform.Rotate(Vector3.right, rotation.y, Space.World);
+        if (leftMouseButton) {
+            MousePositioning(Mouse.current.position.ReadValue());
+        } else {
+            Vector2 rotation = Mouse.current.delta.ReadValue() * ofRotSpeed;
+
+            selectedModel.transform.Rotate(Vector3.up, -rotation.x, Space.World);
+            selectedModel.transform.Rotate(Vector3.right, rotation.y, Space.World);
+        }
     }
 
     private void TouchMovePerformed(InputAction.CallbackContext c) {
@@ -150,6 +200,22 @@ public class DisplayInputManager : MonoBehaviour {
         Camera displayCamera = DisplayLocalizer.Instance.displayCamera;
         float distance = selectedModel.transform.position.z - displayCamera.transform.position.z;
         Vector3 newOffset = displayCamera.ScreenToWorldPoint(new Vector3(palmPosition.x, palmPosition.y, distance));
+        Vector3 viewportSize = DisplayCameraPositioning.Instance.viewportSize;
+        newOffset = new Vector3(newOffset.x / viewportSize.x, newOffset.y / viewportSize.x, newOffset.z);
+        
+        // set screen offset, therefore reposition model
+        selectedModel.GetComponent<ModelTransformator>().screenOffset.Value = newOffset;
+    }
+
+    // positioning via left mouse button
+    private void MousePositioning(Vector2 mouseScreenPosition) {
+        ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
+        if (selectedModel == null) { return; }
+
+        // calculate new screen offset based on camera position and current z position
+        Camera displayCamera = DisplayLocalizer.Instance.displayCamera;
+        float distance = selectedModel.transform.position.z - displayCamera.transform.position.z;
+        Vector3 newOffset = displayCamera.ScreenToWorldPoint(new Vector3(mouseScreenPosition.x, mouseScreenPosition.y, distance));
         Vector3 viewportSize = DisplayCameraPositioning.Instance.viewportSize;
         newOffset = new Vector3(newOffset.x / viewportSize.x, newOffset.y / viewportSize.x, newOffset.z);
         
