@@ -14,6 +14,7 @@ public class ModelTransformator : NetworkBehaviour {
     public NetworkVariable<Vector3> screenOffset = new NetworkVariable<Vector3>(new Vector3(0, 0, 1));
     public NetworkVariable<float> scaleOnDisplay = new NetworkVariable<float>(1);
     public float scaleFactor = 0.375f;
+    public NetworkVariable<bool> highlighted = new NetworkVariable<bool>(false);
     private Hand interactingHand;
     private bool isBeingGrabbed = false;
     private bool isBeingRotated = false;
@@ -31,6 +32,7 @@ public class ModelTransformator : NetworkBehaviour {
 
     private void Start() {
         ModelManager.Instance.attached.OnValueChanged += ChangeModelAttachment;
+        highlighted.OnValueChanged += ToggleOutlineShader;
 
         // triggers setup process
         if (CrossPlatformMediator.Instance.isServer) { SetupServer(); }
@@ -122,6 +124,21 @@ public class ModelTransformator : NetworkBehaviour {
         }
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void SetHighlightedStateServerRpc(bool status) {
+        highlighted.Value = status;
+    }
+
+    // changes shader properties for selection outline shader pass
+    public void ToggleOutlineShader(bool prevStatus, bool currStatus) {
+        int status = currStatus ? 1 : 0;
+        
+        Material[] mats = transform.Find("Model").GetComponent<Renderer>().materials;
+        foreach (Material mat in mats) {
+            mat.SetInt("_IsSelected", status);
+        }
+    }
+
     // perform palm grab movement
     private void PalmGrabMovement() {
         Vector3 delta = interactingHand.PalmPosition - lastPalmPosition;
@@ -199,6 +216,7 @@ public class ModelTransformator : NetworkBehaviour {
 
                 isBeingGrabbed = true;
                 lastPalmPosition = interactingHand.PalmPosition;
+                SetHighlightedStateServerRpc(true);
                 UpdateClipScreenParametersClientside();
             }
         }
@@ -211,6 +229,7 @@ public class ModelTransformator : NetworkBehaviour {
             screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, 0);
             float distance = Vector3.Distance(transform.position, displayCenter.transform.position + displayCenter.transform.TransformDirection(screenOffset));
             isBeingGrabbed = false;
+            SetHighlightedStateServerRpc(false);
 
             if (distance >= releaseDistanceThreshold) {
                 CrossPlatformMediator.Instance.ChangeAttachmentButtonInteractabilityServerRpc(true);
@@ -281,6 +300,7 @@ public class ModelTransformator : NetworkBehaviour {
 
             lastIndexPosition = interactingHand.GetIndex().TipPosition - transform.position;
             isBeingRotated = true;
+            SetHighlightedStateServerRpc(true);
         }
     }
 
@@ -288,6 +308,7 @@ public class ModelTransformator : NetworkBehaviour {
     public void OneFingerRotationOff() {
         if (!CrossPlatformMediator.Instance.isServer) {
             isBeingRotated = false;
+            SetHighlightedStateServerRpc(false);
         }
     }
 
