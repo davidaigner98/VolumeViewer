@@ -73,11 +73,17 @@ public class DisplayInputManager : MonoBehaviour {
         // try to select model to be transformed
         TrySelectModel(Mouse.current.position.ReadValue());
 
+        ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
+        if (selectedModel != null) { selectedModel.GetComponent<ModelTransformator>().ToggleOutlineShader(1); }
+
         leftMouseButton = true;
         mouseMoveAction.performed += MouseMovePerformed;
     }
 
     private void MouseLeftDragCanceled(InputAction.CallbackContext c) {
+        ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
+        if (selectedModel != null) { selectedModel.GetComponent<ModelTransformator>().ToggleOutlineShader(0); }
+
         mouseMoveAction.performed -= MouseMovePerformed;
     }
 
@@ -87,12 +93,18 @@ public class DisplayInputManager : MonoBehaviour {
         // try to select model to be transformed
         TrySelectModel(Mouse.current.position.ReadValue());
 
+        ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
+        if (selectedModel != null) { selectedModel.GetComponent<ModelTransformator>().ToggleOutlineShader(1); }
+
         leftMouseButton = false;
         mouseMoveAction.performed += MouseMovePerformed;
     }
 
     private void MouseRightDragCanceled(InputAction.CallbackContext c) {
         mouseMoveAction.performed -= MouseMovePerformed;
+
+        ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
+        if (selectedModel != null) { selectedModel.GetComponent<ModelTransformator>().ToggleOutlineShader(0); }
     }
 
     private void MouseScrollPerformed(InputAction.CallbackContext c) {
@@ -124,6 +136,9 @@ public class DisplayInputManager : MonoBehaviour {
     private void TouchDragCanceled(InputAction.CallbackContext c) {
         touchMoveAction.performed -= TouchMovePerformed;
         mouseLeftDragAction.started += MouseLeftDragStarted;
+
+        ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
+        if (selectedModel != null) { selectedModel.GetComponent<ModelTransformator>().ToggleOutlineShader(0); }
     }
 
     private void MouseMovePerformed(InputAction.CallbackContext c) {
@@ -173,6 +188,9 @@ public class DisplayInputManager : MonoBehaviour {
 
             MultipleFingerPositioning(touchCount);
         }
+
+        ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
+        if (selectedModel != null) { selectedModel.GetComponent<ModelTransformator>().ToggleOutlineShader(1); }
     }
 
     // one finger rotation on touch

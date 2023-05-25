@@ -70,9 +70,6 @@ public class ModelManager : NetworkBehaviour {
 
     // sets the selected model
     public void SetSelectedModel(ModelInfo newSelectedModel) {
-        // deactivates the selection outline shader on newly selected model
-        SetModelSelectionInShader(selectedModel, 0);
-
         selectedModel = newSelectedModel;
 
         // changes text color in model list
@@ -80,22 +77,9 @@ public class ModelManager : NetworkBehaviour {
             ModelListUIManager.Instance.ChangeSelectedText(selectedModel.name);
         }
 
-        // activates the selection outline shader on newly selected model
-        SetModelSelectionInShader(selectedModel, 1);
-
         // fire OnSelectionChanged event
         if (OnSelectionChanged != null) {
             OnSelectionChanged();
-        }
-    }
-
-    // changes shader properties for selection outline shader pass
-    private void SetModelSelectionInShader(ModelInfo model, int selectionStatus) {
-        if (CrossPlatformMediator.Instance.isServer &&  model != null) {
-            Material[] mats = model.transform.Find("Model").GetComponent<Renderer>().materials;
-            foreach (Material mat in mats) {
-                mat.SetInt("_IsSelected", selectionStatus);
-            }
         }
     }
 

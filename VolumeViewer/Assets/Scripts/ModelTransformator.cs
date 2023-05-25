@@ -122,6 +122,16 @@ public class ModelTransformator : NetworkBehaviour {
         }
     }
 
+    // changes shader properties for selection outline shader pass
+    public void ToggleOutlineShader(int selectionStatus) {
+        if (CrossPlatformMediator.Instance.isServer) {
+            Material[] mats = transform.Find("Model").GetComponent<Renderer>().materials;
+            foreach (Material mat in mats) {
+                mat.SetInt("_IsSelected", selectionStatus);
+            }
+        }
+    }
+
     // perform palm grab movement
     private void PalmGrabMovement() {
         Vector3 delta = interactingHand.PalmPosition - lastPalmPosition;
@@ -199,6 +209,7 @@ public class ModelTransformator : NetworkBehaviour {
 
                 isBeingGrabbed = true;
                 lastPalmPosition = interactingHand.PalmPosition;
+                ToggleOutlineShader(1);
                 UpdateClipScreenParametersClientside();
             }
         }
@@ -211,6 +222,7 @@ public class ModelTransformator : NetworkBehaviour {
             screenOffset = new Vector3(screenOffset.x * displaySize.localScale.x, screenOffset.y * displaySize.localScale.y, 0);
             float distance = Vector3.Distance(transform.position, displayCenter.transform.position + displayCenter.transform.TransformDirection(screenOffset));
             isBeingGrabbed = false;
+            ToggleOutlineShader(0);
 
             if (distance >= releaseDistanceThreshold) {
                 CrossPlatformMediator.Instance.ChangeAttachmentButtonInteractabilityServerRpc(true);
@@ -281,6 +293,7 @@ public class ModelTransformator : NetworkBehaviour {
 
             lastIndexPosition = interactingHand.GetIndex().TipPosition - transform.position;
             isBeingRotated = true;
+            ToggleOutlineShader(1);
         }
     }
 
@@ -288,6 +301,7 @@ public class ModelTransformator : NetworkBehaviour {
     public void OneFingerRotationOff() {
         if (!CrossPlatformMediator.Instance.isServer) {
             isBeingRotated = false;
+            ToggleOutlineShader(0);
         }
     }
 
