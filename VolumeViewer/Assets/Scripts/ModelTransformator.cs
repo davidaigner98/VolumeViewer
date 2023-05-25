@@ -212,7 +212,7 @@ public class ModelTransformator : NetworkBehaviour {
     // clientside call to the server for rotating the model
     [ServerRpc(RequireOwnership = false)]
     public void ApplyQuaternionToRotationServerRpc(Quaternion rotation) {
-        transform.rotation = transform.rotation * rotation;
+        transform.rotation = rotation * transform.rotation;
     }
 
     // start palm grab movement
