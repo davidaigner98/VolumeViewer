@@ -19,6 +19,7 @@ public class ModelTransformator : NetworkBehaviour {
     private bool isBeingGrabbed = false;
     private bool isBeingRotated = false;
     private Vector3 lastPalmPosition;
+    private Quaternion lastPalmRotation;
     private Vector3 lastIndexPosition;
     private float zPositionFactor = 0.2f;
 
@@ -150,6 +151,11 @@ public class ModelTransformator : NetworkBehaviour {
         Vector3 newOffset = screenCenter.InverseTransformDirection(transform.position - screenCenter.position) / screenSize.x;
         newOffset = new Vector3(newOffset.x, newOffset.y, newOffset.z / zPositionFactor);
         SetModelScreenOffsetServerRpc(newOffset);
+
+        Quaternion currPalmRotation = interactingHand.GetPalmPose().rotation;
+        Quaternion deltaRotation = currPalmRotation * Quaternion.Inverse(lastPalmRotation);
+        ApplyQuaternionToRotationServerRpc(deltaRotation);
+        lastPalmRotation = currPalmRotation;
     }
 
     // clientside call to the server for changing the screen offset of this model
@@ -203,6 +209,12 @@ public class ModelTransformator : NetworkBehaviour {
         transform.Rotate(axis, angle, Space.World);
     }
 
+    // clientside call to the server for rotating the model
+    [ServerRpc(RequireOwnership = false)]
+    public void ApplyQuaternionToRotationServerRpc(Quaternion rotation) {
+        transform.rotation = transform.rotation * rotation;
+    }
+
     // start palm grab movement
     public void PalmGrabModelOn(string hand) {
         if (!CrossPlatformMediator.Instance.isServer) {
@@ -216,6 +228,7 @@ public class ModelTransformator : NetworkBehaviour {
 
                 isBeingGrabbed = true;
                 lastPalmPosition = interactingHand.PalmPosition;
+                lastPalmRotation = interactingHand.GetPalmPose().rotation;
                 SetHighlightedStateServerRpc(true);
                 UpdateClipScreenParametersClientside();
             }
