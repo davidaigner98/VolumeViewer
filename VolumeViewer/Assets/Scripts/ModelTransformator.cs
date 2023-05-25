@@ -12,6 +12,7 @@ public class ModelTransformator : NetworkBehaviour {
     private GameObject displayCenter;
     private Transform displaySize;
     public NetworkVariable<Vector3> screenOffset = new NetworkVariable<Vector3>(new Vector3(0, 0, 1));
+    public NetworkVariable<Quaternion> modelRotation = new NetworkVariable<Quaternion>(Quaternion.identity);
     public NetworkVariable<float> scaleOnDisplay = new NetworkVariable<float>(1);
     public float scaleFactor = 0.375f;
     public NetworkVariable<bool> highlighted = new NetworkVariable<bool>(false);
@@ -33,6 +34,7 @@ public class ModelTransformator : NetworkBehaviour {
 
     private void Start() {
         ModelManager.Instance.attached.OnValueChanged += ChangeModelAttachment;
+        modelRotation.OnValueChanged += AdjustRotation;
         highlighted.OnValueChanged += ToggleOutlineShader;
 
         // triggers setup process
@@ -145,7 +147,8 @@ public class ModelTransformator : NetworkBehaviour {
         // apply delta rotation
         Quaternion currPalmRotation = interactingHand.GetPalmPose().rotation;
         Quaternion deltaRotation = currPalmRotation * Quaternion.Inverse(lastPalmRotation);
-        ApplyQuaternionToRotationServerRpc(deltaRotation);
+        transform.rotation = deltaRotation * transform.rotation;
+        SetModelRotationServerRpc(transform.rotation);
         lastPalmRotation = currPalmRotation;
 
         // rotate model around palm
@@ -189,6 +192,13 @@ public class ModelTransformator : NetworkBehaviour {
         transform.position = screenCenter.position + screenCenter.TransformDirection(newOffset * screenSize.x);
     }
 
+    // adjust model rotation
+    private void AdjustRotation(Quaternion oldRotation, Quaternion newRotation) {
+        if (isBeingGrabbed) { return; }
+
+        transform.rotation = newRotation;
+    }
+
     // perform one finger rotation
     private void OneFingerRotation() {
         float distance = Vector3.Distance(transform.position, interactingHand.GetIndex().TipPosition);
@@ -212,13 +222,13 @@ public class ModelTransformator : NetworkBehaviour {
     // clientside call to the server for rotating the model
     [ServerRpc(RequireOwnership = false)]
     public void RotateModelServerRpc(Vector3 axis, float angle) {
-        transform.Rotate(axis, angle, Space.World);
+        modelRotation.Value *= Quaternion.Euler(axis * angle);
     }
 
-    // clientside call to the server for rotating the model
+    // clientside call to the server for setting the model rotation
     [ServerRpc(RequireOwnership = false)]
-    public void ApplyQuaternionToRotationServerRpc(Quaternion rotation) {
-        transform.rotation = rotation * transform.rotation;
+    public void SetModelRotationServerRpc(Quaternion rotation) {
+        modelRotation.Value = rotation;
     }
 
     // start palm grab movement
@@ -341,21 +351,21 @@ public class ModelTransformator : NetworkBehaviour {
     // align the model with its front to the camera
     public void AlignCoronal() {
         if (CrossPlatformMediator.Instance.isServer) {
-            transform.rotation = Quaternion.Euler(0, 180, 0);
+            modelRotation.Value = Quaternion.Euler(0, 180, 0);
         }
     }
 
     // align the model with its side to the camera
     public void AlignSagittal() {
         if (CrossPlatformMediator.Instance.isServer) {
-            transform.rotation = Quaternion.Euler(0, 90, 0);
+            modelRotation.Value = Quaternion.Euler(0, 90, 0);
         }
     }
 
     // align the model with its top to the camera
     public void AlignAxial() {
         if (CrossPlatformMediator.Instance.isServer) {
-            transform.rotation = Quaternion.Euler(90, 180, 0);
+            modelRotation.Value = Quaternion.Euler(90, 180, 0);
         }
     }
 }

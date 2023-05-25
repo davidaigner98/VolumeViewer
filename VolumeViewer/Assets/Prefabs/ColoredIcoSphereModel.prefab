@@ -111,7 +111,6 @@ GameObject:
   - component: {fileID: 5607420365980232650}
   - component: {fileID: 6396818906830094369}
   - component: {fileID: 5963580643563713035}
-  - component: {fileID: 5885022621359051704}
   - component: {fileID: 2267648004183866134}
   m_Layer: 0
   m_Name: ColoredIcoSphereModel
@@ -190,32 +189,8 @@ MonoBehaviour:
   scaleOnDisplay:
     m_InternalValue: 1
   scaleFactor: 0.39
---- !u!114 &5885022621359051704
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2780622952699860421}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SyncPositionX: 0
-  SyncPositionY: 0
-  SyncPositionZ: 0
-  SyncRotAngleX: 1
-  SyncRotAngleY: 1
-  SyncRotAngleZ: 1
-  SyncScaleX: 0
-  SyncScaleY: 0
-  SyncScaleZ: 0
-  PositionThreshold: 0.001
-  RotAngleThreshold: 0.01
-  ScaleThreshold: 0.01
-  InLocalSpace: 1
-  Interpolate: 1
+  highlighted:
+    m_InternalValue: 0
 --- !u!54 &2267648004183866134
 Rigidbody:
   m_ObjectHideFlags: 0

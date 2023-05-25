@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 844784276372826023}
   - component: {fileID: 844784276372826021}
   - component: {fileID: 844784276372826022}
-  - component: {fileID: 844784276372826019}
   - component: {fileID: -3279837825101385547}
   m_Layer: 0
   m_Name: ColoredConeModel
@@ -91,32 +90,8 @@ MonoBehaviour:
   scaleOnDisplay:
     m_InternalValue: 1
   scaleFactor: 0.39
---- !u!114 &844784276372826019
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2445960196229900246}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SyncPositionX: 0
-  SyncPositionY: 0
-  SyncPositionZ: 0
-  SyncRotAngleX: 1
-  SyncRotAngleY: 1
-  SyncRotAngleZ: 1
-  SyncScaleX: 0
-  SyncScaleY: 0
-  SyncScaleZ: 0
-  PositionThreshold: 0.001
-  RotAngleThreshold: 0.01
-  ScaleThreshold: 0.01
-  InLocalSpace: 1
-  Interpolate: 1
+  highlighted:
+    m_InternalValue: 0
 --- !u!54 &-3279837825101385547
 Rigidbody:
   m_ObjectHideFlags: 0

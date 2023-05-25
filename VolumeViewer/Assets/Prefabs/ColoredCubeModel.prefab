@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 35580066031769194}
   - component: {fileID: -6897657156471507777}
   - component: {fileID: -5993723681606187905}
-  - component: {fileID: 5858151768860054549}
   - component: {fileID: -5189130442401047280}
   m_Layer: 0
   m_Name: ColoredCubeModel
@@ -28,7 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 918468449551100734}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -91,32 +90,8 @@ MonoBehaviour:
   scaleOnDisplay:
     m_InternalValue: 1
   scaleFactor: 0.39
---- !u!114 &5858151768860054549
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 918468449551100734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SyncPositionX: 0
-  SyncPositionY: 0
-  SyncPositionZ: 0
-  SyncRotAngleX: 1
-  SyncRotAngleY: 1
-  SyncRotAngleZ: 1
-  SyncScaleX: 0
-  SyncScaleY: 0
-  SyncScaleZ: 0
-  PositionThreshold: 0.001
-  RotAngleThreshold: 0.01
-  ScaleThreshold: 0.01
-  InLocalSpace: 1
-  Interpolate: 1
+  highlighted:
+    m_InternalValue: 0
 --- !u!54 &-5189130442401047280
 Rigidbody:
   m_ObjectHideFlags: 0
