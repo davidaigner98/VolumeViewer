@@ -150,8 +150,9 @@ public class DisplayInputManager : MonoBehaviour {
         } else {
             Vector2 rotation = Mouse.current.delta.ReadValue() * ofRotSpeed;
 
-            selectedModel.GetComponent<ModelTransformator>().modelRotation.Value *= Quaternion.Euler(-rotation.x * Vector3.up);
-            selectedModel.GetComponent<ModelTransformator>().modelRotation.Value *= Quaternion.Euler(rotation.y * Vector3.right);
+            ModelTransformator selectedTransformator = selectedModel.GetComponent<ModelTransformator>();
+            selectedTransformator.modelRotation.Value *= Quaternion.Euler(-rotation.x * selectedModel.transform.InverseTransformDirection(Vector3.up));
+            selectedTransformator.modelRotation.Value *= Quaternion.Euler(rotation.y * selectedModel.transform.InverseTransformDirection(Vector3.right));
         }
     }
 
@@ -202,9 +203,9 @@ public class DisplayInputManager : MonoBehaviour {
         Vector2 rotation = Touchscreen.current.delta.ReadValue() * ofRotSpeed;
 
         // rotate model by two axes
-        selectedModel.GetComponent<ModelTransformator>().modelRotation.Value *= Quaternion.Euler(-rotation.x * Vector3.up);
-        selectedModel.GetComponent<ModelTransformator>().modelRotation.Value *= Quaternion.Euler(rotation.y * Vector3.right);
-
+        ModelTransformator selectedTransformator = selectedModel.GetComponent<ModelTransformator>();
+        selectedTransformator.modelRotation.Value *= Quaternion.Euler(-rotation.x * selectedModel.transform.InverseTransformDirection(Vector3.up));
+        selectedTransformator.modelRotation.Value *= Quaternion.Euler(rotation.y * selectedModel.transform.InverseTransformDirection(Vector3.right));
     }
 
     // multiple finger positioning on touch
