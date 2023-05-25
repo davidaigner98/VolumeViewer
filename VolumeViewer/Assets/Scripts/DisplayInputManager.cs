@@ -150,8 +150,8 @@ public class DisplayInputManager : MonoBehaviour {
         } else {
             Vector2 rotation = Mouse.current.delta.ReadValue() * ofRotSpeed;
 
-            selectedModel.transform.Rotate(Vector3.up, -rotation.x, Space.World);
-            selectedModel.transform.Rotate(Vector3.right, rotation.y, Space.World);
+            selectedModel.GetComponent<ModelTransformator>().modelRotation.Value *= Quaternion.Euler(-rotation.x * Vector3.up);
+            selectedModel.GetComponent<ModelTransformator>().modelRotation.Value *= Quaternion.Euler(rotation.y * Vector3.right);
         }
     }
 
@@ -202,8 +202,9 @@ public class DisplayInputManager : MonoBehaviour {
         Vector2 rotation = Touchscreen.current.delta.ReadValue() * ofRotSpeed;
 
         // rotate model by two axes
-        selectedModel.transform.Rotate(Vector3.up, -rotation.x, Space.World);
-        selectedModel.transform.Rotate(Vector3.right, rotation.y, Space.World);
+        selectedModel.GetComponent<ModelTransformator>().modelRotation.Value *= Quaternion.Euler(-rotation.x * Vector3.up);
+        selectedModel.GetComponent<ModelTransformator>().modelRotation.Value *= Quaternion.Euler(rotation.y * Vector3.right);
+
     }
 
     // multiple finger positioning on touch
@@ -257,7 +258,7 @@ public class DisplayInputManager : MonoBehaviour {
         if (!oldRotatingFingerDifference.Equals(Vector2.zero)) {
             // calculate rotation angle
             float angle = -Vector2.SignedAngle(newVector, oldRotatingFingerDifference) * mfRotSpeed;
-            selectedModel.transform.Rotate(Vector3.forward, angle, Space.World);
+            selectedModel.GetComponent<ModelTransformator>().modelRotation.Value *= Quaternion.Euler(angle * Vector3.forward);
         }
 
         oldRotatingFingerDifference = newVector;

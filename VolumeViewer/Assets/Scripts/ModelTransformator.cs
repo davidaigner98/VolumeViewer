@@ -64,6 +64,7 @@ public class ModelTransformator : NetworkBehaviour {
 
         transform.SetParent(displayCenter.transform);
         AdjustPositionClientside(Vector3.zero, screenOffset.Value);
+        AdjustRotation(Quaternion.identity, modelRotation.Value);
 
         UpdateClipScreenParametersClientside();
     }
