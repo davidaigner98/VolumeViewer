@@ -142,20 +142,26 @@ public class ModelTransformator : NetworkBehaviour {
 
     // perform palm grab movement
     private void PalmGrabMovement() {
+        // apply delta rotation
+        Quaternion currPalmRotation = interactingHand.GetPalmPose().rotation;
+        Quaternion deltaRotation = currPalmRotation * Quaternion.Inverse(lastPalmRotation);
+        ApplyQuaternionToRotationServerRpc(deltaRotation);
+        lastPalmRotation = currPalmRotation;
+
+        // rotate model around palm
+        transform.position = deltaRotation * (transform.position - interactingHand.PalmPosition) + interactingHand.PalmPosition;
+
+        // apply delta movement
         Vector3 delta = interactingHand.PalmPosition - lastPalmPosition;
         lastPalmPosition = interactingHand.PalmPosition;
-
         transform.position += delta;
+        
+        // calculate and update screen offset
         Transform screenCenter = DisplayProfileManager.Instance.GetCurrentDisplayCenter().transform;
         Vector3 screenSize = DisplayProfileManager.Instance.GetCurrentDisplaySize().transform.localScale;
         Vector3 newOffset = screenCenter.InverseTransformDirection(transform.position - screenCenter.position) / screenSize.x;
         newOffset = new Vector3(newOffset.x, newOffset.y, newOffset.z / zPositionFactor);
         SetModelScreenOffsetServerRpc(newOffset);
-
-        Quaternion currPalmRotation = interactingHand.GetPalmPose().rotation;
-        Quaternion deltaRotation = currPalmRotation * Quaternion.Inverse(lastPalmRotation);
-        ApplyQuaternionToRotationServerRpc(deltaRotation);
-        lastPalmRotation = currPalmRotation;
     }
 
     // clientside call to the server for changing the screen offset of this model
