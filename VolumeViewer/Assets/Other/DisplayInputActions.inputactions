@@ -33,13 +33,31 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "MouseDrag",
+                    "name": "MouseLeftDrag",
                     "type": "Button",
                     "id": "89bdf212-e45f-4861-aae3-3cceb39a9057",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "MouseRightDrag",
+                    "type": "Button",
+                    "id": "07365c03-107e-4c24-b2cf-cd0643d03c40",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MouseScroll",
+                    "type": "Value",
+                    "id": "6324f699-8623-4af0-b7bb-b90802cc75fe",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -50,7 +68,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "MouseDrag",
+                    "action": "MouseLeftDrag",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -106,6 +124,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "TouchDrag",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e6e8392b-aa3c-4b8a-a38d-d71a21c26733",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseRightDrag",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a71e9534-551f-4863-ae8a-1376c42dd9ef",
+                    "path": "<Mouse>/scroll",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseScroll",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
