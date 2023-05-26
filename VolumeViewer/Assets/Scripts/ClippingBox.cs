@@ -11,7 +11,7 @@ public class ClippingBox : MonoBehaviour {
     private bool active = false;
 
     private List<ClippingBoxCorner> corners = new List<ClippingBoxCorner>();
-    private List<Vector3> possibleIndices = new List<Vector3>() {
+    private List<Vector3> possibleCornerIndices = new List<Vector3>() {
         new Vector3(-1, -1, -1),
         new Vector3(-1, -1, +1),
         new Vector3(-1, +1, -1),
@@ -20,6 +20,16 @@ public class ClippingBox : MonoBehaviour {
         new Vector3(+1, -1, +1),
         new Vector3(+1, +1, -1),
         new Vector3(+1, +1, +1)
+    };
+
+    private List<ClippingBoxCorner> faces = new List<ClippingBoxCorner>();
+    private List<Vector3> possibleFaceIndices = new List<Vector3>() {
+        new Vector3(+1, 0, 0),
+        new Vector3(0, +1, 0),
+        new Vector3(0, 0, +1),
+        new Vector3(-1, 0, 0),
+        new Vector3(0, -1, 0),
+        new Vector3(0, 0, -1),
     };
 
     private void Awake() {
@@ -33,10 +43,15 @@ public class ClippingBox : MonoBehaviour {
             corners.Add(cornerGO.GetComponent<ClippingBoxCorner>());
         }
 
+        foreach (Transform faceGO in transform.Find("Faces")) {
+            faces.Add(faceGO.GetComponent<ClippingBoxCorner>());
+        }
+
         if (drawBox) { DrawBox(); }
         UpdateTrigger();
         UpdateLineVertices();
         UpdateAllCornerPositions();
+        UpdateAllFacePositions();
     }
 
     private void Update() {
@@ -57,6 +72,11 @@ public class ClippingBox : MonoBehaviour {
 
         // enable or disable all corners
         foreach (Transform child in transform.Find("Corners")) {
+            child.gameObject.GetComponent<MeshRenderer>().enabled = active;
+        }
+
+        // enable or disable all faces
+        foreach (Transform child in transform.Find("Faces")) {
             child.gameObject.GetComponent<MeshRenderer>().enabled = active;
         }
     }
@@ -202,22 +222,32 @@ public class ClippingBox : MonoBehaviour {
     // start pinch movement for corners
     public void StartPinchMovement(Hand grabbingHand) {
         Vector3 pinchPosition = grabbingHand.GetPinchPosition();
-        GameObject pinchedCorner = null;
+        GameObject pinchedGrabbable = null;
         float shortestDistancce = -1;
 
         // find closest corner
         foreach (Transform corner in transform.Find("Corners")) {
             float currDistance = Vector3.Distance(pinchPosition, corner.position);
 
-            if (pinchedCorner == null || currDistance < shortestDistancce) {
-                pinchedCorner = corner.gameObject;
+            if (pinchedGrabbable == null || currDistance < shortestDistancce) {
+                pinchedGrabbable = corner.gameObject;
+                shortestDistancce = currDistance;
+            }
+        }
+
+        // or find closest face
+        foreach (Transform face in transform.Find("Faces")) {
+            float currDistance = Vector3.Distance(pinchPosition, face.position);
+
+            if (pinchedGrabbable == null || currDistance < shortestDistancce) {
+                pinchedGrabbable = face.gameObject;
                 shortestDistancce = currDistance;
             }
         }
 
         // if closest corner is close enough, perform pinch movement
-        if (Vector3.Distance(pinchPosition, pinchedCorner.transform.position) < 0.2f) {
-            pinchedCorner.GetComponent<ClippingBoxCorner>().StartGrabMovement(grabbingHand);
+        if (Vector3.Distance(pinchPosition, pinchedGrabbable.transform.position) < 0.2f) {
+            pinchedGrabbable.GetComponent<ClippingBoxCorner>().StartGrabMovement(grabbingHand);
         }
     }
 
@@ -227,7 +257,12 @@ public class ClippingBox : MonoBehaviour {
             corner.GetComponent<ClippingBoxCorner>().EndGrabMovement();
         }
 
+        foreach (Transform face in transform.Find("Faces")) {
+            face.GetComponent<ClippingBoxCorner>().EndGrabMovement();
+        }
+
         UpdateAllCornerPositions();
+        UpdateAllFacePositions();
     }
 
     // update minimal and maximal bounds based on the new position of one corner
@@ -243,6 +278,7 @@ public class ClippingBox : MonoBehaviour {
 
         // update other corners, the line game objects and the trigger
         UpdateAllCornerPositions();
+        UpdateAllFacePositions();
         UpdateLineVertices();
         UpdateTrigger();
     }
@@ -279,7 +315,18 @@ public class ClippingBox : MonoBehaviour {
             minBounds.z = maxBounds.z;
             maxBounds.z = tmp;
         }
+    }
 
+    // shifts the bounds of the clipping box by a delta vector
+    public void ShiftBoundary(Vector3 delta) {
+        minBounds += delta;
+        maxBounds += delta;
+
+        // update other corners, the line game objects and the trigger
+        UpdateAllCornerPositions();
+        UpdateAllFacePositions();
+        UpdateLineVertices();
+        UpdateTrigger();
     }
 
     // ipdate box trigger center and size
@@ -297,13 +344,27 @@ public class ClippingBox : MonoBehaviour {
     private void UpdateAllCornerPositions() {
         // determine the right order of the corners, respective their indices
         List<GameObject> cornerGOs = new List<GameObject>();
-        foreach (Vector3 index in possibleIndices) {
+        foreach (Vector3 index in possibleCornerIndices) {
             cornerGOs.Add(GetCorner(index));
         }
 
         // update the corners positions
-        for (int i = 0; i < possibleIndices.Count; i++) {
-            UpdateCornerPosition(cornerGOs[i], possibleIndices[i]);
+        for (int i = 0; i < possibleCornerIndices.Count; i++) {
+            UpdateCornerPosition(cornerGOs[i], possibleCornerIndices[i]);
+        }
+    }
+
+    // update all face box positions respective the minimal and maximal bounds
+    private void UpdateAllFacePositions() {
+        // determine the right order of the corners, respective their indices
+        List<GameObject> faceGOs = new List<GameObject>();
+        foreach (Vector3 index in possibleFaceIndices) {
+            faceGOs.Add(GetFace(index));
+        }
+
+        // update the corners positions
+        for (int i = 0; i < possibleFaceIndices.Count; i++) {
+            UpdateFacePosition(faceGOs[i], possibleFaceIndices[i]);
         }
     }
 
@@ -317,6 +378,21 @@ public class ClippingBox : MonoBehaviour {
         if (index.z < 0) { posZ = minBounds.z; }
 
         cornerGO.transform.localPosition = new Vector3(posX, posY, posZ);
+    }
+
+    // update the position of a specific face
+    private void UpdateFacePosition(GameObject faceGO, Vector3 index) {
+        Vector3 center = GetBoxCenter();
+        float posX = 0, posY = 0, posZ = 0;
+
+        if (index.x > 0) { posX = maxBounds.x - center.x; }
+        else if (index.x < 0) { posX = minBounds.x - center.x; }
+        else if (index.y > 0) { posY = maxBounds.y - center.y; }
+        else if (index.y < 0) { posY = minBounds.y - center.y; }
+        else if (index.z > 0) { posZ = maxBounds.z - center.z; }
+        else if (index.z < 0) { posZ = minBounds.z - center.z; }
+
+        faceGO.transform.localPosition = center + new Vector3(posX, posY, posZ);
     }
 
     // find a corner based on its index
@@ -343,6 +419,32 @@ public class ClippingBox : MonoBehaviour {
         }
         
         return resultCorner;
+    }
+
+    // find a face based on its index
+    private GameObject GetFace(Vector3 index) {
+        GameObject resultFace = null;
+        Vector3 boxCenter = GetBoxCenter();
+        float positionSum = 0;
+
+        // iterate through all corners
+        foreach(ClippingBoxCorner face in faces) {
+            Vector3 currPosition = face.transform.localPosition - boxCenter;
+            float currPositionSum = 0;
+            
+            // sum up the directional position sum
+            currPositionSum += currPosition.x * index.x;
+            currPositionSum += currPosition.y * index.y;
+            currPositionSum += currPosition.z * index.z;
+            
+            // if the position of the corner is in the same direction as the index, save it
+            if (resultFace == null || currPositionSum > positionSum) {
+                resultFace = face.gameObject;
+                positionSum = currPositionSum;
+            }
+        }
+        
+        return resultFace;
     }
 
     // returns the center position of the clipping box, (e.g. average position of all corners)
