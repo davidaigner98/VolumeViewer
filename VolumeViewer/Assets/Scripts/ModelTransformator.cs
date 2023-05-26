@@ -12,6 +12,7 @@ public class ModelTransformator : NetworkBehaviour {
     private GameObject displayCenter;
     private Transform displaySize;
     public NetworkVariable<Vector3> screenOffset = new NetworkVariable<Vector3>(new Vector3(0, 0, 1));
+    public NetworkVariable<Quaternion> modelRotation = new NetworkVariable<Quaternion>(Quaternion.identity);
     public NetworkVariable<float> scaleOnDisplay = new NetworkVariable<float>(1);
     public float scaleFactor = 0.375f;
     public NetworkVariable<bool> highlighted = new NetworkVariable<bool>(false);
@@ -19,6 +20,7 @@ public class ModelTransformator : NetworkBehaviour {
     private bool isBeingGrabbed = false;
     private bool isBeingRotated = false;
     private Vector3 lastPalmPosition;
+    private Quaternion lastPalmRotation;
     private Vector3 lastIndexPosition;
     private float zPositionFactor = 0.2f;
 
@@ -32,6 +34,7 @@ public class ModelTransformator : NetworkBehaviour {
 
     private void Start() {
         ModelManager.Instance.attached.OnValueChanged += ChangeModelAttachment;
+        modelRotation.OnValueChanged += AdjustRotation;
         highlighted.OnValueChanged += ToggleOutlineShader;
 
         // triggers setup process
@@ -61,6 +64,7 @@ public class ModelTransformator : NetworkBehaviour {
 
         transform.SetParent(displayCenter.transform);
         AdjustPositionClientside(Vector3.zero, screenOffset.Value);
+        AdjustRotation(Quaternion.identity, modelRotation.Value);
 
         UpdateClipScreenParametersClientside();
     }
@@ -141,10 +145,22 @@ public class ModelTransformator : NetworkBehaviour {
 
     // perform palm grab movement
     private void PalmGrabMovement() {
+        // apply delta rotation
+        Quaternion currPalmRotation = interactingHand.GetPalmPose().rotation;
+        Quaternion deltaRotation = currPalmRotation * Quaternion.Inverse(lastPalmRotation);
+        transform.rotation = deltaRotation * transform.rotation;
+        SetModelRotationServerRpc(transform.rotation);
+        lastPalmRotation = currPalmRotation;
+
+        // rotate model around palm
+        transform.position = deltaRotation * (transform.position - interactingHand.PalmPosition) + interactingHand.PalmPosition;
+
+        // apply delta movement
         Vector3 delta = interactingHand.PalmPosition - lastPalmPosition;
         lastPalmPosition = interactingHand.PalmPosition;
-
         transform.position += delta;
+        
+        // calculate and update screen offset
         Transform screenCenter = DisplayProfileManager.Instance.GetCurrentDisplayCenter().transform;
         Vector3 screenSize = DisplayProfileManager.Instance.GetCurrentDisplaySize().transform.localScale;
         Vector3 newOffset = screenCenter.InverseTransformDirection(transform.position - screenCenter.position) / screenSize.x;
@@ -177,6 +193,13 @@ public class ModelTransformator : NetworkBehaviour {
         transform.position = screenCenter.position + screenCenter.TransformDirection(newOffset * screenSize.x);
     }
 
+    // adjust model rotation
+    private void AdjustRotation(Quaternion oldRotation, Quaternion newRotation) {
+        if (isBeingGrabbed) { return; }
+
+        transform.rotation = newRotation;
+    }
+
     // perform one finger rotation
     private void OneFingerRotation() {
         float distance = Vector3.Distance(transform.position, interactingHand.GetIndex().TipPosition);
@@ -186,8 +209,8 @@ public class ModelTransformator : NetworkBehaviour {
             Vector3 indexPosition = interactingHand.GetIndex().TipPosition - transform.position;
 
             // calculate axis and angle
-            Vector3 axis = Vector3.Cross(indexPosition, lastIndexPosition);
-            axis = new Vector3(axis.x, axis.y, axis.z);
+            Vector3 axis = Vector3.Normalize(Vector3.Cross(indexPosition, lastIndexPosition));
+            axis = transform.InverseTransformDirection(new Vector3(axis.x, axis.y, axis.z));
             float angle = -Vector3.Angle(indexPosition, lastIndexPosition);
 
             // perform rotation
@@ -200,7 +223,13 @@ public class ModelTransformator : NetworkBehaviour {
     // clientside call to the server for rotating the model
     [ServerRpc(RequireOwnership = false)]
     public void RotateModelServerRpc(Vector3 axis, float angle) {
-        transform.Rotate(axis, angle, Space.World);
+        modelRotation.Value *= Quaternion.Euler(axis * angle);
+    }
+
+    // clientside call to the server for setting the model rotation
+    [ServerRpc(RequireOwnership = false)]
+    public void SetModelRotationServerRpc(Quaternion rotation) {
+        modelRotation.Value = rotation;
     }
 
     // start palm grab movement
@@ -216,6 +245,7 @@ public class ModelTransformator : NetworkBehaviour {
 
                 isBeingGrabbed = true;
                 lastPalmPosition = interactingHand.PalmPosition;
+                lastPalmRotation = interactingHand.GetPalmPose().rotation;
                 SetHighlightedStateServerRpc(true);
                 UpdateClipScreenParametersClientside();
             }
@@ -322,21 +352,21 @@ public class ModelTransformator : NetworkBehaviour {
     // align the model with its front to the camera
     public void AlignCoronal() {
         if (CrossPlatformMediator.Instance.isServer) {
-            transform.rotation = Quaternion.Euler(0, 180, 0);
+            modelRotation.Value = Quaternion.Euler(0, 180, 0);
         }
     }
 
     // align the model with its side to the camera
     public void AlignSagittal() {
         if (CrossPlatformMediator.Instance.isServer) {
-            transform.rotation = Quaternion.Euler(0, 90, 0);
+            modelRotation.Value = Quaternion.Euler(0, 90, 0);
         }
     }
 
     // align the model with its top to the camera
     public void AlignAxial() {
         if (CrossPlatformMediator.Instance.isServer) {
-            transform.rotation = Quaternion.Euler(90, 180, 0);
+            modelRotation.Value = Quaternion.Euler(90, 180, 0);
         }
     }
 }

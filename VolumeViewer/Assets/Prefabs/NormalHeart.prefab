@@ -109,7 +109,6 @@ GameObject:
   - component: {fileID: 5347350082325509841}
   - component: {fileID: 3518435478352309516}
   - component: {fileID: 6038229449826497020}
-  - component: {fileID: 8843466174311507383}
   - component: {fileID: 5528092088806606860}
   m_Layer: 0
   m_Name: NormalHeart
@@ -188,32 +187,8 @@ MonoBehaviour:
   scaleOnDisplay:
     m_InternalValue: 1
   scaleFactor: 0.39
---- !u!114 &8843466174311507383
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5112978934898084750}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SyncPositionX: 0
-  SyncPositionY: 0
-  SyncPositionZ: 0
-  SyncRotAngleX: 1
-  SyncRotAngleY: 1
-  SyncRotAngleZ: 1
-  SyncScaleX: 0
-  SyncScaleY: 0
-  SyncScaleZ: 0
-  PositionThreshold: 0.001
-  RotAngleThreshold: 0.01
-  ScaleThreshold: 0.01
-  InLocalSpace: 1
-  Interpolate: 1
+  highlighted:
+    m_InternalValue: 0
 --- !u!54 &5528092088806606860
 Rigidbody:
   m_ObjectHideFlags: 0
