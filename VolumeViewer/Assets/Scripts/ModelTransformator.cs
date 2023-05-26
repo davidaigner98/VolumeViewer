@@ -209,8 +209,8 @@ public class ModelTransformator : NetworkBehaviour {
             Vector3 indexPosition = interactingHand.GetIndex().TipPosition - transform.position;
 
             // calculate axis and angle
-            Vector3 axis = Vector3.Cross(indexPosition, lastIndexPosition);
-            axis = new Vector3(axis.x, axis.y, axis.z);
+            Vector3 axis = Vector3.Normalize(Vector3.Cross(indexPosition, lastIndexPosition));
+            axis = transform.InverseTransformDirection(new Vector3(axis.x, axis.y, axis.z));
             float angle = -Vector3.Angle(indexPosition, lastIndexPosition);
 
             // perform rotation
