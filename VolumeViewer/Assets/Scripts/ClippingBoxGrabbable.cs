@@ -7,7 +7,7 @@ public enum CornerType {
     Face
 }
 
-public class ClippingBoxCorner : MonoBehaviour {
+public class ClippingBoxGrabbable : MonoBehaviour {
     public CornerType type;
     private ClippingBox clippingBox;
     private bool isBeingGrabbed = false;

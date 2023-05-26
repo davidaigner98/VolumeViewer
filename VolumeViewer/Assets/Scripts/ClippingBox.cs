@@ -10,7 +10,7 @@ public class ClippingBox : MonoBehaviour {
     public bool drawBox;
     private bool active = false;
 
-    private List<ClippingBoxCorner> corners = new List<ClippingBoxCorner>();
+    private List<ClippingBoxGrabbable> corners = new List<ClippingBoxGrabbable>();
     private List<Vector3> possibleCornerIndices = new List<Vector3>() {
         new Vector3(-1, -1, -1),
         new Vector3(-1, -1, +1),
@@ -22,7 +22,7 @@ public class ClippingBox : MonoBehaviour {
         new Vector3(+1, +1, +1)
     };
 
-    private List<ClippingBoxCorner> faces = new List<ClippingBoxCorner>();
+    private List<ClippingBoxGrabbable> faces = new List<ClippingBoxGrabbable>();
     private List<Vector3> possibleFaceIndices = new List<Vector3>() {
         new Vector3(+1, 0, 0),
         new Vector3(0, +1, 0),
@@ -40,11 +40,11 @@ public class ClippingBox : MonoBehaviour {
     // performs the initial setup
     public void Setup() {
         foreach (Transform cornerGO in transform.Find("Corners")) {
-            corners.Add(cornerGO.GetComponent<ClippingBoxCorner>());
+            corners.Add(cornerGO.GetComponent<ClippingBoxGrabbable>());
         }
 
         foreach (Transform faceGO in transform.Find("Faces")) {
-            faces.Add(faceGO.GetComponent<ClippingBoxCorner>());
+            faces.Add(faceGO.GetComponent<ClippingBoxGrabbable>());
         }
 
         if (drawBox) { DrawBox(); }
@@ -247,18 +247,18 @@ public class ClippingBox : MonoBehaviour {
 
         // if closest corner is close enough, perform pinch movement
         if (Vector3.Distance(pinchPosition, pinchedGrabbable.transform.position) < 0.2f) {
-            pinchedGrabbable.GetComponent<ClippingBoxCorner>().StartGrabMovement(grabbingHand);
+            pinchedGrabbable.GetComponent<ClippingBoxGrabbable>().StartGrabMovement(grabbingHand);
         }
     }
 
     // end pinch movement for corners
     public void EndPinchMovement() {
         foreach (Transform corner in transform.Find("Corners")) {
-            corner.GetComponent<ClippingBoxCorner>().EndGrabMovement();
+            corner.GetComponent<ClippingBoxGrabbable>().EndGrabMovement();
         }
 
         foreach (Transform face in transform.Find("Faces")) {
-            face.GetComponent<ClippingBoxCorner>().EndGrabMovement();
+            face.GetComponent<ClippingBoxGrabbable>().EndGrabMovement();
         }
 
         UpdateAllCornerPositions();
@@ -402,7 +402,7 @@ public class ClippingBox : MonoBehaviour {
         float positionSum = 0;
 
         // iterate through all corners
-        foreach(ClippingBoxCorner corner in corners) {
+        foreach(ClippingBoxGrabbable corner in corners) {
             Vector3 currPosition = corner.transform.localPosition - boxCenter;
             float currPositionSum = 0;
             
@@ -428,7 +428,7 @@ public class ClippingBox : MonoBehaviour {
         float positionSum = 0;
 
         // iterate through all corners
-        foreach(ClippingBoxCorner face in faces) {
+        foreach(ClippingBoxGrabbable face in faces) {
             Vector3 currPosition = face.transform.localPosition - boxCenter;
             float currPositionSum = 0;
             
@@ -452,7 +452,7 @@ public class ClippingBox : MonoBehaviour {
         Vector3 center = Vector3.zero;
 
         // sum up all corner positions
-        foreach (ClippingBoxCorner corner in corners) {
+        foreach (ClippingBoxGrabbable corner in corners) {
             center += corner.transform.localPosition;
         }
 
