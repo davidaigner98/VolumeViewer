@@ -2,7 +2,13 @@ using Leap;
 using Leap.Unity;
 using UnityEngine;
 
-public class ClippingBoxCorner : MonoBehaviour {
+public enum CornerType {
+    Corner,
+    Face
+}
+
+public class ClippingBoxGrabbable : MonoBehaviour {
+    public CornerType type;
     private ClippingBox clippingBox;
     private bool isBeingGrabbed = false;
     private Hand grabbingHand;
@@ -28,7 +34,12 @@ public class ClippingBoxCorner : MonoBehaviour {
     // perform grab movement for this corner
     private void PerformGrabMovement() {
         Vector3 currPinchPosition = grabbingHand.GetPinchPosition();
-        clippingBox.UpdateCorner(gameObject, currPinchPosition);
+
+        if (type.Equals(CornerType.Corner)) {
+            clippingBox.UpdateCorner(gameObject, currPinchPosition);
+        } else if (type.Equals(CornerType.Face)) {
+            clippingBox.ShiftBoundary(currPinchPosition - transform.localPosition);
+        }
     }
 
     // end grab movement for this corner
