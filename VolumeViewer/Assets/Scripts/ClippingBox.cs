@@ -201,12 +201,14 @@ public class ClippingBox : MonoBehaviour {
     // triggers if a model exits the clipping box trigger
     private void OnTriggerExit(Collider other) {
         ModelInfo modelInfo = other.gameObject.GetComponentInParent<ModelInfo>();
-        if (modelInfo) { includedModels.Remove(modelInfo); }
+        if (modelInfo) {
+            includedModels.Remove(modelInfo);
 
-        Material[] currMats = other.gameObject.GetComponent<Renderer>().materials;
-        foreach (Material currMat in currMats) {
-            currMat.SetVector("_MinBounds", new Vector3(1, 1, 1));
-            currMat.SetVector("_MaxBounds", new Vector3(0, 0, 0));
+            Material[] currMats = other.gameObject.GetComponent<Renderer>().materials;
+            foreach (Material currMat in currMats) {
+                currMat.SetVector("_MinBounds", new Vector3(1, 1, 1));
+                currMat.SetVector("_MaxBounds", new Vector3(0, 0, 0));
+            }
         }
     }
     
