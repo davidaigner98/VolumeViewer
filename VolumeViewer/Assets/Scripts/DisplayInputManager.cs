@@ -114,12 +114,19 @@ public class DisplayInputManager : MonoBehaviour {
         ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
         if (selectedModel == null) { return; }
 
+        float zPos = selectedModel.transform.position.z;
+        float oldZBoundary = selectedModel.transform.Find("Model").GetComponent<BoxCollider>().bounds.min.z - zPos;
         float sizeChange = mouseScrollAction.ReadValue<Vector2>().y / 1200;
 
         // scale model
         float currScale = selectedModel.transform.localScale.x;
         selectedModel.transform.localScale = Vector3.one * currScale * (1.0f + sizeChange);
         selectedModel.GetComponent<ModelTransformator>().scaleOnDisplay.Value = selectedModel.transform.localScale.x;
+
+        // move model back on z axis
+        float newZBoundary = oldZBoundary * (1.0f + sizeChange);
+        float deltaZBoundary = oldZBoundary - newZBoundary;
+        selectedModel.GetComponent<ModelTransformator>().screenOffset.Value += Vector3.forward * deltaZBoundary;
     }
 
     private void TouchDragStarted(InputAction.CallbackContext c) {
@@ -288,7 +295,8 @@ public class DisplayInputManager : MonoBehaviour {
         }
 
         // scale model
-        selectedModel.transform.localScale = initialScale * newDistance / initialScaleDistance;
+        float sizeChange = newDistance / initialScaleDistance;
+        selectedModel.transform.localScale = initialScale * sizeChange;
         selectedModel.GetComponent<ModelTransformator>().scaleOnDisplay.Value = selectedModel.transform.localScale.x;
     }
 
