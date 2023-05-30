@@ -11,6 +11,7 @@ public class DisplayInputManager : MonoBehaviour {
     public float ofRotSpeed = 0.25f;
     public float mfRotSpeed = 0.7f;
     public float moveSpeed = 0.006f;
+    private bool mouseOverUI = false;
     private InputAction mouseMoveAction;
     private InputAction mouseLeftDragAction;
     private InputAction mouseRightDragAction;
@@ -56,6 +57,14 @@ public class DisplayInputManager : MonoBehaviour {
         touchDragAction.canceled += TouchDragCanceled;
     }
 
+    private void Update() {
+        if (EventSystem.current.IsPointerOverGameObject()) {
+            mouseOverUI = true;
+        } else {
+            mouseOverUI = false;
+        }
+    }
+
     private void OnDestroy() {
         // remove bindings on destroy
         mouseLeftDragAction.started -= MouseLeftDragStarted;
@@ -70,7 +79,7 @@ public class DisplayInputManager : MonoBehaviour {
     }
 
     private void MouseLeftDragStarted(InputAction.CallbackContext c) {
-        if (EventSystem.current.IsPointerOverGameObject()) { return; }
+        if (mouseOverUI) { return; }
 
         // try to select model to be transformed
         TrySelectModel(Mouse.current.position.ReadValue());
@@ -90,7 +99,7 @@ public class DisplayInputManager : MonoBehaviour {
     }
 
     private void MouseRightDragStarted(InputAction.CallbackContext c) {
-        if (EventSystem.current.IsPointerOverGameObject()) { return; }
+        if (mouseOverUI) { return; }
 
         // try to select model to be transformed
         TrySelectModel(Mouse.current.position.ReadValue());
@@ -267,8 +276,9 @@ public class DisplayInputManager : MonoBehaviour {
         // if this is not the first rotation
         if (!oldRotatingFingerDifference.Equals(Vector2.zero)) {
             // calculate rotation angle
-            float angle = Vector2.SignedAngle(newVector, oldRotatingFingerDifference) * mfRotSpeed;
-            selectedModel.GetComponent<ModelTransformator>().modelRotation.Value *= Quaternion.Euler(angle * Vector3.forward);
+            float angle = -Vector2.SignedAngle(newVector, oldRotatingFingerDifference) * mfRotSpeed;
+            Vector3 axis = selectedModel.transform.InverseTransformDirection(Vector3.forward);
+            selectedModel.GetComponent<ModelTransformator>().modelRotation.Value *= Quaternion.Euler(angle * axis);
         }
 
         oldRotatingFingerDifference = newVector;
