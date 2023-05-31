@@ -345,7 +345,10 @@ public class ModelTransformator : NetworkBehaviour {
     // reset the models screen offset (and therefore its position) to (0, 0, 0)
     public void ResetToCenter() {
         if (CrossPlatformMediator.Instance.isServer) {
-            screenOffset.Value = new Vector3(0, 0, 1);
+            float zPos = transform.position.z;
+            float currZBoundary = transform.Find("Model").GetComponent<BoxCollider>().bounds.min.z - zPos;
+
+            screenOffset.Value = new Vector3(0, 0, -currZBoundary + 1);
         }
     }
 
