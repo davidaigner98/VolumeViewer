@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -10,6 +11,7 @@ public class DisplayInputManager : MonoBehaviour {
     public float ofRotSpeed = 0.25f;
     public float mfRotSpeed = 0.7f;
     public float moveSpeed = 0.006f;
+    private bool mouseOverUI = false;
     private InputAction mouseMoveAction;
     private InputAction mouseLeftDragAction;
     private InputAction mouseRightDragAction;
@@ -20,6 +22,7 @@ public class DisplayInputManager : MonoBehaviour {
     private Vector2 oldRotatingFingerDifference = Vector2.zero;
     private float initialScaleDistance = -1;
     private Vector3 initialScale = Vector3.one;
+    private float lastExtent = 0;
     private bool first1FingerCall, first2FingerCall, first3To5FingerCall;
 
     private void Awake() {
@@ -54,6 +57,14 @@ public class DisplayInputManager : MonoBehaviour {
         touchDragAction.canceled += TouchDragCanceled;
     }
 
+    private void Update() {
+        if (EventSystem.current.IsPointerOverGameObject()) {
+            mouseOverUI = true;
+        } else {
+            mouseOverUI = false;
+        }
+    }
+
     private void OnDestroy() {
         // remove bindings on destroy
         mouseLeftDragAction.started -= MouseLeftDragStarted;
@@ -68,7 +79,7 @@ public class DisplayInputManager : MonoBehaviour {
     }
 
     private void MouseLeftDragStarted(InputAction.CallbackContext c) {
-        if (EventSystem.current.IsPointerOverGameObject()) { return; }
+        if (mouseOverUI) { return; }
 
         // try to select model to be transformed
         TrySelectModel(Mouse.current.position.ReadValue());
@@ -88,7 +99,7 @@ public class DisplayInputManager : MonoBehaviour {
     }
 
     private void MouseRightDragStarted(InputAction.CallbackContext c) {
-        if (EventSystem.current.IsPointerOverGameObject()) { return; }
+        if (mouseOverUI) { return; }
 
         // try to select model to be transformed
         TrySelectModel(Mouse.current.position.ReadValue());
@@ -114,12 +125,19 @@ public class DisplayInputManager : MonoBehaviour {
         ModelInfo selectedModel = ModelManager.Instance.GetSelectedModel();
         if (selectedModel == null) { return; }
 
+        float zPos = selectedModel.transform.position.z;
+        float oldZBoundary = selectedModel.transform.Find("Model").GetComponent<BoxCollider>().bounds.min.z - zPos;
         float sizeChange = mouseScrollAction.ReadValue<Vector2>().y / 1200;
 
         // scale model
         float currScale = selectedModel.transform.localScale.x;
         selectedModel.transform.localScale = Vector3.one * currScale * (1.0f + sizeChange);
         selectedModel.GetComponent<ModelTransformator>().scaleOnDisplay.Value = selectedModel.transform.localScale.x;
+
+        // move model back on z axis
+        float newZBoundary = oldZBoundary * (1.0f + sizeChange);
+        float deltaZBoundary = oldZBoundary - newZBoundary;
+        selectedModel.GetComponent<ModelTransformator>().screenOffset.Value += Vector3.forward * deltaZBoundary;
     }
 
     private void TouchDragStarted(InputAction.CallbackContext c) {
@@ -259,7 +277,8 @@ public class DisplayInputManager : MonoBehaviour {
         if (!oldRotatingFingerDifference.Equals(Vector2.zero)) {
             // calculate rotation angle
             float angle = -Vector2.SignedAngle(newVector, oldRotatingFingerDifference) * mfRotSpeed;
-            selectedModel.GetComponent<ModelTransformator>().modelRotation.Value *= Quaternion.Euler(angle * Vector3.forward);
+            Vector3 axis = selectedModel.transform.InverseTransformDirection(Vector3.forward);
+            selectedModel.GetComponent<ModelTransformator>().modelRotation.Value *= Quaternion.Euler(angle * axis);
         }
 
         oldRotatingFingerDifference = newVector;
@@ -279,17 +298,29 @@ public class DisplayInputManager : MonoBehaviour {
         Vector2 newPosition1 = touch1.position.ReadValue();
         float newDistance = Vector2.Distance(newPosition0, newPosition1);
 
+        Vector2 oldPosition0 = newPosition0 - touch0.delta.ReadValue();
+        Vector2 oldPosition1 = newPosition1 - touch1.delta.ReadValue();
         // calculate old distance between touching fingers, if this is not the first touch
         if (initialScaleDistance < 0) {
-            Vector2 oldPosition0 = newPosition0 - touch0.delta.ReadValue();
-            Vector2 oldPosition1 = newPosition1 - touch1.delta.ReadValue();
             initialScale = selectedModel.transform.localScale;
             initialScaleDistance = Vector2.Distance(oldPosition0, oldPosition1);
         }
 
+        //float zPos = selectedModel.transform.position.z;
+        //float currZBoundary = selectedModel.transform.Find("Model").GetComponent<BoxCollider>().bounds.min.z - zPos;
+
         // scale model
-        selectedModel.transform.localScale = initialScale * newDistance / initialScaleDistance;
+        float sizeChange1 = newDistance / initialScaleDistance;
+        selectedModel.transform.localScale = initialScale * sizeChange1;
         selectedModel.GetComponent<ModelTransformator>().scaleOnDisplay.Value = selectedModel.transform.localScale.x;
+
+        // move model back on z axis --> experimental
+        //float deltaZBoundary = lastExtent - currZBoundary;
+        //Debug.Log("Old: "+ lastExtent + ", New: "+ currZBoundary + ", Delta: "+deltaZBoundary);
+
+        //lastExtent = currZBoundary;
+
+        //selectedModel.GetComponent<ModelTransformator>().screenOffset.Value += Vector3.forward * deltaZBoundary;
     }
 
     // get number of fingers currently touching the screen
